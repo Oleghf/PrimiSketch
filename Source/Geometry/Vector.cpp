@@ -2,6 +2,11 @@
 
 #include <Vector.h>
 
+namespace
+{
+constexpr double epsilonDouble = 1e-9;
+}
+
 
 Vector Vector::operator+(const Vector& rhs) const
 {
@@ -50,7 +55,7 @@ Vector& Vector::operator*=(double rhs)
 
 bool Vector::operator==(const Vector& rhs) const
 {
-  return x == rhs.x && y == rhs.y;
+  return std::abs(x - rhs.x) < epsilonDouble && std::abs(y - rhs.y) < epsilonDouble;
 }
 
 

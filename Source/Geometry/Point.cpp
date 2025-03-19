@@ -1,5 +1,12 @@
+#include <cmath>
+
 #include <Point.h>
 #include <Vector.h>
+
+namespace
+{
+constexpr double epsilonDouble = 1e-9;
+}
 
 
 Vector Point::operator-(const Point& rhs) const
@@ -25,7 +32,7 @@ Point& Point::operator+=(const Vector& rhs)
 
 bool Point::operator==(const Point& rhs) const
 {
-  return x == rhs.x && y == rhs.y;
+  return std::abs(x - rhs.x) < epsilonDouble && std::abs(y - rhs.y) < epsilonDouble;
 }
 
 
