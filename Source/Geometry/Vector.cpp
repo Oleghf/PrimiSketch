@@ -87,7 +87,7 @@ Vector& Vector::operator*=(double rhs)
 //---
 bool Vector::operator==(const Vector& rhs) const
 {
-  return doubleEQ(x, rhs.x) * doubleEQ(y, rhs.y);
+  return math_utils::doubleEQ(x, rhs.x) * math_utils::doubleEQ(y, rhs.y);
 }
 
 

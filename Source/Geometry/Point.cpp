@@ -48,7 +48,7 @@ Point& Point::operator+=(const Vector& rhs)
 //---
 bool Point::operator==(const Point& rhs) const
 {
-  return doubleEQ(x, rhs.x) && doubleEQ(y, rhs.y);
+  return math_utils::doubleEQ(x, rhs.x) && math_utils::doubleEQ(y, rhs.y);
 }
 
 
