@@ -23,7 +23,7 @@ Vector Point::operator-(const Point& rhs) const
 //---
 Point Point::operator+(const Vector& rhs) const
 {
-  return {x + rhs.x, y + rhs.y};
+  return {x + rhs.dx, y + rhs.dy};
 }
 
 
@@ -34,8 +34,8 @@ Point Point::operator+(const Vector& rhs) const
 //---
 Point& Point::operator+=(const Vector& rhs)
 {
-  x += rhs.x;
-  y += rhs.y;
+  x += rhs.dx;
+  y += rhs.dy;
 
   return *this;
 }
