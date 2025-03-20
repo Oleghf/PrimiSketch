@@ -12,7 +12,7 @@
 //---
 Vector Vector::operator+(const Vector& rhs) const
 {
-  return {x + rhs.x, y + rhs.y};
+  return {dx + rhs.dx, dy + rhs.dy};
 }
 
 
@@ -23,8 +23,8 @@ Vector Vector::operator+(const Vector& rhs) const
 //---
 Vector& Vector::operator+=(const Vector& rhs)
 {
-  x += rhs.x;
-  y += rhs.y;
+  dx += rhs.dx;
+  dy += rhs.dy;
 
   return *this;
 }
@@ -37,7 +37,7 @@ Vector& Vector::operator+=(const Vector& rhs)
 //---
 Vector Vector::operator-(const Vector& rhs) const
 {
-  return {x - rhs.x, y - rhs.y};
+  return {dx - rhs.dx, dy - rhs.dy};
 }
 
 
@@ -48,8 +48,8 @@ Vector Vector::operator-(const Vector& rhs) const
 //---
 Vector& Vector::operator-=(const Vector& rhs)
 {
-  x -= rhs.x;
-  y -= rhs.y;
+  dx -= rhs.dx;
+  dy -= rhs.dy;
 
   return *this;
 }
@@ -62,7 +62,7 @@ Vector& Vector::operator-=(const Vector& rhs)
 //---
 Vector Vector::operator*(double rhs) const
 {
-  return {x * rhs, y * rhs};
+  return {dx * rhs, dy * rhs};
 }
 
 
@@ -73,8 +73,8 @@ Vector Vector::operator*(double rhs) const
 //---
 Vector& Vector::operator*=(double rhs)
 {
-  x *= rhs;
-  y *= rhs;
+  dx *= rhs;
+  dy *= rhs;
 
   return *this;
 }
@@ -87,7 +87,7 @@ Vector& Vector::operator*=(double rhs)
 //---
 bool Vector::operator==(const Vector& rhs) const
 {
-  return math_utils::doubleEQ(x, rhs.x) * math_utils::doubleEQ(y, rhs.y);
+  return math_utils::doubleEQ(dx, rhs.dx) * math_utils::doubleEQ(dy, rhs.dy);
 }
 
 
@@ -109,5 +109,5 @@ bool Vector::operator!=(const Vector& rhs) const
 //---
 double Vector::Length() const
 {
-  return std::sqrt(x * x + y * y);
+  return std::hypot(dx, dy);
 }

@@ -9,8 +9,8 @@
 struct Vector
 {
 public:
-  double x{};
-  double y{};
+  double dx{};
+  double dy{};
 
 public:
   Vector operator-(const Vector& rhs) const;
