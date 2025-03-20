@@ -7,17 +7,17 @@ namespace math_utils
 
 namespace math_constants
 {
-/// Epsilon для сравнения объектов типа double
+/// Epsilon РґР»СЏ СЃСЂР°РІРЅРµРЅРёСЏ РѕР±СЉРµРєС‚РѕРІ С‚РёРїР° double
 constexpr double epsilonDouble = 1e-4;
 } // namespace math_constants
 
 
 //------------------------------------------------------------------------------
 /**
-  \brief Функция сравнения двух объектов типа double
-  \param arg1 double для сравнения
-  \param arg2 double для сравнения
-  \param epsilon Погрешность при сравнении
+  \brief Р¤СѓРЅРєС†РёСЏ СЃСЂР°РІРЅРµРЅРёСЏ РґРІСѓС… РѕР±СЉРµРєС‚РѕРІ С‚РёРїР° double
+  \param arg1 double РґР»СЏ СЃСЂР°РІРЅРµРЅРёСЏ
+  \param arg2 double РґР»СЏ СЃСЂР°РІРЅРµРЅРёСЏ
+  \param epsilon РџРѕРіСЂРµС€РЅРѕСЃС‚СЊ РїСЂРё СЃСЂР°РІРЅРµРЅРёРё
 */
 //---
 inline bool doubleEQ(double arg1, double arg2, double epsilon = math_constants::epsilonDouble)

@@ -4,9 +4,9 @@
 
 //------------------------------------------------------------------------------
 /**
-  \brief Конструктор
-  \param startPoint Начальная точка отрезка
-  \param endPoint Конечная точка отрезка
+  \brief РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+  \param startPoint РќР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР° РѕС‚СЂРµР·РєР°
+  \param endPoint РљРѕРЅРµС‡РЅР°СЏ С‚РѕС‡РєР° РѕС‚СЂРµР·РєР°
 */
 //---
 LineSegment::LineSegment(const Point & startPoint, const Point & endPoint)
@@ -18,8 +18,8 @@ LineSegment::LineSegment(const Point & startPoint, const Point & endPoint)
 
 //------------------------------------------------------------------------------
 /**
-  \brief Получить центр отрезка
-  \return центр отрезка
+  \brief РџРѕР»СѓС‡РёС‚СЊ С†РµРЅС‚СЂ РѕС‚СЂРµР·РєР°
+  \return С†РµРЅС‚СЂ РѕС‚СЂРµР·РєР°
 */
 //---
 Point LineSegment::Center() const
@@ -33,8 +33,8 @@ Point LineSegment::Center() const
 
 //------------------------------------------------------------------------------
 /**
-  \brief Сдвинуть элемент на вектор
-  \param offset вектор смещения
+  \brief РЎРґРІРёРЅСѓС‚СЊ СЌР»РµРјРµРЅС‚ РЅР° РІРµРєС‚РѕСЂ
+  \param offset РІРµРєС‚РѕСЂ СЃРјРµС‰РµРЅРёСЏ
 */
 //---
 void LineSegment::Move(const Vector& offset)
