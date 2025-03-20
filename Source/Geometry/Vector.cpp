@@ -1,19 +1,26 @@
 #include <cmath>
 
+#include <MathUtils.h>
+
 #include <Vector.h>
 
-namespace
-{
-constexpr double epsilonDouble = 1e-9;
-}
 
-
+//------------------------------------------------------------------------------
+/**
+  ѕерегруженный оператор сложени€ дл€ вектора
+*/
+//---
 Vector Vector::operator+(const Vector& rhs) const
 {
   return {x + rhs.x, y + rhs.y};
 }
 
 
+//------------------------------------------------------------------------------
+/**
+  ѕерегруженный оператор добавлени€ и присваивани€ дл€ вектора
+*/
+//---
 Vector& Vector::operator+=(const Vector& rhs)
 {
   x += rhs.x;
@@ -23,12 +30,22 @@ Vector& Vector::operator+=(const Vector& rhs)
 }
 
 
+//------------------------------------------------------------------------------
+/**
+  ѕерегруженный оператор вычитани€ дл€ вектора
+*/
+//---
 Vector Vector::operator-(const Vector& rhs) const
 {
   return {x - rhs.x, y - rhs.y};
 }
 
 
+//------------------------------------------------------------------------------
+/**
+  ѕерегруженный оператор вычитани€ и присваивани€ дл€ вектора
+*/
+//---
 Vector& Vector::operator-=(const Vector& rhs)
 {
   x -= rhs.x;
@@ -38,12 +55,22 @@ Vector& Vector::operator-=(const Vector& rhs)
 }
 
 
+//------------------------------------------------------------------------------
+/**
+  ѕерегруженный оператор умножени€ дл€ вектора
+*/
+//---
 Vector Vector::operator*(double rhs) const
 {
   return {x * rhs, y * rhs};
 }
 
 
+//------------------------------------------------------------------------------
+/**
+  ѕерегруженный оператор умножени€ и присваивани€ дл€ вектора
+*/
+//---
 Vector& Vector::operator*=(double rhs)
 {
   x *= rhs;
@@ -53,18 +80,33 @@ Vector& Vector::operator*=(double rhs)
 }
 
 
+//------------------------------------------------------------------------------
+/**
+  ѕерегруженный оператор равенства дл€ вектора
+*/
+//---
 bool Vector::operator==(const Vector& rhs) const
 {
-  return std::abs(x - rhs.x) < epsilonDouble && std::abs(y - rhs.y) < epsilonDouble;
+  return doubleEQ(x, rhs.x) * doubleEQ(y, rhs.y);
 }
 
 
+//------------------------------------------------------------------------------
+/**
+  ѕерегруженный оператор неравенства дл€ вектора
+*/
+//---
 bool Vector::operator!=(const Vector& rhs) const
 {
   return !(*this == rhs);
 }
 
 
+//------------------------------------------------------------------------------
+/**
+  ƒлина вектора
+*/
+//---
 double Vector::Length() const
 {
   return std::sqrt(x * x + y * y);
