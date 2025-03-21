@@ -18,7 +18,7 @@
   \warning Передача одинаковых точек создаст вырожденный прямоугольник
 */
 //---
-Rectangle::Rectangle(const Point& topLeft, const Point& bottomRight)
+Rectangle::Rectangle(const Point & topLeft, const Point & bottomRight)
   : m_topLeft({std::min(topLeft.x, bottomRight.x), std::max(topLeft.y, bottomRight.y)})
   , m_bottomRight({std::max(topLeft.x, bottomRight.x), std::min(topLeft.y, bottomRight.y)})
 {
@@ -133,7 +133,7 @@ Point Rectangle::Center() const
   \param offset Вектор смещения
 */
 //---
-void Rectangle::Move(const Vector& offset)
+void Rectangle::Move(const Vector & offset)
 {
   m_topLeft += offset;
   m_bottomRight += offset;

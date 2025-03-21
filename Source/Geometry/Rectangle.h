@@ -11,8 +11,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 class Rectangle : public IFigure
 {
+private:
+  Point m_topLeft;
+  Point m_bottomRight;
+
 public:
-  Rectangle(const Point& topLeft, const Point& bottomRight);
+  Rectangle(const Point & topLeft, const Point & bottomRight);
 
   Point TopLeft() const;
   Point TopRight() const;
@@ -25,9 +29,5 @@ public:
   double Left() const;
 
   Point Center() const override;
-  void Move(const Vector& offset) override;
-
-private:
-  Point m_topLeft;
-  Point m_bottomRight;
+  void Move(const Vector & offset) override;
 };
