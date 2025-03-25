@@ -42,3 +42,14 @@ void LineSegment::Move(const Vector& offset)
   start += offset;
   end += offset;
 }
+
+
+//------------------------------------------------------------------------------
+/**
+  Получить длину отрезка
+*/
+//---
+double LineSegment::Length() const
+{
+  return (end - start).Length();
+}

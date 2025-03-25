@@ -23,14 +23,14 @@ BrokenLine::BrokenLine(const std::vector<LineSegment>& segments)
 Point BrokenLine::Center() const
 {
   if (m_segments.empty())
-    return {0, 0};
+    return Point{};
 
   double sumX = 0, sumY = 0;
 
-  // Вычисляем сумму x,y точек сегментов и общую длину сегментов
+  // Вычисляем сумму x,y точек сегментов
   for (const LineSegment& segment : m_segments)
   {
-    double lengthSegment = (segment.end - segment.start).Length();
+    double lengthSegment = segment.Length();
     Point centerSegment = segment.Center();
 
     sumX += lengthSegment * centerSegment.x;
@@ -39,7 +39,7 @@ Point BrokenLine::Center() const
 
   const double lengthTotal = Length();
   if (lengthTotal == 0)
-    return m_segments.front().start;
+    return m_segments.front().Center();
   return {sumX / lengthTotal, sumY / lengthTotal};
 }
 
@@ -70,19 +70,6 @@ std::vector<LineSegment> BrokenLine::GetSegments() const
 
 //------------------------------------------------------------------------------
 /**
-  Узнать о том, замкнута ли ломаная линия
-*/
-//---
-bool BrokenLine::IsClosed() const
-{
-  if (m_segments.empty())
-    return false;
-  return m_segments.front().start == m_segments.back().end;
-}
-
-
-//------------------------------------------------------------------------------
-/**
   Получить длину ломаной линии
 */
 //---
@@ -90,7 +77,7 @@ double BrokenLine::Length() const
 {
   double lengthTotal = 0;
   for (const LineSegment & segment : m_segments)
-    lengthTotal += (segment.end - segment.start).Length();
+    lengthTotal += segment.Length();
   
   return lengthTotal;
 }

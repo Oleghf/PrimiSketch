@@ -23,6 +23,5 @@ public:
   void Move(const Vector & offset) override;
 
   std::vector<LineSegment> GetSegments() const;
-  bool IsClosed() const;
   double Length() const;
 };
