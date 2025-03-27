@@ -16,7 +16,7 @@ private:
   Point m_bottomRight;
 
 public:
-  Rectangle(const Point & topLeft, const Point & bottomRight);
+  Rectangle(const Point & first, const Point & second);
 
   Point TopLeft() const;
   Point TopRight() const;

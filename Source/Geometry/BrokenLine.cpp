@@ -1,46 +1,45 @@
+#include <limits>
+#include <cassert>
+
 #include <BrokenLine.h>
-#include <Vector.h>
 
 
 //------------------------------------------------------------------------------
 /**
   \brief Конструктор
-  \param segments Массив отрезков
+  \param points Массив точек
+  \warning Массив всегда должен содержать хотя бы одну точку
 */
 //---
-BrokenLine::BrokenLine(const std::vector<LineSegment>& segments)
-	: m_segments(segments)
+BrokenLine::BrokenLine(const std::vector<Point> & points)
+	: m_points(points)
 {
+  assert(points.size() > 0);
 }
 
 
 //------------------------------------------------------------------------------
 /**
   \brief Получить центр ломаной линии
-  \details Высчитывает центр ломанной линии, учитывая длины отрезков
+  \details Высчитывает центр ломанной линии
 */
 //---
 Point BrokenLine::Center() const
 {
-  if (m_segments.empty())
-    return Point{};
+  double minX = std::numeric_limits<double>::max();
+  double maxX = std::numeric_limits<double>::min();
+  double minY = std::numeric_limits<double>::max();
+  double maxY = std::numeric_limits<double>::min();
 
-  double sumX = 0, sumY = 0;
-
-  // Вычисляем сумму x,y точек сегментов
-  for (const LineSegment& segment : m_segments)
+  for (const Point& point : m_points)
   {
-    double lengthSegment = segment.Length();
-    Point centerSegment = segment.Center();
-
-    sumX += lengthSegment * centerSegment.x;
-    sumY += lengthSegment * centerSegment.y;
+    minX = std::min(minX, point.x);
+    maxX = std::max(maxX, point.x);
+    minY = std::min(minY, point.y);
+    maxY = std::max(maxY, point.y);
   }
 
-  const double lengthTotal = Length();
-  if (lengthTotal == 0)
-    return m_segments.front().Center();
-  return {sumX / lengthTotal, sumY / lengthTotal};
+  return {{(minX + maxX) / 2}, {(minY + maxY) / 2}};
 }
 
 
@@ -52,8 +51,8 @@ Point BrokenLine::Center() const
 //---
 void BrokenLine::Move(const Vector & offset)
 {
-  for (LineSegment& segment : m_segments)
-    segment.Move(offset);
+  for (Point & point : m_points)
+    point += offset;
 }
 
 
@@ -62,22 +61,7 @@ void BrokenLine::Move(const Vector & offset)
   Получить массив отрезков, составляющих ломаную линию
 */
 //---
-std::vector<LineSegment> BrokenLine::GetSegments() const
+std::vector<Point> BrokenLine::GetPoints() const
 {
-  return m_segments;
-}
-
-
-//------------------------------------------------------------------------------
-/**
-  Получить длину ломаной линии
-*/
-//---
-double BrokenLine::Length() const
-{
-  double lengthTotal = 0;
-  for (const LineSegment & segment : m_segments)
-    lengthTotal += segment.Length();
-  
-  return lengthTotal;
+  return m_points;
 }

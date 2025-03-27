@@ -3,7 +3,7 @@
 #include <vector>
 
 #include <IFigure.h>
-#include <LineSegment.h>
+#include <Point.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -14,14 +14,13 @@
 class BrokenLine : public IFigure
 {
 private:
-  std::vector<LineSegment> m_segments;
+  std::vector<Point> m_points;
 
 public:
-  BrokenLine(const std::vector<LineSegment> & segments);
+  BrokenLine(const std::vector<Point> & points);
 
   Point Center() const override;
   void Move(const Vector & offset) override;
 
-  std::vector<LineSegment> GetSegments() const;
-  double Length() const;
+  std::vector<Point> GetPoints() const;
 };

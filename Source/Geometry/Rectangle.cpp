@@ -12,15 +12,15 @@
   Автоматически корректирует координаты так, чтобы m_topLeft
   всегда была верхней левой точкой, а m_bottomRight - нижней правой
 
-  \param topLeft Левая верхняя точка прямоугольника или любая другая точка прямоугольника
-  \param bottomRight Правая нижняя точка прямоугольника или любая другая точка прямоугольника
+  \param first любая точка прямоугольника
+  \param second любая точка прямоугольника
 
   \warning Передача одинаковых точек создаст вырожденный прямоугольник
 */
 //---
-Rectangle::Rectangle(const Point & topLeft, const Point & bottomRight)
-  : m_topLeft({std::min(topLeft.x, bottomRight.x), std::max(topLeft.y, bottomRight.y)})
-  , m_bottomRight({std::max(topLeft.x, bottomRight.x), std::min(topLeft.y, bottomRight.y)})
+Rectangle::Rectangle(const Point & first, const Point & second)
+  : m_topLeft({std::min(first.x, second.x), std::max(first.y, second.y)})
+  , m_bottomRight({std::max(first.x, second.x), std::min(first.y, second.y)})
 {
 }
 
