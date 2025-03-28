@@ -20,4 +20,6 @@ public:
 
   Point Center() const override;
   void Move(const Vector& offset) override;
+
+  double Length() const;
 };
