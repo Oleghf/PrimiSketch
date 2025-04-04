@@ -1,6 +1,9 @@
 #include <limits>
 #include <cassert>
+#include <algorithm>
 
+#include <MathUtils.h>
+#include <Vector.h>
 #include <BrokenLine.h>
 
 
@@ -53,6 +56,35 @@ void BrokenLine::Move(const Vector & offset)
 {
   for (Point & point : m_points)
     point += offset;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Проверить, нахождение ломанной линии в прямоугольной области
+*/
+//---
+bool BrokenLine::InBox(const Box& box) const
+{
+  return std::ranges::all_of(m_points, [&box](const Point & point) { return math_utils::PointInBox(point, box); });
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  \brief Проверить вхождение точки (с погрешностью) в ломанную линию
+  \param point Точка с которой проверяется пересечение
+  \param epsilon Допустимая погрешность
+*/
+//---
+bool BrokenLine::IntersectsPoint(const Point & point, double epsilon) const
+{
+  for (size_t i = 1; i < m_points.size(); i++)
+  {
+    if (math_utils::SegmentIntersectsCircle(m_points[i - 1], m_points[i], point, epsilon))
+      return true;
+  }
+  return false;
 }
 
 

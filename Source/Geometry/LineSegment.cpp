@@ -1,3 +1,6 @@
+#include <algorithm>
+
+#include <MathUtils.h>
 #include <LineSegment.h>
 #include <Vector.h>
 
@@ -52,4 +55,39 @@ void LineSegment::Move(const Vector& offset)
 double LineSegment::Length() const
 {
   return (end - start).Length();
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  \brief Проверить, нахождение отрезка в прямоугольной области
+  \param topLeft Верхний левый угол прямоугольной области
+  \param bottomRight Правый нижний угол прямоугольной области
+*/
+//---
+bool LineSegment::InBox(const Box & box) const
+{
+  const double minX = std::min(start.x, end.x);
+  const double minY = std::min(start.y, end.y);
+  const double maxX = std::max(start.x, end.x);
+  const double maxY = std::max(start.y, end.y);
+
+  const Point topLeftBox = box.TopLeft();
+  const Point bottomRightBox = box.BottomRight();
+
+  return (minX >= topLeftBox.x && maxX <= bottomRightBox.x) &&
+         (minY >= bottomRightBox.y && maxY <= topLeftBox.y);
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  \brief Проверяет вхождение точки (с погрешностью) в отрезок
+  \param point Точка с которой проверяется пересечение
+  \param epsilon Допустимая погрешность
+*/
+//---
+bool LineSegment::IntersectsPoint(const Point & point, double epsilon) const
+{
+  return math_utils::SegmentIntersectsCircle(start, end, point, epsilon);
 }

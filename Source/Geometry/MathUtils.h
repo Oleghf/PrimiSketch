@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cmath>
+#include <Box.h>
+#include <Point.h>
+#include <Vector.h>
 
 namespace math_utils
 {
@@ -24,6 +27,10 @@ inline bool doubleEQ(double arg1, double arg2, double epsilon = math_constants::
 {
   return std::abs(arg1 - arg2) < epsilon;
 }
+
+bool PointInBox(const Point & point, const Box & box);
+
+bool SegmentIntersectsCircle(const Point& firstSegment, const Point& secondSegment, const Point& centerCircle, double radiusCircle);
 
 
 } // namespace math_utils
