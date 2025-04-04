@@ -19,7 +19,9 @@ public:
   LineSegment(const Point& startPoint, const Point& endPoint);
 
   Point Center() const override;
-  void Move(const Vector& offset) override;
+  void Move(const Vector & offset) override;
+  bool InBox(const Box & box) const override;
+  bool IntersectsPoint(const Point & point, double epsilon) const override;
 
   double Length() const;
 };

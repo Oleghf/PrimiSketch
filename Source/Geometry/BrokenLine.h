@@ -21,6 +21,8 @@ public:
 
   Point Center() const override;
   void Move(const Vector & offset) override;
+  bool InBox(const Box& box) const override;
+  bool IntersectsPoint(const Point & point, double epsilon) const override;
 
   std::vector<Point> GetPoints() const;
 };

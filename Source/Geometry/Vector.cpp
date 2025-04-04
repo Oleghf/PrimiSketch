@@ -111,3 +111,25 @@ double Vector::Length() const
 {
   return std::hypot(dx, dy);
 }
+
+
+//------------------------------------------------------------------------------
+/**
+  Псевдовекторное произведение векторов
+*/
+//---
+double Vector::PseudoCrossProduct(const Vector& rhs) const
+{
+  return dx * rhs.dy - dy * rhs.dx;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Скалярное произведение векторов
+*/
+//---
+double Vector::DotProduct(const Vector & rhs) const
+{
+  return dx * rhs.dx + dy * rhs.dy;
+}

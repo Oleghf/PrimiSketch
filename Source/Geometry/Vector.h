@@ -26,4 +26,6 @@ public:
   bool operator!=(const Vector& rhs) const;
 
   double Length() const;
+  double PseudoCrossProduct(const Vector & rhs) const;
+  double DotProduct(const Vector & rhs) const;
 };

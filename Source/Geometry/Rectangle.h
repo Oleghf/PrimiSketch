@@ -17,6 +17,11 @@ private:
 
 public:
   Rectangle(const Point & first, const Point & second);
+  
+  Point Center() const override;
+  void Move(const Vector & offset) override;
+  bool InBox(const Box & box) const override;
+  bool IntersectsPoint(const Point & point, double epsilon) const override;
 
   Point TopLeft() const;
   Point TopRight() const;
@@ -27,7 +32,4 @@ public:
   double Bottom() const;
   double Right() const;
   double Left() const;
-
-  Point Center() const override;
-  void Move(const Vector & offset) override;
-};
+}; 
