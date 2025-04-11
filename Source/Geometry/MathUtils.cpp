@@ -3,9 +3,9 @@
 
 //------------------------------------------------------------------------------
 /**
-  \brief Функция вхождения точки в обрамляющий прямоугольник
-  \param point Точка
-  \param box Обрамляющий прямоугольник
+  \brief Р¤СѓРЅРєС†РёСЏ РІС…РѕР¶РґРµРЅРёСЏ С‚РѕС‡РєРё РІ РѕР±СЂР°РјР»СЏСЋС‰РёР№ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє
+  \param point РўРѕС‡РєР°
+  \param box РћР±СЂР°РјР»СЏСЋС‰РёР№ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє
 */
 //---
 bool math_utils::PointInBox(const Point & point, const Box & box)
@@ -19,16 +19,16 @@ bool math_utils::PointInBox(const Point & point, const Box & box)
 
 //------------------------------------------------------------------------------
 /**
-  \brief Функция, проверяющая пересечение отрезка с окружностью
-  \param firstSegment Начальная/Конечная точка отрезка
-  \param secondSegment Конечная/Начальная точка сегмента
-  \param centerCircle Центр окружности
-  \param radiusCircle Радиус окружности
+  \brief Р¤СѓРЅРєС†РёСЏ, РїСЂРѕРІРµСЂСЏСЋС‰Р°СЏ РїРµСЂРµСЃРµС‡РµРЅРёРµ РѕС‚СЂРµР·РєР° СЃ РѕРєСЂСѓР¶РЅРѕСЃС‚СЊСЋ
+  \param firstSegment РќР°С‡Р°Р»СЊРЅР°СЏ/РљРѕРЅРµС‡РЅР°СЏ С‚РѕС‡РєР° РѕС‚СЂРµР·РєР°
+  \param secondSegment РљРѕРЅРµС‡РЅР°СЏ/РќР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР° СЃРµРіРјРµРЅС‚Р°
+  \param centerCircle Р¦РµРЅС‚СЂ РѕРєСЂСѓР¶РЅРѕСЃС‚Рё
+  \param radiusCircle Р Р°РґРёСѓСЃ РѕРєСЂСѓР¶РЅРѕСЃС‚Рё
 */
 //---
 bool math_utils::SegmentIntersectsCircle(const Point & firstSegment, const Point & secondSegment, const Point & centerCircle, double radiusCircle)
 {
-  // Проверяем коллинеарность
+  // РџСЂРѕРІРµСЂСЏРµРј РєРѕР»Р»РёРЅРµР°СЂРЅРѕСЃС‚СЊ
   const Vector directionSegment = secondSegment - firstSegment;
   const Vector directionToCenter = centerCircle - firstSegment;
 
