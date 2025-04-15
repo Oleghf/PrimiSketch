@@ -59,9 +59,9 @@ int main()
   GeometryModel model;
   model.add(segmentPtr);
   model.add(brokenLinePtr);
-  if (model.findFigure({4, 5}, 10).lock() == segmentPtr)
+  if (model.findFigure({4, 5}, 10) == segmentPtr)
     std::cout << "segmentPtr Finded" << std::endl;
-  if (model.findFigure({0, 0}, 10).lock() == brokenLinePtr)
+  if (model.findFigure({0, 0}, 10) == brokenLinePtr)
     std::cout << "brokenLinePtrFinded" << std::endl;
 
   std::cout << "GeometryModel end" << std::endl;

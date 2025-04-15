@@ -7,9 +7,9 @@
   Добавить фигуру
 */
 //---
-void GeometryModel::add(const std::shared_ptr<IFigure> & figure)
+void GeometryModel::add(std::shared_ptr<IFigure> figure)
 {
-  m_figures.push_back(figure);
+  m_figures.emplace_back(std::move(figure));
 }
 
 
@@ -29,7 +29,7 @@ void GeometryModel::remove(const std::shared_ptr<IFigure> & figure)
   Найти первую попавшуюся фигуру в точке с определенным радиусом
 */
 //---
-std::weak_ptr<IFigure> GeometryModel::findFigure(const Point & point, double radius) const
+std::shared_ptr<IFigure> GeometryModel::findFigure(const Point & point, double radius) const
 {
   auto it = std::ranges::find_if(m_figures,
                        [&point, radius](const std::shared_ptr<IFigure> & figure)
@@ -39,5 +39,5 @@ std::weak_ptr<IFigure> GeometryModel::findFigure(const Point & point, double rad
 
   if (it != m_figures.end())
     return *it;
-  return std::weak_ptr<IFigure>();
+  return nullptr;
 }
