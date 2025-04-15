@@ -1,13 +1,16 @@
 #include <iostream>
 #include <iomanip>
+#include <memory>
 
 #include <Box.h>
 #include <LineSegment.h>
 #include <BrokenLine.h>
 #include <Rectangle.h>
+#include <GeometryModel.h>
 
 int main()
 {
+  // -------------------------------
   std::cout << "Line Segment start: " << std::endl;
 
   LineSegment segment({4, 5}, {2,5});
@@ -21,6 +24,7 @@ int main()
 
   std::cout << "Line Segment end.\n\n";
 
+  // -------------------------------
   std::cout << "Broken Line start:" << std::endl;
 
   BrokenLine brokenLine({{0, 0}, {1, 1}});
@@ -34,6 +38,7 @@ int main()
 
   std::cout << "Broken Line end.\n\n";
 
+  // -------------------------------
   std::cout << "Rectangle start: " << std::endl;
 
   Rectangle rect({ 1, 2 }, {3, 4});
@@ -44,5 +49,23 @@ int main()
   std::cout << "Intersects Point: " << rect.IntersectsPoint(segment.start, 1) << std::endl;
 
   std::cout << "Rectangle end.\n\n";
+
+  // -------------------------------
+  std::cout << "GeometryModel start" << std::endl;
+
+  std::shared_ptr<LineSegment> segmentPtr = std::make_shared<LineSegment>(segment);
+  std::shared_ptr<BrokenLine> brokenLinePtr = std::make_shared<BrokenLine>(brokenLine);
+  
+  GeometryModel model;
+  model.add(segmentPtr);
+  model.add(brokenLinePtr);
+  if (model.findFigure({4, 5}, 10) == segmentPtr)
+    std::cout << "segmentPtr Finded" << std::endl;
+  if (model.findFigure({0, 0}, 10) == brokenLinePtr)
+    std::cout << "brokenLinePtrFinded" << std::endl;
+
+  std::cout << "GeometryModel end" << std::endl;
+
+
 
 }
