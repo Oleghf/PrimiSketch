@@ -57,12 +57,37 @@ int main()
   std::shared_ptr<BrokenLine> brokenLinePtr = std::make_shared<BrokenLine>(brokenLine);
   
   GeometryModel model;
-  model.add(segmentPtr);
-  model.add(brokenLinePtr);
-  if (model.findFigure({4, 5}, 10) == segmentPtr)
+
+  model.Add(segmentPtr);
+  model.Add(brokenLinePtr);
+
+  if (model.FindFigure({4, 5}, 10) == segmentPtr)
     std::cout << "segmentPtr Finded" << std::endl;
-  if (model.findFigure({0, 0}, 10) == brokenLinePtr)
+  if (model.FindFigure({0, 0}, 10) == brokenLinePtr)
     std::cout << "brokenLinePtrFinded" << std::endl;
+
+  model.ForEachFigures(
+    [&brokenLinePtr](std::shared_ptr<IFigure> figure)
+    {
+      if (figure == brokenLinePtr)
+      {
+        std::cout << "brokenLine center x: " << figure->Center().x << " y: " << figure->Center().y << std::endl;
+        return false;
+      }
+      return true;
+    });
+
+  model.ForEachFiguresInBox({{0, 0}, {10, 10}},
+                            [&segmentPtr](std::shared_ptr<IFigure> figure)
+                            {
+                              if (figure == segmentPtr)
+                              {
+                                std::cout << "segment center x: " << figure->Center().x << " y: " << figure->Center().y
+                                          << std::endl;
+                                return false;
+                              }
+                              return true;
+                            });
 
   std::cout << "GeometryModel end" << std::endl;
 
