@@ -52,7 +52,10 @@ void GeometryModel::ForEachFiguresInBox(const Box& box, std::function <bool(std:
 
   for (std::shared_ptr<IFigure> & figure : m_figures)
   {
-    if (figure->InBox(box) && !pred(figure))
+    if (!figure->InBox(box))
+      continue;
+
+    if (!pred(figure))
       break;
   }
 }
