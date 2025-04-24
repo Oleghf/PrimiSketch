@@ -7,6 +7,7 @@
 #include <BrokenLine.h>
 #include <Rectangle.h>
 #include <GeometryModel.h>
+#include <ConsoleOutputStream.h>
 
 int main()
 {
@@ -90,6 +91,18 @@ int main()
                             });
 
   std::cout << "GeometryModel end" << std::endl;
+
+  // -------------------------------
+  std::cout << std::endl << "OutputStream start" << std::endl;
+
+  ConsoleOutputStream cos;
+
+  rect.Write(cos);
+  segment.Write(cos);
+  brokenLine.Write(cos);
+
+  std::cout << std::endl << "OutputStream end" << std::endl;
+  
 
 
 

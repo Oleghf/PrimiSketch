@@ -2,6 +2,8 @@
 #include <cassert>
 #include <algorithm>
 
+#include <ConsoleOutputStream.h>
+#include <OutputStream.h>
 #include <MathUtils.h>
 #include <Vector.h>
 #include <BrokenLine.h>
@@ -85,6 +87,24 @@ bool BrokenLine::IntersectsPoint(const Point & point, double epsilon) const
       return true;
   }
   return false;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Выводит данные о ломанной линии в численном формате
+*/
+//---
+void BrokenLine::Write(OutputStream& os) const
+{
+  os.Write(static_cast<int>(m_points.size()));
+
+  std::ranges::for_each(m_points,
+                        [&os](const Point & point)
+                        {
+                          os.Write(point.x);
+                          os.Write(point.y);
+                        });
 }
 
 

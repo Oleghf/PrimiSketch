@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include <OutputStream.h>
 #include <MathUtils.h>
 #include <LineSegment.h>
 #include <Vector.h>
@@ -90,4 +91,18 @@ bool LineSegment::InBox(const Box & box) const
 bool LineSegment::IntersectsPoint(const Point & point, double epsilon) const
 {
   return math_utils::SegmentIntersectsCircle(start, end, point, epsilon);
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Выводит данные об отрезке в численном формате
+*/
+//---
+void LineSegment::Write(OutputStream & os) const
+{
+  os.Write(start.x);
+  os.Write(start.y);
+  os.Write(end.x);
+  os.Write(end.y);
 }
