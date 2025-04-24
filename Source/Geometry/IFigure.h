@@ -3,6 +3,7 @@
 struct Point;
 struct Vector;
 class Box;
+class OutputStream;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -21,4 +22,6 @@ public:
   virtual bool InBox(const Box& box) const = 0;
   /// Проверка пересечения фигуры с точкой
   virtual bool IntersectsPoint(const Point & point, double epsilon) const = 0;
+  /// Записывает данные о фигуре в поток
+  virtual void Write(OutputStream & os) = 0;
 };

@@ -4,6 +4,7 @@
 #include <Box.h>
 #include <Rectangle.h>
 #include <Vector.h>
+#include <OutputStream.h>
 
 
 //------------------------------------------------------------------------------
@@ -83,6 +84,20 @@ bool Rectangle::IntersectsPoint(const Point & point, double epsilon) const
 
   return !((bottomRightBoundBoxPoint.x < m_topLeft.x) || (topLeftBoundBoxPoint.x > m_bottomRight.x) ||
            (bottomRightBoundBoxPoint.y > m_topLeft.y) || (topLeftBoundBoxPoint.y < m_bottomRight.y));
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Выводит данные о прямоугольнике в численном формате
+*/
+//---
+void Rectangle::Write(OutputStream& os)
+{
+  os.Write(m_topLeft.x);
+  os.Write(m_topLeft.y);
+  os.Write(m_bottomRight.x);
+  os.Write(m_bottomRight.y);
 }
 
 
