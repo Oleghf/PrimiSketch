@@ -92,7 +92,7 @@ bool Rectangle::IntersectsPoint(const Point & point, double epsilon) const
   Выводит данные о прямоугольнике в численном формате
 */
 //---
-void Rectangle::Write(OutputStream& os)
+void Rectangle::Write(OutputStream& os) const
 {
   os.Write(m_topLeft.x);
   os.Write(m_topLeft.y);

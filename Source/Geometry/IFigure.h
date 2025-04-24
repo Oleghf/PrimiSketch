@@ -23,5 +23,5 @@ public:
   /// Проверка пересечения фигуры с точкой
   virtual bool IntersectsPoint(const Point & point, double epsilon) const = 0;
   /// Записывает данные о фигуре в поток
-  virtual void Write(OutputStream & os) = 0;
+  virtual void Write(OutputStream & os) const = 0;
 };

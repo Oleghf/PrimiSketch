@@ -99,7 +99,7 @@ bool LineSegment::IntersectsPoint(const Point & point, double epsilon) const
   Выводит данные об отрезке в численном формате
 */
 //---
-void LineSegment::Write(OutputStream & os)
+void LineSegment::Write(OutputStream & os) const
 {
   os.Write(start.x);
   os.Write(start.y);

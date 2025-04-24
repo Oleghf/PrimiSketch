@@ -95,7 +95,7 @@ bool BrokenLine::IntersectsPoint(const Point & point, double epsilon) const
   Выводит данные о ломанной линии в численном формате
 */
 //---
-void BrokenLine::Write(OutputStream& os)
+void BrokenLine::Write(OutputStream& os) const
 {
   os.Write(static_cast<int>(m_points.size()));
 
