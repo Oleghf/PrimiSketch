@@ -8,6 +8,7 @@
 #include <Rectangle.h>
 #include <GeometryModel.h>
 #include <ConsoleOutputStream.h>
+#include <BinaryFile.h>
 
 int main()
 {
@@ -102,6 +103,23 @@ int main()
   brokenLine.Write(cos);
 
   std::cout << std::endl << "OutputStream end" << std::endl;
+
+  std::cout << std::endl << "BinaryFile start" << std::endl;
+  BinaryFile bf("Hello.txt");
+
+  rect.Write(bf);
+  segment.Write(bf);
+  segment.Write(bf);
+
+  bf.Open("Animal.txt");
+
+  bf << 67 << 97 << 116 << 0;
+
+  bf.Close();
+
+  // -------------------------------
+
+
   
 
 

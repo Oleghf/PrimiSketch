@@ -10,7 +10,7 @@ add_library(${geometry_target_name} STATIC)
 
 # Указываем какие файлы необходимо включить в цель сборки. PRIVATE - относится
 # только к текущей цели для сборки.
-target_sources(${geometry_target_name} PRIVATE "IFigure.h" "Point.h" "Point.cpp" "Vector.h" "Vector.cpp" "LineSegment.h" "LineSegment.cpp" "MathUtils.h" "Rectangle.h" "Rectangle.cpp" "BrokenLine.h" "BrokenLine.cpp" "Box.h" "Box.cpp" "MathUtils.cpp" "GeometryModel.cpp" "OutputStream.h" "ConsoleOutputStream.h" "ConsoleOutputStream.cpp")
+target_sources(${geometry_target_name} PRIVATE "IFigure.h" "Point.h" "Point.cpp" "Vector.h" "Vector.cpp" "LineSegment.h" "LineSegment.cpp" "MathUtils.h" "Rectangle.h" "Rectangle.cpp" "BrokenLine.h" "BrokenLine.cpp" "Box.h" "Box.cpp" "MathUtils.cpp" "GeometryModel.cpp" "OutputStream.h" "ConsoleOutputStream.h" "ConsoleOutputStream.cpp" "BinaryFile.cpp")
 
 # Указываем подключаемые директории - директория с текущим CMakeLists. PUBLIC -
 # директория будет подключена к данной цели сборки и ко всем, которые подключают
