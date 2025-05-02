@@ -1,4 +1,5 @@
 #include <MathUtils.h>
+#include <OutputStream.h>
 #include <GeometryModel.h>
 #include <Box.h>
 
@@ -27,8 +28,8 @@ void GeometryModel::Remove(const std::shared_ptr<IFigure> & figure)
 
 //------------------------------------------------------------------------------
 /**
-  /brief Выполняет перебор всех указателей на фигуры.
-  /warning Если предикат вернет false, то перебор остановится
+  \brief Выполняет перебор всех указателей на фигуры.
+  \warning Если предикат вернет false, то перебор остановится
 */
 //---
 void GeometryModel::ForEachFigures(std::function<bool(std::shared_ptr<IFigure>)> pred)
@@ -43,8 +44,8 @@ void GeometryModel::ForEachFigures(std::function<bool(std::shared_ptr<IFigure>)>
 
 //------------------------------------------------------------------------------
 /**
-  /brief Выполняет перебор всех указателей на фигуры, находящихся в переданной прямоугольной области.
-  /warning Если предикат вернет false, то перебор остановится
+  \brief Выполняет перебор всех указателей на фигуры, находящихся в переданной прямоугольной области.
+  \warning Если предикат вернет false, то перебор остановится
 */
 //---
 void GeometryModel::ForEachFiguresInBox(const Box& box, std::function <bool(std::shared_ptr<IFigure>)> pred)
@@ -77,4 +78,20 @@ std::shared_ptr<IFigure> GeometryModel::FindFigure(const Point & point, double r
   if (it != m_figures.end())
     return *it;
   return nullptr;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  \brief Записывает данные о всех фигурах, составляющих геометрическую модель в поток
+  \warning Перед записью данных о фигуре, сначала записывает хэш типа фигуры
+*/
+//---
+void GeometryModel::Write(OutputStream & os)
+{
+  for (std::shared_ptr<IFigure> figure : m_figures)
+  {
+    os.Write(figure->GetTypeHash());
+    figure->Write(os);
+  }
 }

@@ -16,6 +16,17 @@ void ConsoleOutputStream::Write(int num)
 
 //------------------------------------------------------------------------------
 /**
+  Записывает size_t в поток
+*/
+//---
+void ConsoleOutputStream::Write(size_t num)
+{
+  std::cout << num;
+}
+
+
+//------------------------------------------------------------------------------
+/**
   Записывает double в поток
 */
 //---
@@ -31,6 +42,18 @@ void ConsoleOutputStream::Write(double num)
 */
 //---
 ConsoleOutputStream & ConsoleOutputStream::operator<<(int rhs)
+{
+  Write(rhs);
+  return *this;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Записывает size_t в поток
+*/
+//---
+ConsoleOutputStream & ConsoleOutputStream::operator<<(size_t rhs)
 {
   Write(rhs);
   return *this;

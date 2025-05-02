@@ -28,6 +28,17 @@ void BinaryFile::Write(int num)
   Записывает число в файл, в бинарном формате
 */
 //---
+void BinaryFile::Write(size_t num)
+{
+  m_ofs.write(reinterpret_cast<const char *>(&num), sizeof(num));
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Записывает число в файл, в бинарном формате
+*/
+//---
 void BinaryFile::Write(double num)
 {
   m_ofs.write(reinterpret_cast<const char *>(&num), sizeof(num));
@@ -41,9 +52,6 @@ void BinaryFile::Write(double num)
 //---
 void BinaryFile::Open(const std::string& filePath)
 {
-  if (IsOpen())
-    Close();
-
   m_ofs.open(filePath);
 }
 
@@ -76,6 +84,19 @@ void BinaryFile::Close()
 */
 //---
 BinaryFile & BinaryFile::operator<<(int rhs)
+{
+  m_ofs.write(reinterpret_cast<const char *>(&rhs), sizeof(rhs));
+
+  return *this;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Записывает число в файл, в бинарном формате
+*/
+//---
+BinaryFile & BinaryFile::operator<<(size_t rhs)
 {
   m_ofs.write(reinterpret_cast<const char *>(&rhs), sizeof(rhs));
 

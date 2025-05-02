@@ -22,6 +22,7 @@ public:
   BinaryFile(const std::string & filePath);
 
   void Write(int num) override;
+  void Write(size_t num) override;
   void Write(double num) override;
 
   void Open(const std::string & filePath);
@@ -30,5 +31,6 @@ public:
   void Close();
 
   BinaryFile & operator<<(int rhs);
+  BinaryFile & operator<<(size_t rhs);
   BinaryFile & operator<<(double rhs);
 };
