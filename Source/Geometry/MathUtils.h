@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cmath>
-#include <string>
 
 #include <Box.h>
 #include <Point.h>
