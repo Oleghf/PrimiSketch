@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string>
 
 #include <MathUtils.h>
 #include <Box.h>
@@ -98,6 +99,17 @@ void Rectangle::Write(OutputStream& os) const
   os.Write(m_topLeft.y);
   os.Write(m_bottomRight.x);
   os.Write(m_bottomRight.y);
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Возвращает хэш типа прямоугольника
+*/
+//---
+size_t Rectangle::GetTypeHash() const
+{
+  return math_utils::hash("Rectangle");
 }
 
 

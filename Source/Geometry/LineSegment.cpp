@@ -106,3 +106,14 @@ void LineSegment::Write(OutputStream & os) const
   os.Write(end.x);
   os.Write(end.y);
 }
+
+
+//------------------------------------------------------------------------------
+/**
+  Возвращает хэш типа отрезка
+*/
+//---
+size_t LineSegment::GetTypeHash() const
+{
+  return math_utils::hash("LineSegment");
+}

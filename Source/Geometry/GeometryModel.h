@@ -25,4 +25,5 @@ public:
   void ForEachFigures(std::function<bool(std::shared_ptr<IFigure>)> pred);
   void ForEachFiguresInBox(const Box & box, std::function<bool(std::shared_ptr<IFigure>)> pred);
   std::shared_ptr<IFigure> FindFigure(const Point & point, double radius) const;
+  void Write(OutputStream & os);
 };
