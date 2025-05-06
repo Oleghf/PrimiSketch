@@ -3,9 +3,10 @@
 
 #include <MathUtils.h>
 #include <Box.h>
-#include <Rectangle.h>
 #include <Vector.h>
+#include <InputStream.h>
 #include <OutputStream.h>
+#include <Rectangle.h>
 
 
 //------------------------------------------------------------------------------
@@ -93,7 +94,7 @@ bool Rectangle::IntersectsPoint(const Point & point, double epsilon) const
   Выводит данные о прямоугольнике в численном формате
 */
 //---
-void Rectangle::Write(OutputStream& os) const
+void Rectangle::Write(OutputStream & os) const
 {
   os.Write(m_topLeft.x);
   os.Write(m_topLeft.y);
@@ -110,6 +111,20 @@ void Rectangle::Write(OutputStream& os) const
 constexpr size_t Rectangle::GetTypeHash() const
 {
   return math_utils::hash("Rectangle");
+}
+
+
+//
+std::shared_ptr<Rectangle> Rectangle::Read(const InputStream & is)
+{
+  double coords[4]{};
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+      if (!is.Read(coords[i]))
+        return nullptr;
+  }
+    return std::make_shared<Rectangle>(Point{coords[0], coords[1]}, Point{coords[2], coords[3]});
 }
 
 

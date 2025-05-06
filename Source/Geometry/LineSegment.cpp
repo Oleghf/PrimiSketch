@@ -1,9 +1,10 @@
 #include <algorithm>
 
 #include <OutputStream.h>
+#include <InputStream.h>
 #include <MathUtils.h>
-#include <LineSegment.h>
 #include <Vector.h>
+#include <LineSegment.h>
 
 
 //------------------------------------------------------------------------------
@@ -116,4 +117,18 @@ void LineSegment::Write(OutputStream & os) const
 constexpr size_t LineSegment::GetTypeHash() const
 {
   return math_utils::hash("LineSegment");
+}
+
+
+//
+std::shared_ptr<LineSegment> LineSegment::Read(const InputStream & is)
+{
+  double coords[4]{};
+
+  for (size_t i = 0; i < 4; ++i)
+  {
+    if (!is.Read(coords[i]))
+      return nullptr;
+  }
+  return std::make_shared<LineSegment>(Point{coords[0], coords[1]}, Point{coords[2], coords[3]});
 }

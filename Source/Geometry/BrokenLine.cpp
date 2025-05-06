@@ -4,6 +4,7 @@
 
 #include <ConsoleOutputStream.h>
 #include <OutputStream.h>
+#include <InputStream.h>
 #include <MathUtils.h>
 #include <Vector.h>
 #include <BrokenLine.h>
@@ -118,6 +119,29 @@ constexpr size_t BrokenLine::GetTypeHash() const
   return math_utils::hash("BrokenLine");
 }
 
+
+//
+std::shared_ptr<BrokenLine> BrokenLine::Read(const InputStream & is)
+{
+  int size = 0;
+  std::vector<Point> points;
+
+  if (!is.Read(size))
+    return nullptr;
+
+  for (size_t i = 0; i < size; ++i)
+  {
+    double x = 0;
+    double y = 0;
+
+    if (!(is.Read(x) && is.Read(y)))
+      return nullptr;
+    
+    points.emplace_back(x, y);
+  }
+  
+  return std::make_shared<BrokenLine>(points);
+}
 
 //------------------------------------------------------------------------------
 /**

@@ -26,5 +26,7 @@ public:
   void Write(OutputStream & os) const override;
   constexpr size_t GetTypeHash() const override;
 
+  static std::shared_ptr<BrokenLine> Read(const InputStream & is);
+
   std::vector<Point> GetPoints() const;
 };
