@@ -114,7 +114,7 @@ void BrokenLine::Write(OutputStream& os) const
   Возвращает хэш типа ломанной линии
 */
 //---
-constexpr size_t BrokenLine::GetTypeHash() const
+size_t BrokenLine::GetTypeHash() const
 {
   return math_utils::hash("BrokenLine");
 }
@@ -142,6 +142,7 @@ std::shared_ptr<BrokenLine> BrokenLine::Read(const InputStream & is)
   
   return std::make_shared<BrokenLine>(points);
 }
+
 
 //------------------------------------------------------------------------------
 /**

@@ -108,7 +108,7 @@ void Rectangle::Write(OutputStream & os) const
   Возвращает хэш типа прямоугольника
 */
 //---
-constexpr size_t Rectangle::GetTypeHash() const
+size_t Rectangle::GetTypeHash() const
 {
   return math_utils::hash("Rectangle");
 }

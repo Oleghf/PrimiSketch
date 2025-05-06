@@ -11,12 +11,7 @@ std::unordered_map<size_t, std::function<std::shared_ptr<IFigure>(const InputStr
 //
 std::shared_ptr<IFigure> IFigure::Read(size_t hash)
 {
-  auto it = types.find(hash);
-
-  if (it != types.end())
-  {
-    return it->second()
-  }
+  return nullptr;
 }
 
 //

@@ -18,6 +18,7 @@ class InputStream;
 class IFigure
 {
 public:
+
   /// Центр фигуры
   virtual Point Center() const = 0;
   /// Сдвинуть фигуру
@@ -29,10 +30,11 @@ public:
   /// Записывает данные о фигуре в поток
   virtual void Write(OutputStream & os) const = 0;
   /// Возвращает хэш типа фигуры
-  virtual constexpr size_t GetTypeHash() const = 0;
+  virtual size_t GetTypeHash() const = 0;
 
   static std::shared_ptr<IFigure> Read(size_t hash);
 
 protected:
   static bool RegisterType(size_t hash, std::function<std::shared_ptr<IFigure>(const InputStream&)>);
+
 };

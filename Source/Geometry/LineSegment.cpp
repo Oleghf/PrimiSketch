@@ -114,7 +114,7 @@ void LineSegment::Write(OutputStream & os) const
   Возвращает хэш типа отрезка
 */
 //---
-constexpr size_t LineSegment::GetTypeHash() const
+size_t LineSegment::GetTypeHash() const
 {
   return math_utils::hash("LineSegment");
 }

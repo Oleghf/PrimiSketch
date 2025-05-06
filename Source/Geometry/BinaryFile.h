@@ -29,8 +29,4 @@ public:
   bool IsOpen() const;
 
   void Close();
-
-  BinaryFile & operator<<(int rhs);
-  BinaryFile & operator<<(size_t rhs);
-  BinaryFile & operator<<(double rhs);
 };
