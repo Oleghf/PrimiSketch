@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <memory>
 
+#include <MockStream.h>
 #include <Box.h>
 #include <LineSegment.h>
 #include <BrokenLine.h>
@@ -123,11 +124,6 @@ int main()
 
   model.Write(cos);
 
-
-
-
-  
-
-
-
+  MockStream mis;
+  IFigure::Read(mis);
 }

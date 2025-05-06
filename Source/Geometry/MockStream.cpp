@@ -46,12 +46,24 @@ bool MockStream::Read(int& n) const
 
 //------------------------------------------------------------------------------
 /**
-  Всегда возвращает один из трех возможных хэшей
+  \brief Псевдо-генерируте значение и помещает его в n
+  \details При первом вызове всегда возвращает один из существующих хэшей.
+           Далее возвращает псевдо-случайные значения.
 */
 //---
 bool MockStream::Read(size_t & n) const
 {
-  n = maybeHashes.at(rand() % 3);
+  static bool isFirstCall = true;
+
+  if (isFirstCall)
+  {
+    n = maybeHashes.at(rand() % 3);
+    isFirstCall = false;
+  }
+  else
+  {
+    n = rand() % 100;
+  }
 
   return true;
 }
