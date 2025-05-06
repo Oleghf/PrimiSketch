@@ -117,7 +117,11 @@ int main()
 
   bf.Close();
 
+  std::cout << std::endl << "BinaryFile end" << std::endl;
   // -------------------------------
+  std::cout << std::endl << "ReadingFromfile start" << std::endl;
+
+  model.Write(cos);
 
 
   

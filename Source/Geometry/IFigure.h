@@ -14,6 +14,7 @@ class OutputStream;
 class IFigure
 {
 public:
+
   /// Центр фигуры
   virtual Point Center() const = 0;
   /// Сдвинуть фигуру
@@ -24,4 +25,7 @@ public:
   virtual bool IntersectsPoint(const Point & point, double epsilon) const = 0;
   /// Записывает данные о фигуре в поток
   virtual void Write(OutputStream & os) const = 0;
+  /// Возвращает хэш типа фигуры
+  virtual size_t GetTypeHash() const = 0;
+
 };
