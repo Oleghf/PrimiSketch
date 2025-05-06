@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 
 #include <OutputStream.h>
 #include <InputStream.h>
@@ -18,6 +19,7 @@ LineSegment::LineSegment(const Point & startPoint, const Point & endPoint)
   : start(startPoint)
   , end(endPoint)
 {
+  RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read);
 }
 
 
@@ -120,15 +122,19 @@ size_t LineSegment::GetTypeHash() const
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  \brief Читает из потока 4 переменных типа double, создает на их основе сегмент линии
+  \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
+*/
 std::shared_ptr<LineSegment> LineSegment::Read(const InputStream & is)
 {
-  double coords[4]{};
+  std::array<double, 4> coords{};
 
-  for (size_t i = 0; i < 4; ++i)
+  for (size_t i = 0; i < coords.size(); ++i)
   {
-    if (!is.Read(coords[i]))
+    if (!is.Read(coords.at(i)))
       return nullptr;
   }
-  return std::make_shared<LineSegment>(Point{coords[0], coords[1]}, Point{coords[2], coords[3]});
+  return std::make_shared<LineSegment>(Point{coords.at(0), coords.at(1)}, Point{coords.at(2), coords.at(3)});
 }

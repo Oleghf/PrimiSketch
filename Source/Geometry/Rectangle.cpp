@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <string>
+#include <array>
 
 #include <MathUtils.h>
 #include <Box.h>
@@ -27,6 +28,7 @@ Rectangle::Rectangle(const Point & first, const Point & second)
   : m_topLeft({std::min(first.x, second.x), std::max(first.y, second.y)})
   , m_bottomRight({std::max(first.x, second.x), std::min(first.y, second.y)})
 {
+  RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
 }
 
 
@@ -114,17 +116,21 @@ size_t Rectangle::GetTypeHash() const
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  \brief Читает из потока 4 переменных типа double, создает на их основе прямоугольник
+  \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
+*/
 std::shared_ptr<Rectangle> Rectangle::Read(const InputStream & is)
 {
-  double coords[4]{};
+  std::array<double, 4> coords{};
 
-    for (size_t i = 0; i < 4; ++i)
+    for (size_t i = 0; i < coords.size(); ++i)
     {
       if (!is.Read(coords[i]))
         return nullptr;
   }
-    return std::make_shared<Rectangle>(Point{coords[0], coords[1]}, Point{coords[2], coords[3]});
+    return std::make_shared<Rectangle>(Point{coords.at(0), coords.at(1)}, Point{coords.at(2), coords.at(3)});
 }
 
 

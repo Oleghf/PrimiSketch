@@ -31,10 +31,9 @@ public:
   virtual void Write(OutputStream & os) const = 0;
   /// Возвращает хэш типа фигуры
   virtual size_t GetTypeHash() const = 0;
-
-  static std::shared_ptr<IFigure> Read(size_t hash);
-
-protected:
+  /// Читает данные из потока и в случае успеха возвращает указатель на фигуру, в ином случае nullptr
+  static std::shared_ptr<IFigure> Read(const InputStream& is);
+  /// Регистрирует тип фигуры по хэшу и функции создания соответствующей фигуры
   static bool RegisterType(size_t hash, std::function<std::shared_ptr<IFigure>(const InputStream&)>);
 
 };
