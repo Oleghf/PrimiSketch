@@ -10,6 +10,9 @@
 #include <BrokenLine.h>
 
 
+static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
+
+
 //------------------------------------------------------------------------------
 /**
   \brief Конструктор
@@ -21,7 +24,6 @@ BrokenLine::BrokenLine(const std::vector<Point> & points)
 	: m_points(points)
 {
   assert(points.size() > 0);
-  RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
 }
 
 

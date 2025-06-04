@@ -10,6 +10,9 @@
 #include <Rectangle.h>
 
 
+static bool _ = IFigure::RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
+
+
 //------------------------------------------------------------------------------
 /**
   \brief Конструктор
@@ -28,7 +31,6 @@ Rectangle::Rectangle(const Point & first, const Point & second)
   : m_topLeft({std::min(first.x, second.x), std::max(first.y, second.y)})
   , m_bottomRight({std::max(first.x, second.x), std::min(first.y, second.y)})
 {
-  RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
 }
 
 

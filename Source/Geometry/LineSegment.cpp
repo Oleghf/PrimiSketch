@@ -8,6 +8,9 @@
 #include <LineSegment.h>
 
 
+static bool _ = IFigure::RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read);
+
+
 //------------------------------------------------------------------------------
 /**
   \brief Конструктор
@@ -19,7 +22,6 @@ LineSegment::LineSegment(const Point & startPoint, const Point & endPoint)
   : start(startPoint)
   , end(endPoint)
 {
-  RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read);
 }
 
 
