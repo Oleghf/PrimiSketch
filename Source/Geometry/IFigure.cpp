@@ -4,7 +4,6 @@
 #include <IFigure.h>
 
 
-
 namespace
 {
 std::unordered_map<size_t, std::function<std::shared_ptr<IFigure>(const InputStream &)>> registeredTypes;

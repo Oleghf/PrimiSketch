@@ -134,10 +134,10 @@ std::shared_ptr<BrokenLine> BrokenLine::Read(const InputStream & is)
 {
   size_t size = 0;
   std::vector<Point> points;
-  points.reserve(size);
 
   if (!is.Read(size))
     return nullptr;
+  points.reserve(size);
 
   for (size_t i = 0; i < size; ++i)
   {

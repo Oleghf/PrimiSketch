@@ -125,5 +125,6 @@ int main()
   model.Write(cos);
 
   MockStream mis;
-  IFigure::Read(mis);
+  std::shared_ptr<IFigure> fig = IFigure::Read(mis);
+  std::cout << "hash figure: " << fig->GetTypeHash() << std::endl;
 }
