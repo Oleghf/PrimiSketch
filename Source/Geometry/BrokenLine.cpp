@@ -4,9 +4,13 @@
 
 #include <ConsoleOutputStream.h>
 #include <OutputStream.h>
+#include <InputStream.h>
 #include <MathUtils.h>
 #include <Vector.h>
 #include <BrokenLine.h>
+
+
+static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
 
 
 //------------------------------------------------------------------------------
@@ -97,7 +101,7 @@ bool BrokenLine::IntersectsPoint(const Point & point, double epsilon) const
 //---
 void BrokenLine::Write(OutputStream& os) const
 {
-  os.Write(static_cast<int>(m_points.size()));
+  os.Write((m_points.size()));
 
   std::ranges::for_each(m_points,
                         [&os](const Point & point)
@@ -116,6 +120,37 @@ void BrokenLine::Write(OutputStream& os) const
 size_t BrokenLine::GetTypeHash() const
 {
   return math_utils::hash("BrokenLine");
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  \brief Читает поток, создавая ломанную линию на основе прочитанных данных
+  \details Первую переменную читает как size_t и интерпретирует ее как размер ломанной линии.
+           Дальнейшие переменные читает как double и интерпетирует как координаты точек.
+  \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
+*/
+std::shared_ptr<BrokenLine> BrokenLine::Read(const InputStream & is)
+{
+  size_t size = 0;
+  std::vector<Point> points;
+
+  if (!is.Read(size))
+    return nullptr;
+  points.reserve(size);
+
+  for (size_t i = 0; i < size; ++i)
+  {
+    double x = 0;
+    double y = 0;
+
+    if (!(is.Read(x) && is.Read(y)))
+      return nullptr;
+    
+    points.emplace_back(x, y);
+  }
+  
+  return std::make_shared<BrokenLine>(points);
 }
 
 

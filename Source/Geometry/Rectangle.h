@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <IFigure.h>
 #include <Point.h>
 
@@ -24,6 +26,8 @@ public:
   bool IntersectsPoint(const Point & point, double epsilon) const override;
   void Write(OutputStream & os) const override;
   size_t GetTypeHash() const override;
+
+  static std::shared_ptr<Rectangle> Read(const InputStream & is);
 
   Point TopLeft() const;
   Point TopRight() const;

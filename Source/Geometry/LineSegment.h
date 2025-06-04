@@ -25,5 +25,6 @@ public:
   void Write(OutputStream & os) const override;
   size_t GetTypeHash() const override;
 
+  static std::shared_ptr<LineSegment> Read(const InputStream & is);
   double Length() const;
 };

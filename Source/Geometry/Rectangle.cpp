@@ -1,11 +1,16 @@
 #include <algorithm>
 #include <string>
+#include <array>
 
 #include <MathUtils.h>
 #include <Box.h>
-#include <Rectangle.h>
 #include <Vector.h>
+#include <InputStream.h>
 #include <OutputStream.h>
+#include <Rectangle.h>
+
+
+static bool _ = IFigure::RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
 
 
 //------------------------------------------------------------------------------
@@ -93,7 +98,7 @@ bool Rectangle::IntersectsPoint(const Point & point, double epsilon) const
   Выводит данные о прямоугольнике в численном формате
 */
 //---
-void Rectangle::Write(OutputStream& os) const
+void Rectangle::Write(OutputStream & os) const
 {
   os.Write(m_topLeft.x);
   os.Write(m_topLeft.y);
@@ -110,6 +115,24 @@ void Rectangle::Write(OutputStream& os) const
 size_t Rectangle::GetTypeHash() const
 {
   return math_utils::hash("Rectangle");
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  \brief Читает из потока 4 переменных типа double, создает на их основе прямоугольник
+  \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
+*/
+std::shared_ptr<Rectangle> Rectangle::Read(const InputStream & is)
+{
+  std::array<double, 4> coords{};
+
+    for (size_t i = 0; i < coords.size(); ++i)
+    {
+      if (!is.Read(coords[i]))
+        return nullptr;
+  }
+    return std::make_shared<Rectangle>(Point{coords.at(0), coords.at(1)}, Point{coords.at(2), coords.at(3)});
 }
 
 
