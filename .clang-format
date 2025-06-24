@@ -1,4 +1,4 @@
----
+﻿---
 
 Language: Cpp
 Standard: c++20
@@ -128,4 +128,3 @@ IncludeCategories:
   # Headers in "" with extension.
   - Regex:           '"([A-Za-z0-9.\Q/-_\E])+"'
     Priority:        500
-

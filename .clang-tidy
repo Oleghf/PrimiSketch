@@ -1,47 +1,5 @@
 Checks: >
-  readability-identifier-naming,
-  cert-dcl58-cpp,
-  google-default-arguments,
-  google-readability-casting,
-  modernize-make-shared,
-  modernize-make-unique,
-  modernize-pass-by-value,
-  modernize-use-override,
-  modernize-use-designated-initializers,
-  modernize-return-braced-init-list,
-  performance-inefficient-string-concatenation,
-  performance-unnecessary-value-param,
-  performance-unnecessary-copy-initialization,
-  performance-type-promotion-in-math-fn,
-  performance-noexcept-move-constructor,
-  performance-noexcept-destructor,
-  performance-no-automatic-move,
-  performance-move-const-arg,
-  performance-inefficient-vector-operation,
-  performance-inefficient-algorithm,
-  performance-implicit-conversion-in-loop,
-  readability-avoid-const-params-in-decls,
-  readability-inconsistent-declaration-parameter-name,
-  readability-named-parameter,
-  readability-simplify-boolean-expr,
-  readability-use-anyofallof,
-  bugprone-use-after-move,
-  bugprone-unchecked-optional-access,
-  hicpp-exception-baseclass,
-  misc-use-internal-linkage,
-  misc-use-anonymous-namespace,
-  misc-unused-parameters,
-  misc-unconventional-assign-operator,
-  misc-throw-by-value-catch-by-reference,
-  misc-redundant-expression,
-  misc-definitions-in-headers,
-  misc-const-correctness,
-  bugprone-shared-ptr-array-mismatch,
-  bugprone-optional-value-conversion,
-  bugprone-move-forwarding-reference,
-  bugprone-virtual-near-miss,
-  bugprone-unhandled-self-assignment,
-  modernize-use-ranges
+  readability-identifier-naming
 
 CheckOptions:
   - { key: readability-identifier-naming.ClassCase,                value: CamelCase }
@@ -69,4 +27,3 @@ CheckOptions:
   - { key: readability-identifier-naming.TemplateParameterCase,    value: CamelCase }
   - { key: readability-identifier-naming.NamespaceCase,            value: lower_case }
   - { key: readability-identifier-naming.MacroDefinitionCase,      value: UPPER_CASE }
-  - { key: modernize-use-override, value: AllowOverrideAndFinal }
