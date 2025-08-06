@@ -1,0 +1,26 @@
+#pragma once
+
+#include <QWidget>
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+/// Виджет сцены
+/**
+*/
+////////////////////////////////////////////////////////////////////////////////
+class SceneWidget : public QWidget
+{
+	Q_OBJECT
+public:
+  SceneWidget(QWidget * parent = nullptr);
+
+  void mousePressEvent(QMouseEvent * event) override;
+  void mouseMoveEvent(QMouseEvent * event) override;
+  void mouseReleaseEvent(QMouseEvent * event) override;
+  void paintEvent(QPaintEvent * event) override;
+
+signals:
+  void CreatedQPainter(QPainter & painter);
+  void CreatedQMouseEvent(QMouseEvent * event);
+};
