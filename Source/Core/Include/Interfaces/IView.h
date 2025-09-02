@@ -3,8 +3,7 @@
 #include <memory>
 #include <string>
 
-#include <StyleLine.h>
-
+enum class StyleLine;
 class EventListener;
 
 
@@ -62,7 +61,7 @@ public:
   /// Установить новое название процесса
   virtual void SetProcessName(const std::string & string) = 0;
   /// Узнать название процесса
-  virtual std::string ProccessName() const = 0;
+  virtual std::string GetProccessName() const = 0;
 
   /// Открыть диалог сохранения
   virtual std::string OpenSaveFileDialog(const std::string & title, const std::string & initPath) = 0;
@@ -81,11 +80,8 @@ public:
   /// Удалить слушателя событий
   virtual void RemoveEventListener(std::shared_ptr<EventListener> listener) = 0;
 
-  /*
   /// Установить новый стиль линии
   virtual void SetStyleLine(StyleLine style) = 0;
   /// Узнать текущий стиль линии
-  virtual StyleLine StyleLine() const = 0;
-
-  */
+  virtual StyleLine GetStyleLine() const = 0;
 };

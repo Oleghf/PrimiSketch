@@ -37,5 +37,8 @@ void SceneWidget::paintEvent(QPaintEvent * event)
   QWidget::paintEvent(event);
 
   QPainter painter(this);
+
+  painter.setBrush(QBrush(Qt::black));
+  painter.drawRect(rect());
   emit CreatedQPainter(painter);
 }
