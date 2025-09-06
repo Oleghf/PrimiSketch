@@ -7,6 +7,7 @@
 #include <IView.h>
 #include <StyleLine.h>
 #include <PropertiesPanelWidget.h>
+#include <ConstructionPanel.h>
 
 class SceneWidget;
 
@@ -25,9 +26,9 @@ private:
 
   SceneWidget * m_scene;
   PropertiesPanelWidget * m_properties;
+  ConstructionPanel * m_construction;
 
   QWidget * m_centralWidget;
-  QGridLayout * m_centralWidgetLayout;
 
   // Действия в редакторе
   QAction * m_open;
@@ -42,34 +43,33 @@ private:
  private:
   void SetupMenu();
   void SetupToolBar();
-  void SetupScene(QGridLayout * layout);
-  void SetupProperties(QGridLayout * layout);
+  void SetupWidgets();
 
 public:
   QtView();
 
-  void RequestRedraw() override {};
+  void RequestRedraw() override;
 
   void SetActionEnabled(EditorAction action, bool isEnabled) override {};
   bool IsActionEnabled(EditorAction action) override { return true; };
 
-  void SetProcessName(const std::string & string) override {};
-  std::string GetProccessName() const override { return ""; };
+  void SetProcessName(const std::string & nameProcess) override;
+  std::string GetProccessName() const override;
 
-  std::string OpenSaveFileDialog(const std::string & title, const std::string & initPath) override { return ""; };
-  std::string OpenLoadFileDialog(const std::string & title, const std::string & initPath) override { return ""; };
-  void ShowMessage(const std::string & title, const std::string & message, MessageType type) override {};
+  std::string OpenSaveFileDialog(const std::string & title, const std::string & initPath) override;
+  std::string OpenLoadFileDialog(const std::string & title, const std::string & initPath) override;
+  void ShowMessage(const std::string & title, const std::string & message, MessageType type) override;
 
-  void SetZoomFactor(double factor) override {};
-  double ZoomFactor() const override { return 1.0; };
+  void SetZoomFactor(double factor) override;
+  double ZoomFactor() const override;
 
-  void AddEventListener(std::shared_ptr<EventListener> listener) override {};
-  void RemoveEventListener(std::shared_ptr<EventListener> listener) override {};
+  void AddEventListener(std::shared_ptr<EventListener> listener) override;
+  void RemoveEventListener(std::shared_ptr<EventListener> listener) override;
 
-  void SetStyleLine(StyleLine style) override {};
-  StyleLine GetStyleLine() const override { return StyleLine::Axis; };
+  void SetStyleLine(StyleLine style) override;
+  StyleLine GetStyleLine() const override;
 
 public slots:
-  void SendSceneQPainter(QPainter & painter) {};
+  void SendSceneQPainter(QPainter & painter);
 
 };

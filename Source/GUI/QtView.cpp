@@ -1,6 +1,8 @@
 #include <QMenuBar>
 #include <QHBoxLayout>
 #include <QGridLayout>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #include <SceneWidget.h>
 #include <EditorToolBar.h>
@@ -36,21 +38,20 @@ void QtView::SetupToolBar()
 
 
 //
-void QtView::SetupScene(QGridLayout* layout)
+void QtView::SetupWidgets()
 {
-  m_scene->setFixedSize(m_centralWidget->size());
+  QVBoxLayout * mainVertLayout = new QVBoxLayout(m_centralWidget);
+  QHBoxLayout * subHorizLayout = new QHBoxLayout();
 
-  layout->addWidget(m_scene, 0,0, Qt::AlignTop);
-}
+  m_scene->setMinimumSize(m_centralWidget->size());
 
+  subHorizLayout->addWidget(m_scene,9);
+  subHorizLayout->addWidget(m_properties,1);
+  subHorizLayout->addStretch();
 
-//
-void QtView::SetupProperties(QGridLayout * layout)
-{
-  m_properties->setFixedHeight(m_scene->height());
-  m_properties->setFixedWidth(m_scene->width() / 4);
-
-  layout->addWidget(m_properties, 0, 1);
+  mainVertLayout->addLayout(subHorizLayout, 9);
+  mainVertLayout->addWidget(m_construction, 1);
+  mainVertLayout->addStretch();
 }
 
 
@@ -59,12 +60,115 @@ QtView::QtView()
   : QMainWindow(nullptr)
   , m_scene(new SceneWidget())
   , m_properties(new PropertiesPanelWidget())
+  , m_construction(new ConstructionPanel())
   , m_centralWidget(new QWidget())
-  , m_centralWidgetLayout(new QGridLayout(m_centralWidget))
 {
   setCentralWidget(m_centralWidget);
   SetupMenu();
   SetupToolBar();
-  SetupScene(m_centralWidgetLayout);
-  SetupProperties(m_centralWidgetLayout);
+  SetupWidgets();
+
+  connect(m_scene, &SceneWidget::CreatedQPainter, this, &QtView::SendSceneQPainter);
+}
+
+
+//
+void QtView::RequestRedraw()
+{
+  m_scene->update();
+}
+
+
+//
+void QtView::SetProcessName(const std::string& nameProcess)
+{
+  m_properties->SetProcessName(nameProcess);
+}
+
+
+//
+std::string QtView::GetProccessName() const
+{
+  return m_properties->GetProcessName();
+}
+
+
+//
+std::string QtView::OpenSaveFileDialog(const std::string & title, const std::string & initPath)
+{
+  return QFileDialog::getSaveFileName(this, title.c_str(), initPath.c_str()).toStdString();
+}
+
+
+//
+std::string QtView::OpenLoadFileDialog(const std::string& title, const std::string& initPath)
+{
+  return QFileDialog::getOpenFileName(this, title.c_str(), initPath.c_str()).toStdString();
+}
+
+
+//
+void QtView::ShowMessage(const std::string & title, const std::string & message, MessageType type)
+{
+  switch (type)
+  {
+    case MessageType::Info:
+      QMessageBox::information(this, title.c_str(), message.c_str());
+      break;
+    case MessageType::Error:
+      QMessageBox::critical(this, title.c_str(), message.c_str());
+      break;
+    case MessageType::Warning:
+      QMessageBox::warning(this, title.c_str(), message.c_str());
+      break;
+  }
+}
+
+
+//
+void QtView::SetZoomFactor(double factor)
+{
+  m_zoomFactor = std::abs(factor);
+}
+
+
+//
+double QtView::ZoomFactor() const
+{
+  return m_zoomFactor;
+}
+
+
+//
+void QtView::AddEventListener(std::shared_ptr<EventListener> listener)
+{
+  m_listeners.push_back(std::move(listener));
+}
+
+
+//
+void QtView::RemoveEventListener(std::shared_ptr<EventListener> listener)
+{
+  std::erase(m_listeners, std::move(listener));
+}
+
+
+//
+void QtView::SetStyleLine(StyleLine style)
+{
+  m_properties->SetStyleLine(style);
+}
+
+
+//
+StyleLine QtView::GetStyleLine() const
+{
+  return m_properties->GetStyleLine();
+}
+
+
+//
+void QtView::SendSceneQPainter(QPainter & painter)
+{
+    // ...
 }

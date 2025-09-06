@@ -24,11 +24,11 @@ private:
 public:
   PropertiesPanelWidget(QWidget * parent = nullptr);
 
-  void setNameProcess(const std::string & nameProcess);
-  std::string nameProcess() const;
+  void SetProcessName(const std::string & nameProcess);
+  std::string GetProcessName() const;
 
-  void setStyleLine(StyleLine newStyle) {};
-  StyleLine styleLine() const { StyleLine::Axis; }; 
+  void SetStyleLine(StyleLine newStyle);
+  StyleLine GetStyleLine() const; 
 
   void paintEvent(QPaintEvent * event) override;
 
