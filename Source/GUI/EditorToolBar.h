@@ -2,22 +2,7 @@
 
 #include <QToolBar>
 
-
-////////////////////////////////////////////////////////////////////////////////
-//
-/// Перечисление действий панели инструментов редактора
-/**
-*/
-////////////////////////////////////////////////////////////////////////////////
-enum class ToolBarAction
-{
-  None,                 // Инструмент не выбран
-  LineSegment,          // Построение отрезка
-  BrokenLine,           // Построение ломанной линии
-  RectangleTwoPoints,   // Построение прямоугольника по двум точкам
-  RectangleCenterAngle, // Построение прямоугольника по центру и углу
-};
-
+#include <Tools.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -32,5 +17,5 @@ public:
   EditorToolBar(QWidget * parent = nullptr);
 
 signals:
-  void toolChaned(ToolBarAction newAction);
+  void toolChanged(Tool newAction);
 };

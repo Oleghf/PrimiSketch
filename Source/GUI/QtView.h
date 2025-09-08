@@ -11,6 +11,7 @@
 
 class Event;
 class SceneWidget;
+class EditorToolBar;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -29,6 +30,7 @@ private:
   SceneWidget * m_scene;
   PropertiesPanelWidget * m_properties;
   ConstructionPanelWidget * m_construction;
+  EditorToolBar * m_toolBar;
   QWidget * m_centralWidget;
 
   // Действия в редакторе

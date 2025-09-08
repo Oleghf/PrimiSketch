@@ -20,13 +20,20 @@ private:
   enum class StepCreate
   {
     AwaitFirstPos,
-    AwaitSecondPos
+    AwaitSecondPos,
+    AwaitConfirm
   };
 
 private:
   GeometryModel & m_geometry;
   StepCreate m_step;
   Point m_firstPos;
+  Point m_secondPos;
+
+  bool m_isAutoBuild;
+
+private:
+  std::unique_ptr<ICommand> CompleteDrawing(const Point & first, const Point & second);
 
 public:
   CreateLineSegmentState(GeometryModel & geometry);

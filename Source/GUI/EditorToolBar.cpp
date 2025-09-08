@@ -37,32 +37,32 @@ EditorToolBar::EditorToolBar(QWidget * parent)
           [this](bool checked)
           {
             if (checked)
-              emit toolChaned(ToolBarAction::LineSegment);
+              emit toolChanged(Tool::LineSegment);
             else
-              emit toolChaned(ToolBarAction::None);
+              emit toolChanged(Tool::None);
           });
   connect(brokenLineAction, &QAction::toggled,
           [this](bool checked)
           {
             if (checked)
-              emit toolChaned(ToolBarAction::BrokenLine);
+              emit toolChanged(Tool::BrokenLine);
             else
-              emit toolChaned(ToolBarAction::None);
+              emit toolChanged(Tool::None);
           });
   connect(rectangleTwoPointsAction, &QAction::toggled,
           [this](bool checked)
           {
             if (checked)
-              emit toolChaned(ToolBarAction::RectangleTwoPoints);
+              emit toolChanged(Tool::RectangleTwoPoints);
             else
-              emit toolChaned(ToolBarAction::None);
+              emit toolChanged(Tool::None);
           });
   connect(rectangleCenterAngleAction, &QAction::toggled,
           [this](bool checked)
           {
             if (checked)
-              emit toolChaned(ToolBarAction::RectangleCenterAngle);
+              emit toolChanged(Tool::RectangleCenterAngle);
             else
-              emit toolChaned(ToolBarAction::None);
+              emit toolChanged(Tool::None);
           });
 }

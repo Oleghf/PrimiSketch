@@ -30,6 +30,9 @@ CommandManager::~CommandManager() = default;
 //---
 void CommandManager::Execute(std::unique_ptr<ICommand> command)
 {
+  if (!command)
+    return;
+
   command->Do();
 
   m_undoStack.push_back(std::move(command));
@@ -74,6 +77,6 @@ void CommandManager::Redo()
 
   m_undoStack.push_back(std::move(cmd));
   
-  if (m_undoStack.size() > m_stackSize);
+  if (m_undoStack.size() > m_stackSize)
     m_undoStack.pop_front();
 }

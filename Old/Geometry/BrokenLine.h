@@ -25,6 +25,7 @@ public:
   bool IntersectsPoint(const Point & point, double epsilon) const override;
   void Write(OutputStream & os) const override;
   size_t GetTypeHash() const override;
+  void Render(PrimitiveView & view) override {}
 
   static std::shared_ptr<BrokenLine> Read(const InputStream & is);
 

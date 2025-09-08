@@ -3,8 +3,13 @@
 #include <QGridLayout>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QMouseEvent>
 
+#include <CompleteDrawingEvent.h>
+#include <EditorToolBar.h>
+#include <ToolChangeEvent.h>
 #include <ExportSVGEvent.h>
+#include <SceneMouseEvent.h>
 #include <UndoEvent.h>
 #include <RedoEvent.h>
 #include <LoadFileEvent.h>
@@ -14,7 +19,6 @@
 #include <QtPainter.h>
 #include <ScenePaintEvent.h>
 #include <SceneWidget.h>
-#include <EditorToolBar.h>
 #include <QtView.h>
 
 
@@ -50,7 +54,7 @@ void QtView::SetupMenu()
 //---
 void QtView::SetupToolBar()
 {
-  addToolBar(new EditorToolBar(this));
+  addToolBar(m_toolBar);
 }
 
 
@@ -100,6 +104,7 @@ QtView::QtView()
   , m_properties(new PropertiesPanelWidget())
   , m_construction(new ConstructionPanelWidget())
   , m_centralWidget(new QWidget())
+  , m_toolBar(new EditorToolBar(this))
 {
   setCentralWidget(m_centralWidget);
   SetupMenu();
@@ -107,11 +112,42 @@ QtView::QtView()
   SetupWidgets();
 
   connect(m_scene, &SceneWidget::CreatedQPainter, this, &QtView::SendSceneQPainter);
-  connect(m_open, &QAction::trigger, this, [this]() { SendEvent(LoadFileEvent()); });
-  connect(m_saveAs, &QAction::trigger, this, [this]() { SendEvent(SaveFileEvent()); });
-  connect(m_undo, &QAction::trigger, this, [this]() { SendEvent(UndoEvent()); });
-  connect(m_redo, &QAction::trigger, this, [this]() { SendEvent(RedoEvent()); });
-  connect(m_exportSVG, &QAction::trigger, this, [this]() { SendEvent(ExportSVGEvent()); });
+  connect(m_scene, &SceneWidget::CreatedQMouseEvent, this, [this](QMouseEvent * ev) {
+
+      if (ev->type() != QEvent::MouseButtonPress)
+              return;
+
+      QPointF qlocalPos = ev->localPos();
+      Point localPos(qlocalPos.x(), qlocalPos.y());
+      Qt::MouseButton qButton = ev->button();
+      MouseButton button = MouseButton::Right; // 
+      switch (qButton)
+      {
+        case Qt::LeftButton:
+          button = MouseButton::Left;
+          break;
+        case Qt::MiddleButton:
+          button = MouseButton::Middle;
+          break;
+        case Qt::RightButton:
+          button = MouseButton::Right;
+          break;
+      }
+
+      SceneMouseEvent mouseEv(EventType::SceneMousePress, localPos, button);
+      SendEvent(mouseEv);
+
+      ev->accept();
+
+      });
+  connect(m_open, &QAction::triggered, this, [this]() { SendEvent(LoadFileEvent()); });
+  connect(m_saveAs, &QAction::triggered, this, [this]() { SendEvent(SaveFileEvent()); });
+  connect(m_undo, &QAction::triggered, this, [this]() { SendEvent(UndoEvent()); });
+  connect(m_redo, &QAction::triggered, this, [this]() { SendEvent(RedoEvent()); });
+  connect(m_exportSVG, &QAction::triggered, this, [this]() { SendEvent(ExportSVGEvent()); });
+  connect(m_toolBar, &EditorToolBar::toolChanged, [this](Tool newTool) { SendEvent(ToolChangeEvent(newTool)); });
+  connect(m_construction, &ConstructionPanelWidget::Accepted, [this]() { SendEvent(CompleteDrawingEvent(true)); });
+  connect(m_construction, &ConstructionPanelWidget::Cancelled, [this]() { SendEvent(CompleteDrawingEvent(false)); });
 }
 
 
