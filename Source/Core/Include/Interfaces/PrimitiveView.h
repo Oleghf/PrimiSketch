@@ -1,0 +1,16 @@
+#pragma once
+
+#include <Point.h>
+
+////////////////////////////////////////////////////////////////////////////////
+//
+/// Интерфейс представления примитивов
+/**
+*/
+////////////////////////////////////////////////////////////////////////////////
+class PrimitiveView
+{
+public:
+  virtual void Line(const Point & p1, const Point & p2) = 0;
+  virtual void Circle(const Point & center, double radius) = 0;
+};

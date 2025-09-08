@@ -14,6 +14,6 @@ class EventListener
 public:
   virtual ~EventListener() = default;
 
-  /// Обработать событие
+  /// Обрабатывает переданное событие
   virtual void OnEvent(const Event & event) = 0;
 };

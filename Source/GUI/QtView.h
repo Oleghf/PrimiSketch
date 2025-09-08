@@ -7,8 +7,9 @@
 #include <IView.h>
 #include <StyleLine.h>
 #include <PropertiesPanelWidget.h>
-#include <ConstructionPanel.h>
+#include <ConstructionPanelWidget.h>
 
+class Event;
 class SceneWidget;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,10 +25,10 @@ private:
   // Слушатели
   std::vector<std::shared_ptr<EventListener>> m_listeners;
 
+  // Виджеты
   SceneWidget * m_scene;
   PropertiesPanelWidget * m_properties;
-  ConstructionPanel * m_construction;
-
+  ConstructionPanelWidget * m_construction;
   QWidget * m_centralWidget;
 
   // Действия в редакторе
@@ -44,6 +45,8 @@ private:
   void SetupMenu();
   void SetupToolBar();
   void SetupWidgets();
+
+  void SendEvent(const Event & event);
 
 public:
   QtView();

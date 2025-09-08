@@ -20,7 +20,10 @@ endif()
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 qt_standard_project_setup()
 
+add_subdirectory("Old/Geometry")
 add_subdirectory("Source/Core/Include/Interfaces")
+add_subdirectory("Source/Core/Include/Events")
+add_subdirectory("Source/Core/Controllers")
 add_subdirectory("Source/GUI/")
 
 set(main_target ${PROJECT_NAME})
@@ -39,6 +42,7 @@ target_link_libraries(${main_target}
     Qt6::Widgets
 
     GUI
+    Controllers
 )
 
 if (WIN32)

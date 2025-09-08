@@ -4,11 +4,16 @@
 #include <QCheckBox>
 #include <QPainter>
 
-#include <ConstructionPanel.h>
+#include <ConstructionPanelWidget.h>
 
 
-//
-ConstructionPanel::ConstructionPanel(QWidget* parent): QWidget(parent)
+//------------------------------------------------------------------------------
+/**
+  \brief Конструктор
+  \details Расставляет кнопки и соединяет сигналы
+*/
+//---
+ConstructionPanelWidget::ConstructionPanelWidget(QWidget* parent): QWidget(parent)
 {
   QVBoxLayout * vertLayout = new QVBoxLayout(this);
   QHBoxLayout * buttHorizLayout = new QHBoxLayout();
@@ -25,14 +30,18 @@ ConstructionPanel::ConstructionPanel(QWidget* parent): QWidget(parent)
   vertLayout->setAlignment(Qt::AlignCenter);
   vertLayout->addStretch();
 
-  connect(acceptButton, &QPushButton::click, this, &ConstructionPanel::Accepted);
-  connect(cancellButton, &QPushButton::click, this, &ConstructionPanel::Cancelled);
-  connect(autoBuildCheck, &QCheckBox::toggled, this, &ConstructionPanel::IsAutoBuilded);
+  connect(acceptButton, &QPushButton::click, this, &ConstructionPanelWidget::Accepted);
+  connect(cancellButton, &QPushButton::click, this, &ConstructionPanelWidget::Cancelled);
+  connect(autoBuildCheck, &QCheckBox::toggled, this, &ConstructionPanelWidget::IsAutoBuilded);
 }
 
 
-//
-void ConstructionPanel::paintEvent(QPaintEvent * event)
+//------------------------------------------------------------------------------
+/**
+  Переопределенный метод отрисовки виджета
+*/
+//---
+void ConstructionPanelWidget::paintEvent(QPaintEvent * event)
 {
   QWidget::paintEvent(event);
 

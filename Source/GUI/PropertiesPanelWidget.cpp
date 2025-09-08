@@ -7,7 +7,12 @@
 
 #include <PropertiesPanelWidget.h>
 
-//
+//------------------------------------------------------------------------------
+/**
+  \brief Конструктор
+  \details Инициализирует виджет свойств
+*/
+//---
 PropertiesPanelWidget::PropertiesPanelWidget(QWidget * parent)
   : QWidget(parent)
   , m_nameProcessLabel(new QLabel())
@@ -36,21 +41,33 @@ PropertiesPanelWidget::PropertiesPanelWidget(QWidget * parent)
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Устанавливает название текущего процесса
+*/
+//---
 void PropertiesPanelWidget::SetProcessName(const std::string& nameProcess)
 {
   m_nameProcessLabel->setText(nameProcess.c_str());
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Возвращает название текущего процесса
+*/
+//---
 std::string PropertiesPanelWidget::GetProcessName() const
 {
   return m_nameProcessLabel->text().toStdString();
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Устанавливает стиль отрисовки примитивов
+*/
+//---
 void PropertiesPanelWidget::SetStyleLine(StyleLine newStyle)
 {
   int indexStyle = m_stylesBox->findData(static_cast<int>(newStyle));
@@ -59,7 +76,11 @@ void PropertiesPanelWidget::SetStyleLine(StyleLine newStyle)
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Возвращает установленный стиль отрисовки примитивов
+*/
+//---
 StyleLine PropertiesPanelWidget::GetStyleLine() const
 {
   int indexStyle = m_stylesBox->currentIndex();
@@ -68,7 +89,11 @@ StyleLine PropertiesPanelWidget::GetStyleLine() const
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Перегруженный метод отрисовывающий виджет
+*/
+//---
 void PropertiesPanelWidget::paintEvent(QPaintEvent* event)
 {
   QWidget::paintEvent(event);

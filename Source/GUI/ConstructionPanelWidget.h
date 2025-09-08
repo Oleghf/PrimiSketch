@@ -8,11 +8,11 @@
 /**
 */
 ////////////////////////////////////////////////////////////////////////////////
-class ConstructionPanel : public QWidget
+class ConstructionPanelWidget : public QWidget
 {
 	Q_OBJECT
 public:
-  ConstructionPanel(QWidget * parent = nullptr);
+  ConstructionPanelWidget(QWidget * parent = nullptr);
 
   void paintEvent(QPaintEvent * event) override;
 signals:

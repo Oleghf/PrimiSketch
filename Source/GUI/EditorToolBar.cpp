@@ -3,7 +3,12 @@
 #include <EditorToolBar.h>
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  \brief Конструктор
+  \details Инициализирует кнопки на панели инструментов и соединяет сигналы
+*/
+//---
 EditorToolBar::EditorToolBar(QWidget * parent)
 	: QToolBar(parent)
 {
