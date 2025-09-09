@@ -89,11 +89,6 @@ void MainController::OnEvent(const Event& event)
       Load("Загрузка", "");
       break;
     }
-    case EventType::SceneMousePress:
-    {
-      m_commandManager.Execute(m_currentState->OnEvent(event));
-      break;
-    }
     case EventType::Undo:
     {
       m_commandManager.Undo();
@@ -115,7 +110,7 @@ void MainController::OnEvent(const Event& event)
       ChangeState(tcEv.Tool());
       break;
     }
-    case EventType::CompleteDrawing:
+    default:
     {
       m_commandManager.Execute(m_currentState->OnEvent(event));
       break;

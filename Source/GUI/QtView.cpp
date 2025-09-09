@@ -49,17 +49,6 @@ void QtView::SetupMenu()
 
 //------------------------------------------------------------------------------
 /**
-  Устанавливает меню инструментов
-*/
-//---
-void QtView::SetupToolBar()
-{
-  addToolBar(m_toolBar);
-}
-
-
-//------------------------------------------------------------------------------
-/**
   Устанавливает виджеты сцены, панели создания фигуры, панели свойств в основное окно приложения
 */
 //---
@@ -77,6 +66,8 @@ void QtView::SetupWidgets()
   mainVertLayout->addLayout(subHorizLayout, 9);
   mainVertLayout->addWidget(m_construction, 1);
   mainVertLayout->addStretch();
+
+  addToolBar(m_toolBar);
 }
 
 
@@ -108,10 +99,11 @@ QtView::QtView()
 {
   setCentralWidget(m_centralWidget);
   SetupMenu();
-  SetupToolBar();
   SetupWidgets();
 
   connect(m_scene, &SceneWidget::CreatedQPainter, this, &QtView::SendSceneQPainter);
+
+  /// WIP
   connect(m_scene, &SceneWidget::CreatedQMouseEvent, this, [this](QMouseEvent * ev) {
 
       if (ev->type() != QEvent::MouseButtonPress)

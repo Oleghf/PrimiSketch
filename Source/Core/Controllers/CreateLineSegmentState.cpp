@@ -40,6 +40,8 @@ std::unique_ptr<ICommand> CreateLineSegmentState::CompleteDrawing(const Point & 
 //---
 std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
 {
+
+  // WIP
   switch (event.Type())
   {
     case EventType::SceneMousePress:

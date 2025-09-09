@@ -45,7 +45,6 @@ private:
 
  private:
   void SetupMenu();
-  void SetupToolBar();
   void SetupWidgets();
 
   void SendEvent(const Event & event);
