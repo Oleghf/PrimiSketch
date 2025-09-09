@@ -5,6 +5,20 @@
 
 //------------------------------------------------------------------------------
 /**
+  Пространство имен для хранения enum толщины
+*/
+//---
+namespace
+{
+    enum Thickness
+    {
+        Normal = 4,
+        Thickened = 6
+    };
+}
+
+//------------------------------------------------------------------------------
+/**
   Конструктор
 */
 //---
@@ -87,25 +101,25 @@ void QtPainter::SetStyleLine(StyleLine style)
     case StyleLine::Main:
 	{
       pen.setStyle(Qt::SolidLine);
-      pen.setWidthF(4);
+      pen.setWidthF(Thickness::Normal);
       break;
 	}
     case StyleLine::Thickened:
     {
       pen.setStyle(Qt::SolidLine);
-      pen.setWidthF(6);
+      pen.setWidthF(Thickness::Thickened);
       break;
     }
     case StyleLine::Dashed:
     {
       pen.setStyle(Qt::DashLine);
-      pen.setWidthF(4);
+      pen.setWidthF(Thickness::Normal);
       break;
     }
     case StyleLine::Axis:
     {
       pen.setStyle(Qt::DashDotLine);
-      pen.setWidthF(4);
+      pen.setWidthF(Thickness::Normal);
       break;
     }
     }

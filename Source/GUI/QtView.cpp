@@ -5,8 +5,14 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
-#include <CompleteDrawingEvent.h>
+#include <QtAdapters.h>
+#include <PropertiesPanelWidget.h>
+#include <ConstructionPanelWidget.h>
+#include <SceneWidget.h>
 #include <EditorToolBar.h>
+#include <CompleteDrawingEvent.h>
+#include <AutoBuildEvent.h>
+#include <ScenePaintEvent.h>
 #include <ToolChangeEvent.h>
 #include <ExportSVGEvent.h>
 #include <SceneMouseEvent.h>
@@ -17,8 +23,6 @@
 #include <EventListener.h>
 #include <Event.h>
 #include <QtPainter.h>
-#include <ScenePaintEvent.h>
-#include <SceneWidget.h>
 #include <QtView.h>
 
 
@@ -49,7 +53,7 @@ void QtView::SetupMenu()
 
 //------------------------------------------------------------------------------
 /**
-  Устанавливает виджеты сцены, панели создания фигуры, панели свойств в основное окно приложения
+  Устанавливает виджеты сцены, панели создания фигуры, панели свойств, панели инструментов в основное окно приложения
 */
 //---
 void QtView::SetupWidgets()
@@ -78,8 +82,11 @@ void QtView::SetupWidgets()
 //---
 void QtView::SendEvent(const Event& event)
 {
-  for (auto obs : m_listeners)
-    obs->OnEvent(event);
+  for (auto & obs : m_listeners)
+  {
+    if (obs)
+      obs->OnEvent(event);
+  }
 }
 
 
@@ -101,45 +108,16 @@ QtView::QtView()
   SetupMenu();
   SetupWidgets();
 
-  connect(m_scene, &SceneWidget::CreatedQPainter, this, &QtView::SendSceneQPainter);
-
-  /// WIP
-  connect(m_scene, &SceneWidget::CreatedQMouseEvent, this, [this](QMouseEvent * ev) {
-
-      if (ev->type() != QEvent::MouseButtonPress)
-              return;
-
-      QPointF qlocalPos = ev->localPos();
-      Point localPos(qlocalPos.x(), qlocalPos.y());
-      Qt::MouseButton qButton = ev->button();
-      MouseButton button = MouseButton::Right; // 
-      switch (qButton)
-      {
-        case Qt::LeftButton:
-          button = MouseButton::Left;
-          break;
-        case Qt::MiddleButton:
-          button = MouseButton::Middle;
-          break;
-        case Qt::RightButton:
-          button = MouseButton::Right;
-          break;
-      }
-
-      SceneMouseEvent mouseEv(EventType::SceneMousePress, localPos, button);
-      SendEvent(mouseEv);
-
-      ev->accept();
-
-      });
+  connect(m_scene, &SceneWidget::CreatedQPainter, this, &QtView::CreateScenePaintEvent);
+  connect(m_scene, &SceneWidget::CreatedQMouseEvent, this, [this](QMouseEvent * ev) { SendEvent(qt_adapters::FromQMouseEvent(ev)); });
   connect(m_open, &QAction::triggered, this, [this]() { SendEvent(LoadFileEvent()); });
   connect(m_saveAs, &QAction::triggered, this, [this]() { SendEvent(SaveFileEvent()); });
   connect(m_undo, &QAction::triggered, this, [this]() { SendEvent(UndoEvent()); });
   connect(m_redo, &QAction::triggered, this, [this]() { SendEvent(RedoEvent()); });
   connect(m_exportSVG, &QAction::triggered, this, [this]() { SendEvent(ExportSVGEvent()); });
   connect(m_toolBar, &EditorToolBar::toolChanged, [this](Tool newTool) { SendEvent(ToolChangeEvent(newTool)); });
-  connect(m_construction, &ConstructionPanelWidget::Accepted, [this]() { SendEvent(CompleteDrawingEvent(true)); });
-  connect(m_construction, &ConstructionPanelWidget::Cancelled, [this]() { SendEvent(CompleteDrawingEvent(false)); });
+  connect(m_construction, &ConstructionPanelWidget::IsAccepted, [this](bool is) { SendEvent(CompleteDrawingEvent(is)); });
+  connect(m_construction, &ConstructionPanelWidget::IsAutoBuilded, this, [this](bool isOn) { SendEvent(AutoBuildEvent(isOn)); });
 }
 
 
@@ -181,9 +159,9 @@ std::string QtView::GetProccessName() const
   Открывает диалог сохранения текущего состояния приложения
 */
 //---
-std::string QtView::OpenSaveFileDialog(const std::string & title, const std::string & initPath)
+std::string QtView::OpenSaveFileDialog(const std::string & title, const std::string & initPath, const std::string & filter)
 {
-  return QFileDialog::getSaveFileName(this, title.c_str(), initPath.c_str()).toStdString();
+  return QFileDialog::getSaveFileName(this, title.c_str(), initPath.c_str(), filter.c_str()).toStdString();
 }
 
 
@@ -192,9 +170,9 @@ std::string QtView::OpenSaveFileDialog(const std::string & title, const std::str
   Открывает диалог загрузки состояния приложения
 */
 //---
-std::string QtView::OpenLoadFileDialog(const std::string& title, const std::string& initPath)
+std::string QtView::OpenLoadFileDialog(const std::string & title, const std::string & initPath, const std::string & filter)
 {
-  return QFileDialog::getOpenFileName(this, title.c_str(), initPath.c_str()).toStdString();
+  return QFileDialog::getOpenFileName(this, title.c_str(), initPath.c_str(), filter.c_str()).toStdString();
 }
 
 
@@ -249,7 +227,8 @@ double QtView::ZoomFactor() const
 //---
 void QtView::AddEventListener(std::shared_ptr<EventListener> listener)
 {
-  m_listeners.push_back(std::move(listener));
+  if (listener)
+    m_listeners.push_back(std::move(listener));
 }
 
 
@@ -291,7 +270,7 @@ StyleLine QtView::GetStyleLine() const
   Генерирует событие перерисовки сцены
 */
 //---
-void QtView::SendSceneQPainter(QPainter & painter)
+void QtView::CreateScenePaintEvent(QPainter & painter)
 {
   QtPainter primView(painter);
 

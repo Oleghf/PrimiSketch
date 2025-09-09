@@ -1,10 +1,12 @@
 #pragma once
 
 #include <memory>
+#include <unordered_map>
 
 class IView;
 class GeometryModel;
 class ScenePaintEvent;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //

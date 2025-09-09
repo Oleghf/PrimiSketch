@@ -20,6 +20,7 @@ enum class EventType
   ExportSVG,
   ChangeLineStyle,
   CompleteDrawing,
+  AutoBuild,
   SaveFile,
   LoadFile
 };

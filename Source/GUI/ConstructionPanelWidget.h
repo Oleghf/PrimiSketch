@@ -16,8 +16,7 @@ public:
 
   void paintEvent(QPaintEvent * event) override;
 signals:
-  void Accepted();
-  void Cancelled();
+  void IsAccepted(bool is);
 
   void IsAutoBuilded(bool isOn);
 };

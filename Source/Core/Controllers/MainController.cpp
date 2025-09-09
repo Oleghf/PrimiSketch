@@ -12,44 +12,9 @@
 //
 void MainController::ChangeState(Tool newTool)
 {
-    switch (newTool)
-    {
-      case Tool::None:
-      {
-        m_view->SetProcessName("Инструмент не выбран");
-        m_currentState = m_states[Tool::None];
-        break;
-      }
-      case Tool::LineSegment:
-      {
-        m_view->SetProcessName("Фигура: Отрезок");
-        m_currentState = m_states[Tool::LineSegment];
-        break;
-      }
-      // ...WIP
-    }
-}
-
-
-//------------------------------------------------------------------------------
-/**
-  Запрашивает диалог сохранения текущего состояния программы
-*/
-//---
-void MainController::SaveAs(const std::string & title, const std::string & path)
-{
-  m_view->OpenSaveFileDialog(title, path); // ... WIP
-}
-
-
-//------------------------------------------------------------------------------
-/**
-  Запрашивает диалог загрузки текущего состояния программы
-*/
-//---
-void MainController::Load(const std::string & title, const std::string & path)
-{
-  m_view->OpenLoadFileDialog(title, path); // ... WIP
+  m_currentState->Deactivate();
+  m_states[newTool]->Activate();
+  m_currentState = m_states[newTool];
 }
 
 
@@ -60,11 +25,11 @@ void MainController::Load(const std::string & title, const std::string & path)
 //---
 MainController::MainController(std::shared_ptr<IView> view)
   : m_view(view)
-  , m_currentState(std::make_shared<DefaultState>(m_geometryModel))
+  , m_currentState(std::make_shared<DefaultState>(m_view, m_geometryModel))
   , m_paintController(view, m_geometryModel)
 {
   m_states[Tool::None] = m_currentState;
-  m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_geometryModel);
+  m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_geometryModel);
 
   ChangeState(Tool::None);
 }
@@ -81,12 +46,12 @@ void MainController::OnEvent(const Event& event)
 	{
     case EventType::SaveFile:
 	{
-      SaveAs("Сохранение", "");
+      m_view->OpenSaveFileDialog("Сохранение", "");
       break;
 	}
     case EventType::LoadFile:
     {
-      Load("Загрузка", "");
+      m_view->OpenLoadFileDialog("Загрузка", "");
       break;
     }
     case EventType::Undo:

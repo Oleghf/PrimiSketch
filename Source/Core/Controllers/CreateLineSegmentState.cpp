@@ -1,6 +1,8 @@
+#include <IView.h>
 #include <Event.h>
 #include <LineSegment.h>
 #include <CompleteDrawingEvent.h>
+#include <AutoBuildEvent.h>
 #include <SceneMouseEvent.h>
 #include <CreateFigureCommand.h>
 #include <CreateLineSegmentState.h>
@@ -8,11 +10,61 @@
 
 //------------------------------------------------------------------------------
 /**
+  Обрабатывает событие клика по сцене
+*/
+//---
+std::unique_ptr<ICommand> CreateLineSegmentState::HandleClick(const SceneMouseEvent & mouseEv)
+{
+  if (m_step == StepCreate::AwaitFirstPos)
+  {
+    m_step = StepCreate::AwaitSecondPos;
+    m_firstPos = mouseEv.LocalPos();
+    return nullptr;
+  }
+  else
+  {
+    if (m_isAutoBuild)
+    {
+      m_step = StepCreate::AwaitFirstPos;
+      return CompleteDrawing(m_firstPos, mouseEv.LocalPos());
+    }
+    else
+    {
+      m_step = StepCreate::AwaitConfirm;
+      m_secondPos = mouseEv.LocalPos();
+      return nullptr;
+    }
+  }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Обрабатывает событие завершения рисования
+*/
+//---
+std::unique_ptr<ICommand> CreateLineSegmentState::HandleCompleteDrawingEv(const CompleteDrawingEvent& ev)
+{
+  if (ev.IsAccepted())
+  {
+    m_step = StepCreate::AwaitFirstPos;
+    return CompleteDrawing(m_firstPos, m_secondPos);
+  }
+  else
+  {
+    m_step = StepCreate::AwaitFirstPos;
+  }
+}
+
+
+//------------------------------------------------------------------------------
+/**
   Конструктор
 */
 //---
-CreateLineSegmentState::CreateLineSegmentState(GeometryModel & geometry)
-  : m_geometry(geometry)
+CreateLineSegmentState::CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry)
+  : m_view(view)
+  , m_geometry(geometry)
   , m_step(StepCreate::AwaitFirstPos)
   , m_isAutoBuild(false)
 {
@@ -40,8 +92,6 @@ std::unique_ptr<ICommand> CreateLineSegmentState::CompleteDrawing(const Point & 
 //---
 std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
 {
-
-  // WIP
   switch (event.Type())
   {
     case EventType::SceneMousePress:
@@ -50,45 +100,39 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
       if (mouseEv.Button() != MouseButton::Left)
         break;
 
-      if (m_step == StepCreate::AwaitFirstPos)
-      {
-        m_step = StepCreate::AwaitSecondPos;
-        m_firstPos = mouseEv.LocalPos();
-        return nullptr;
-      }
-      else
-      {
-        if (m_isAutoBuild)
-        {
-          m_step = StepCreate::AwaitFirstPos;
-          return CompleteDrawing(m_firstPos, mouseEv.LocalPos());
-        }
-        else
-        {
-          m_step = StepCreate::AwaitConfirm;
-          m_secondPos = mouseEv.LocalPos();
-        }
-      }
-
-      break;
+      return HandleClick(mouseEv);
     }
     case EventType::CompleteDrawing:
     {
       if (m_step != StepCreate::AwaitConfirm)
         break;
+      const CompleteDrawingEvent & comDrEv = static_cast<const CompleteDrawingEvent &>(event);
 
-      const CompleteDrawingEvent & comDrEvEv = static_cast<const CompleteDrawingEvent &>(event);
-      if (comDrEvEv.IsAccepted())
-      {
-        m_step = StepCreate::AwaitFirstPos;
-        return CompleteDrawing(m_firstPos, m_secondPos);
-      }
-      else
-      {
-        m_step = StepCreate::AwaitFirstPos;
-      }
+      return HandleCompleteDrawingEv(comDrEv);
+    }
+    case EventType::AutoBuild:
+    {
+      const AutoBuildEvent & autoBuildEv = static_cast<const AutoBuildEvent &>(event);
+      m_isAutoBuild = autoBuildEv.IsAutoBuild();
+      return nullptr;
     }
   }
 
 	return nullptr;
+}
+
+
+//
+void CreateLineSegmentState::Activate()
+{
+  m_step = StepCreate::AwaitFirstPos;
+  m_view->SetProcessName("Фигура: Отрезок");
+}
+
+
+//
+void CreateLineSegmentState::Deactivate()
+{
+  m_step = StepCreate::AwaitActivate;
+  m_view->SetProcessName("");
 }

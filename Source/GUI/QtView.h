@@ -6,10 +6,10 @@
 
 #include <IView.h>
 #include <StyleLine.h>
-#include <PropertiesPanelWidget.h>
-#include <ConstructionPanelWidget.h>
 
 class Event;
+class PropertiesPanelWidget;
+class ConstructionPanelWidget;
 class SceneWidget;
 class EditorToolBar;
 
@@ -60,8 +60,8 @@ public:
   void SetProcessName(const std::string & nameProcess) override;
   std::string GetProccessName() const override;
 
-  std::string OpenSaveFileDialog(const std::string & title, const std::string & initPath) override;
-  std::string OpenLoadFileDialog(const std::string & title, const std::string & initPath) override;
+  std::string OpenSaveFileDialog(const std::string & title, const std::string & initPath, const std::string & filter) override;
+  std::string OpenLoadFileDialog(const std::string & title, const std::string & initPath, const std::string & filter) override;
   void ShowMessage(const std::string & title, const std::string & message, MessageType type) override;
 
   void SetZoomFactor(double factor) override;
@@ -74,6 +74,6 @@ public:
   StyleLine GetStyleLine() const override;
 
 public slots:
-  void SendSceneQPainter(QPainter & painter);
+  void CreateScenePaintEvent(QPainter & painter);
 
 };

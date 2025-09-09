@@ -30,8 +30,8 @@ ConstructionPanelWidget::ConstructionPanelWidget(QWidget* parent): QWidget(paren
   vertLayout->setAlignment(Qt::AlignCenter);
   vertLayout->addStretch();
 
-  connect(acceptButton, &QPushButton::clicked, this, &ConstructionPanelWidget::Accepted);
-  connect(cancellButton, &QPushButton::clicked, this, &ConstructionPanelWidget::Cancelled);
+  connect(acceptButton, &QPushButton::clicked, this, [this] () {emit IsAccepted(true);});
+  connect(cancellButton, &QPushButton::clicked, this, [this]() {emit IsAccepted(false); });
   connect(autoBuildCheck, &QCheckBox::toggled, this, &ConstructionPanelWidget::IsAutoBuilded);
 }
 

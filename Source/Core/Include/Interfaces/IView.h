@@ -64,9 +64,9 @@ public:
   virtual std::string GetProccessName() const = 0;
 
   /// Открыть диалог сохранения
-  virtual std::string OpenSaveFileDialog(const std::string & title, const std::string & initPath) = 0;
+  virtual std::string OpenSaveFileDialog(const std::string & title, const std::string & initPath, const std::string & filter = {}) = 0;
   /// Открыть диалог загрузки
-  virtual std::string OpenLoadFileDialog(const std::string & title, const std::string & initPath) = 0;
+  virtual std::string OpenLoadFileDialog(const std::string & title, const std::string & initPath, const std::string & filter = {}) = 0;
   /// Вывести сообщение пользователю
   virtual void ShowMessage(const std::string & title, const std::string & message, MessageType type) = 0;
 

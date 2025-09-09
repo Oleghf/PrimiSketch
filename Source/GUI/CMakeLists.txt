@@ -6,7 +6,7 @@ add_library(${gui_static_lib_name} STATIC)
 
 # Указываем какие файлы необходимо включить в цель сборки.
 target_sources(${gui_static_lib_name} PRIVATE
-"QtView.cpp" "SceneWidget.cpp" "EditorToolBar.cpp" "PropertiesPanelWidget.cpp" "ConstructionPanelWidget.h" "ConstructionPanelWidget.cpp" "QtPainter.h" "QtPainter.cpp")
+"QtView.cpp" "SceneWidget.cpp" "EditorToolBar.cpp" "PropertiesPanelWidget.cpp" "ConstructionPanelWidget.h" "ConstructionPanelWidget.cpp" "QtPainter.h" "QtPainter.cpp" "QtAdapters.h" "QtAdapters.cpp")
 
 # Указываем подключенные директории
 target_include_directories(${gui_static_lib_name} PUBLIC
