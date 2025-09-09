@@ -53,6 +53,7 @@ std::unique_ptr<ICommand> CreateLineSegmentState::HandleCompleteDrawingEv(const 
   else
   {
     m_step = StepCreate::AwaitFirstPos;
+    return nullptr;
   }
 }
 
