@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 class IView;
+class RenderableModel;
 class GeometryModel;
 class ScenePaintEvent;
 
@@ -18,10 +19,10 @@ class PaintController
 {
 private:
   std::shared_ptr<IView> m_view;
-  GeometryModel & m_geometry;
+  RenderableModel & m_renderable;
 
 public:
-  PaintController(std::shared_ptr<IView> view, GeometryModel & geometry);
+  PaintController(std::shared_ptr<IView> view, RenderableModel & renderable);
 
   void OnPaintEvent(const ScenePaintEvent & event);
 };

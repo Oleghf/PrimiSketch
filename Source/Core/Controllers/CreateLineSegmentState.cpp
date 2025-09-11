@@ -5,6 +5,7 @@
 #include <AutoBuildEvent.h>
 #include <SceneMouseEvent.h>
 #include <CreateFigureCommand.h>
+#include <RenderableModel.h>
 #include <CreateLineSegmentState.h>
 
 
@@ -63,9 +64,11 @@ std::unique_ptr<ICommand> CreateLineSegmentState::HandleCompleteDrawingEv(const 
   Конструктор
 */
 //---
-CreateLineSegmentState::CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry)
+CreateLineSegmentState::CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry,
+                                               RenderableModel & renderable)
   : m_view(view)
   , m_geometry(geometry)
+  , m_renderable(renderable)
   , m_step(StepCreate::AwaitFirstPos)
   , m_isAutoBuild(false)
 {
@@ -80,7 +83,8 @@ CreateLineSegmentState::CreateLineSegmentState(std::shared_ptr<IView> view, Geom
 std::unique_ptr<ICommand> CreateLineSegmentState::CompleteDrawing(const Point & first, const Point & second)
 {
   std::shared_ptr<LineSegment> segment = std::make_shared<LineSegment>(first, second);
-  return std::make_unique<CreateFigureCommand>(segment, m_geometry);
+  RenderableProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
+  return std::make_unique<CreateFigureCommand>(segment, renderableProp, m_geometry, m_renderable);
 }
 
 
@@ -128,6 +132,11 @@ void CreateLineSegmentState::Activate()
 {
   m_step = StepCreate::AwaitFirstPos;
   m_view->SetProcessName("Фигура: Отрезок");
+
+  m_view->SetActionEnabled(SwitchableEditorAction::Accept, true);
+  m_view->SetActionEnabled(SwitchableEditorAction::Cancel, true);
+  m_view->SetActionEnabled(SwitchableEditorAction::AutoBuild, true);
+  m_view->SetActionEnabled(SwitchableEditorAction::ChangeStyleLine, true);
 }
 
 

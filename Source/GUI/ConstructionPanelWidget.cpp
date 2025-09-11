@@ -18,21 +18,21 @@ ConstructionPanelWidget::ConstructionPanelWidget(QWidget* parent): QWidget(paren
   QVBoxLayout * vertLayout = new QVBoxLayout(this);
   QHBoxLayout * buttHorizLayout = new QHBoxLayout();
 
-  QPushButton * acceptButton = new QPushButton(tr("Применить"));
-  QPushButton * cancellButton = new QPushButton(tr("Отменить"));
-  QCheckBox * autoBuildCheck = new QCheckBox(tr("Автоматическое построение"));
+  m_acceptButton = new QPushButton(tr("Применить"));
+  m_cancelButton = new QPushButton(tr("Отменить"));
+  m_autoBuildCheckBox = new QCheckBox(tr("Автоматическое построение"));
 
-  buttHorizLayout->addWidget(acceptButton);
-  buttHorizLayout->addWidget(cancellButton);
+  buttHorizLayout->addWidget(m_acceptButton);
+  buttHorizLayout->addWidget(m_cancelButton);
 
   vertLayout->addLayout(buttHorizLayout);
-  vertLayout->addWidget(autoBuildCheck);
+  vertLayout->addWidget(m_autoBuildCheckBox);
   vertLayout->setAlignment(Qt::AlignCenter);
   vertLayout->addStretch();
 
-  connect(acceptButton, &QPushButton::clicked, this, [this] () {emit IsAccepted(true);});
-  connect(cancellButton, &QPushButton::clicked, this, [this]() {emit IsAccepted(false); });
-  connect(autoBuildCheck, &QCheckBox::toggled, this, &ConstructionPanelWidget::IsAutoBuilded);
+  connect(m_acceptButton, &QPushButton::clicked, this, [this] () {emit IsAccepted(true);});
+  connect(m_cancelButton, &QPushButton::clicked, this, [this]() {emit IsAccepted(false); });
+  connect(m_autoBuildCheckBox, &QCheckBox::toggled, this, &ConstructionPanelWidget::IsAutoBuilded);
 }
 
 
@@ -49,4 +49,37 @@ void ConstructionPanelWidget::paintEvent(QPaintEvent * event)
 
   painter.setPen(QPen(Qt::black, 2));
   painter.drawRect(rect());
+}
+
+
+//
+void ConstructionPanelWidget::SetActionEnabled(SwitchableConstructionPanelAction action, bool isEnabled)
+{
+	switch (action)
+	{
+    case SwitchableConstructionPanelAction::Accept:
+      m_acceptButton->setEnabled(isEnabled);
+      break;
+    case SwitchableConstructionPanelAction::Cancel:
+      m_cancelButton->setEnabled(isEnabled);
+      break;
+    case SwitchableConstructionPanelAction::AutoBuild:
+      m_autoBuildCheckBox->setEnabled(isEnabled);
+      break;
+    }
+}
+
+
+//
+bool ConstructionPanelWidget::IsActionEnabled(SwitchableConstructionPanelAction action) const
+{
+  switch (action)
+  {
+    case SwitchableConstructionPanelAction::Accept:
+      return m_acceptButton->isEnabled();
+    case SwitchableConstructionPanelAction::Cancel:
+      return m_cancelButton->isEnabled();
+    case SwitchableConstructionPanelAction::AutoBuild:
+      return m_autoBuildCheckBox->isEnabled();
+  }
 }

@@ -41,6 +41,20 @@ PropertiesPanelWidget::PropertiesPanelWidget(QWidget * parent)
 }
 
 
+//
+void PropertiesPanelWidget::SetStyleLineBoxEnabled(bool isEnabled)
+{
+  m_stylesBox->setEnabled(isEnabled);
+}
+
+
+//
+bool PropertiesPanelWidget::IsStyleLineBoxEnabled() const
+{
+  return m_stylesBox->isEnabled();
+}
+
+
 //------------------------------------------------------------------------------
 /**
   Устанавливает название текущего процесса

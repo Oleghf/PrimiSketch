@@ -21,8 +21,8 @@ public:
   void Line(const Point & p1, const Point & p2) override;
   void Circle(const Point & center, double radius) override;
 
-  void SetPenColor(int r, int g, int b) override;
-  void SetBrushColor(int r, int g, int b) override;
+  void SetPenColor(const Color & color) override;
+  void SetBrushColor(const Color & color) override;
   void SetThickness(double thickness) override;
   void SetStyleLine(StyleLine style) override;
 };

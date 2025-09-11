@@ -54,8 +54,8 @@ public:
 
   void RequestRedraw() override;
 
-  void SetActionEnabled(EditorAction action, bool isEnabled) override {};
-  bool IsActionEnabled(EditorAction action) override { return true; };
+  void SetActionEnabled(SwitchableEditorAction action, bool isEnabled) override;
+  bool IsActionEnabled(SwitchableEditorAction action) const override;
 
   void SetProcessName(const std::string & nameProcess) override;
   std::string GetProccessName() const override;

@@ -132,6 +132,64 @@ void QtView::RequestRedraw()
 }
 
 
+//
+void QtView::SetActionEnabled(SwitchableEditorAction action, bool isEnabled)
+{
+    switch (action)
+    {
+      case SwitchableEditorAction::Accept:
+        m_construction->SetActionEnabled(SwitchableConstructionPanelAction::Accept, isEnabled);
+        break;
+      case SwitchableEditorAction::Cancel:
+        m_construction->SetActionEnabled(SwitchableConstructionPanelAction::Cancel, isEnabled);
+        break;
+      case SwitchableEditorAction::AutoBuild:
+        m_construction->SetActionEnabled(SwitchableConstructionPanelAction::AutoBuild, isEnabled);
+        break;
+      case SwitchableEditorAction::ChangeStyleLine:
+        m_properties->SetStyleLineBoxEnabled(isEnabled);
+        break;
+      case SwitchableEditorAction::Undo:
+        m_undo->setEnabled(isEnabled);
+        break;
+      case SwitchableEditorAction::Redo:
+        m_redo->setEnabled(isEnabled);
+        break;
+      case SwitchableEditorAction::LoadAs:
+        m_open->setEnabled(isEnabled);
+        break;
+      case SwitchableEditorAction::SaveAs:
+        m_saveAs->setEnabled(isEnabled);
+        break;
+    }
+}
+
+
+//
+bool QtView::IsActionEnabled(SwitchableEditorAction action) const
+{
+  switch (action)
+  {
+    case SwitchableEditorAction::Accept:
+      return m_construction->IsActionEnabled(SwitchableConstructionPanelAction::Accept);
+    case SwitchableEditorAction::Cancel:
+      return m_construction->IsActionEnabled(SwitchableConstructionPanelAction::Cancel);
+    case SwitchableEditorAction::AutoBuild:
+      return m_construction->IsActionEnabled(SwitchableConstructionPanelAction::AutoBuild);
+    case SwitchableEditorAction::ChangeStyleLine:
+      return m_properties->IsStyleLineBoxEnabled();
+    case SwitchableEditorAction::Undo:
+      return m_undo->isEnabled();
+    case SwitchableEditorAction::Redo:
+      return m_redo->isEnabled();
+    case SwitchableEditorAction::LoadAs:
+      return m_open->isEnabled();
+    case SwitchableEditorAction::SaveAs:
+      return m_saveAs->isEnabled();
+  }
+}
+
+
 //------------------------------------------------------------------------------
 /**
   Установка нового названия процесса в панель свойств

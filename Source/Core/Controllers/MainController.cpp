@@ -26,10 +26,10 @@ void MainController::ChangeState(Tool newTool)
 MainController::MainController(std::shared_ptr<IView> view)
   : m_view(view)
   , m_currentState(std::make_shared<DefaultState>(m_view, m_geometryModel))
-  , m_paintController(view, m_geometryModel)
+  , m_paintController(view, m_renderableModel)
 {
   m_states[Tool::None] = m_currentState;
-  m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_geometryModel);
+  m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_geometryModel, m_renderableModel);
 
   ChangeState(Tool::None);
 }

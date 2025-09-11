@@ -4,11 +4,13 @@
 
 #include <IState.h>
 #include <Point.h>
+#include <RenderableProperties.h>
 
 class SceneMouseEvent;
 class CompleteDrawingEvent;
 class IView;
 class GeometryModel;
+class RenderableModel;
 class ICommand;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,6 +33,7 @@ private:
 private:
   std::shared_ptr<IView> m_view;
   GeometryModel & m_geometry;
+  RenderableModel & m_renderable;
   StepCreate m_step;
   Point m_firstPos;
   Point m_secondPos;
@@ -44,7 +47,7 @@ private:
   std::unique_ptr<ICommand> CompleteDrawing(const Point & first, const Point & second);
 
 public:
-  CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry);
+  CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
   void Activate() override;
   void Deactivate() override;

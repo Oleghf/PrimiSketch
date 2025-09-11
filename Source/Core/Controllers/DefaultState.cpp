@@ -30,6 +30,11 @@ std::unique_ptr<ICommand> DefaultState::OnEvent(const Event& event)
 void DefaultState::Activate()
 {
   m_view->SetProcessName("Инструмент не выбран");
+
+  m_view->SetActionEnabled(SwitchableEditorAction::Accept, false);
+  m_view->SetActionEnabled(SwitchableEditorAction::Cancel, false);
+  m_view->SetActionEnabled(SwitchableEditorAction::AutoBuild, false);
+  m_view->SetActionEnabled(SwitchableEditorAction::ChangeStyleLine, false);
 }
 
 

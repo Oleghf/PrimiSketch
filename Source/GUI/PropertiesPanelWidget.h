@@ -24,6 +24,9 @@ private:
 public:
   PropertiesPanelWidget(QWidget * parent = nullptr);
 
+  void SetStyleLineBoxEnabled(bool isEnabled);
+  bool IsStyleLineBoxEnabled() const;
+
   void SetProcessName(const std::string & nameProcess);
   std::string GetProcessName() const;
 

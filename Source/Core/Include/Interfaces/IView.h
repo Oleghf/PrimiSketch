@@ -9,21 +9,20 @@ class EventListener;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-/// Перечисление действий редактора
+/// Перечисление действий редактора, которые можно выключить
 /**
 */
 ////////////////////////////////////////////////////////////////////////////////
-enum class EditorAction
+enum class SwitchableEditorAction
 {
 	SaveAs,               // Сохранить
 	LoadAs,               // Загрузить
 	Undo,                 // Отменить
 	Redo,                 // Повторить
-	LineSegment,          // Построение отрезка
-	BrokenLine,           // Построение ломанной линии
-	RectangleTwoPoints,   // Построение прямоугольника по двум точкам
-	RectangleCenterAngle, // Построение прямоугольника по центру и углу
-	ChangeStyleLine,      // Изменить стиль линии
+	Accept,
+	Cancel,
+	AutoBuild,
+	ChangeStyleLine
 };
 
 
@@ -54,9 +53,9 @@ public:
   virtual void RequestRedraw() = 0;
 
   /// Включить/Отключить действие редактора
-  virtual void SetActionEnabled(EditorAction action, bool isEnabled) = 0;
+  virtual void SetActionEnabled(SwitchableEditorAction action, bool isEnabled) = 0;
   /// Узнать о том, включено/отключено ли действие редактора
-  virtual bool IsActionEnabled(EditorAction action) = 0;
+  virtual bool IsActionEnabled(SwitchableEditorAction action) const = 0;
 
   /// Установить новое название процесса
   virtual void SetProcessName(const std::string & string) = 0;

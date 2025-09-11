@@ -54,10 +54,10 @@ void QtPainter::Circle(const Point& center, double radius)
   Установить цвет обводки по rgb
 */
 //---
-void QtPainter::SetPenColor(int r, int g, int b)
+void QtPainter::SetPenColor(const Color & color)
 {
   QPen pen = m_painter.pen();
-  pen.setColor({r, g, b});
+  pen.setColor(QColor(color.r, color.g, color.b, color.a));
   m_painter.setPen(pen);
 }
 
@@ -67,10 +67,10 @@ void QtPainter::SetPenColor(int r, int g, int b)
   Установить цвет залива по rgb
 */
 //---
-void QtPainter::SetBrushColor(int r, int g, int b)
+void QtPainter::SetBrushColor(const Color & color)
 {
   QBrush brush = m_painter.brush();
-  brush.setColor({r, g, b});
+  brush.setColor(QColor(color.r, color.g, color.b, color.a));
   m_painter.setBrush(brush);
 }
 
