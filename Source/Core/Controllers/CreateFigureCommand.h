@@ -19,6 +19,7 @@ class CreateFigureCommand : public ICommand
 {
 private:
   std::shared_ptr<IFigure> m_figure;
+
   RenderableProperties m_properties;
   GeometryModel & m_geometry;
   RenderableModel & m_renderable;

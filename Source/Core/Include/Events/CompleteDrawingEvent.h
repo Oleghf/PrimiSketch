@@ -20,5 +20,5 @@ public:
   }
 
   EventType Type() const override { return EventType::CompleteDrawing; }
-  bool IsAccepted() const { return m_isAccepted; }
+  bool IsDrawAccepted() const { return m_isAccepted; }
 };

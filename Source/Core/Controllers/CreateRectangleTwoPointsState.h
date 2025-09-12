@@ -14,11 +14,11 @@ class ICommand;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-/// Состояние создания отрезка линии
+/// Состояние создания прямоугольника по двум точкам
 /**
 */
 ////////////////////////////////////////////////////////////////////////////////
-class CreateLineSegmentState : public IState
+class CreateRectangleTwoPointsState : public IState
 {
 private:
   enum class Status
@@ -49,7 +49,7 @@ private:
   std::unique_ptr<ICommand> CreateDrawCommand(const Point & first, const Point & second);
 
 public:
-  CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
+  CreateRectangleTwoPointsState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
 
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
 

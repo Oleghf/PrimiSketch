@@ -41,7 +41,8 @@ public:
   void SetActionEnabled(SwitchableConstructionPanelAction action, bool isEnabled);
   bool IsActionEnabled(SwitchableConstructionPanelAction action) const;
 signals:
-  void IsAccepted(bool is);
-
-  void IsAutoBuilded(bool isOn);
+  void AcceptButtonTriggered();
+  void CancelButtonTriggered();
+  void AutoBuildCheckBoxChanged(bool isTristed);
+  void AutoBuildCheckBoxEnabled(bool isEnabled);
 };

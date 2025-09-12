@@ -40,4 +40,5 @@ void CreateFigureCommand::Do()
 void CreateFigureCommand::Undo()
 {
   m_geometry.Remove(m_figure);
+  m_renderable.Remove(m_figure);
 }

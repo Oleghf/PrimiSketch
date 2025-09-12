@@ -1,12 +1,11 @@
 #include <IView.h>
-#include <Event.h>
+#include <SceneMouseEvent.h>
 #include <CompleteDrawingEvent.h>
 #include <AutoBuildEvent.h>
-#include <SceneMouseEvent.h>
-#include <LineSegment.h>
+#include <Rectangle.h>
 #include <CreateFigureCommand.h>
-#include <RenderableModel.h>
-#include <CreateLineSegmentState.h>
+#include <ICommand.h>
+#include <CreateRectangleTwoPointsState.h>
 
 
 //------------------------------------------------------------------------------
@@ -14,7 +13,7 @@
   Обрабатывает событие клика по сцене
 */
 //---
-std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMouseEvent(const SceneMouseEvent & mouseEv)
+std::unique_ptr<ICommand> CreateRectangleTwoPointsState::OnSceneMouseEvent(const SceneMouseEvent & mouseEv)
 {
   if (m_status == Status::AwaitFirstPos)
   {
@@ -43,7 +42,7 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMouseEvent(const SceneM
   Обрабатывает событие завершения рисования
 */
 //---
-std::unique_ptr<ICommand> CreateLineSegmentState::OnCompleteDrawingEvent(const CompleteDrawingEvent & ev)
+std::unique_ptr<ICommand> CreateRectangleTwoPointsState::OnCompleteDrawingEvent(const CompleteDrawingEvent & ev)
 {
   m_status = Status::AwaitFirstPos;
 
@@ -59,12 +58,12 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnCompleteDrawingEvent(const C
   Создает команду на создание отрезка по двум точкам
 */
 //---
-std::unique_ptr<ICommand> CreateLineSegmentState::CreateDrawCommand(const Point & first, const Point & second)
+std::unique_ptr<ICommand> CreateRectangleTwoPointsState::CreateDrawCommand(const Point & first, const Point & second)
 {
-  std::shared_ptr<LineSegment> segment = std::make_shared<LineSegment>(first, second);
+  std::shared_ptr<Rectangle> rect = std::make_shared<Rectangle>(first, second);
   RenderableProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
 
-  return std::make_unique<CreateFigureCommand>(segment, renderableProp, m_geometry, m_renderable);
+  return std::make_unique<CreateFigureCommand>(rect, renderableProp, m_geometry, m_renderable);
 }
 
 
@@ -73,8 +72,8 @@ std::unique_ptr<ICommand> CreateLineSegmentState::CreateDrawCommand(const Point 
   Конструктор
 */
 //---
-CreateLineSegmentState::CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry,
-                                               RenderableModel & renderable)
+CreateRectangleTwoPointsState::CreateRectangleTwoPointsState(std::shared_ptr<IView> view, GeometryModel & geometry,
+                                                             RenderableModel & renderable)
   : m_view(view)
   , m_geometry(geometry)
   , m_renderable(renderable)
@@ -86,10 +85,12 @@ CreateLineSegmentState::CreateLineSegmentState(std::shared_ptr<IView> view, Geom
 
 //------------------------------------------------------------------------------
 /**
-  Обрабатывает событие
+  \brief Обрабатывает события мыши по сцене
+  \details При получении первого события нажатия мыши по сцене запоминает координаты нажатия.
+  При получении второго события нажатия мыши  по сцене создает команду создания отрезка и возвращает ее.
 */
 //---
-std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
+std::unique_ptr<ICommand> CreateRectangleTwoPointsState::OnEvent(const Event & event)
 {
   switch (event.Type())
   {
@@ -117,7 +118,7 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
     }
   }
 
-	return nullptr;
+  return nullptr;
 }
 
 
@@ -127,10 +128,10 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
   \details Устанавливает название процесса, включает необходимые кнопки в редакторе
 */
 //---
-void CreateLineSegmentState::Activate()
+void CreateRectangleTwoPointsState::Activate()
 {
   m_status = Status::AwaitFirstPos;
-  m_view->SetProcessName("Фигура: Отрезок");
+  m_view->SetProcessName("Фигура: Прямоугольник по двум точкам");
 
   m_view->SetActionEnabled(SwitchableEditorAction::Accept, true);
   m_view->SetActionEnabled(SwitchableEditorAction::Cancel, true);
@@ -146,7 +147,7 @@ void CreateLineSegmentState::Activate()
   \warning Не отключает кнопки редактора
 */
 //---
-void CreateLineSegmentState::Deactivate()
+void CreateRectangleTwoPointsState::Deactivate()
 {
   m_status = Status::AwaitActivate;
   m_view->SetProcessName("");

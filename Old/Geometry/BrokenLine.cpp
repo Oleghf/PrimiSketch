@@ -2,6 +2,7 @@
 #include <cassert>
 #include <algorithm>
 
+#include <PrimitiveView.h>
 #include <ConsoleOutputStream.h>
 #include <OutputStream.h>
 #include <InputStream.h>
@@ -10,7 +11,7 @@
 #include <BrokenLine.h>
 
 
-static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
+// static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
 
 
 //------------------------------------------------------------------------------
@@ -120,6 +121,14 @@ void BrokenLine::Write(OutputStream& os) const
 size_t BrokenLine::GetTypeHash() const
 {
   return math_utils::hash("BrokenLine");
+}
+
+
+//
+void BrokenLine::Render(PrimitiveView & primitiveView)
+{
+    for (size_t i = 1; i < m_points.size(); i++)
+      primitiveView.Line(m_points.at(i), m_points.at(i - 1));
 }
 
 

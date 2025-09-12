@@ -2,6 +2,7 @@
 #include <string>
 #include <array>
 
+#include <PrimitiveView.h>
 #include <MathUtils.h>
 #include <Box.h>
 #include <Vector.h>
@@ -10,7 +11,7 @@
 #include <Rectangle.h>
 
 
-static bool _ = IFigure::RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
+//static bool _ = IFigure::RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
 
 
 //------------------------------------------------------------------------------
@@ -115,6 +116,20 @@ void Rectangle::Write(OutputStream & os) const
 size_t Rectangle::GetTypeHash() const
 {
   return math_utils::hash("Rectangle");
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Загружает о себе данные в PrimitiveView
+*/
+//---
+void Rectangle::Render(PrimitiveView & primitiveView)
+{
+  primitiveView.Line(TopLeft(), TopRight());
+  primitiveView.Line(TopRight(), BottomRight());
+  primitiveView.Line(BottomRight(), BottomLeft());
+  primitiveView.Line(BottomLeft(), TopLeft());
 }
 
 

@@ -109,15 +109,16 @@ QtView::QtView()
   SetupWidgets();
 
   connect(m_scene, &SceneWidget::CreatedQPainter, this, &QtView::CreateScenePaintEvent);
-  connect(m_scene, &SceneWidget::CreatedQMouseEvent, this, [this](QMouseEvent * ev) { SendEvent(qt_adapters::FromQMouseEvent(ev)); });
-  connect(m_open, &QAction::triggered, this, [this]() { SendEvent(LoadFileEvent()); });
-  connect(m_saveAs, &QAction::triggered, this, [this]() { SendEvent(SaveFileEvent()); });
-  connect(m_undo, &QAction::triggered, this, [this]() { SendEvent(UndoEvent()); });
-  connect(m_redo, &QAction::triggered, this, [this]() { SendEvent(RedoEvent()); });
-  connect(m_exportSVG, &QAction::triggered, this, [this]() { SendEvent(ExportSVGEvent()); });
+  connect(m_scene, &SceneWidget::CreatedQMouseEvent, [this](QMouseEvent * ev) { SendEvent(qt_adapters::FromQMouseEvent(ev)); });
+  connect(m_open, &QAction::triggered, [this]() { SendEvent(LoadFileEvent()); });
+  connect(m_saveAs, &QAction::triggered, [this]() { SendEvent(SaveFileEvent()); });
+  connect(m_undo, &QAction::triggered, [this]() { SendEvent(UndoEvent()); });
+  connect(m_redo, &QAction::triggered, [this]() { SendEvent(RedoEvent()); });
+  connect(m_exportSVG, &QAction::triggered, [this]() { SendEvent(ExportSVGEvent()); });
   connect(m_toolBar, &EditorToolBar::toolChanged, [this](Tool newTool) { SendEvent(ToolChangeEvent(newTool)); });
-  connect(m_construction, &ConstructionPanelWidget::IsAccepted, [this](bool is) { SendEvent(CompleteDrawingEvent(is)); });
-  connect(m_construction, &ConstructionPanelWidget::IsAutoBuilded, this, [this](bool isOn) { SendEvent(AutoBuildEvent(isOn)); });
+  connect(m_construction, &ConstructionPanelWidget::AcceptButtonTriggered, [this]() { SendEvent(CompleteDrawingEvent(true)); });
+  connect(m_construction, &ConstructionPanelWidget::CancelButtonTriggered, [this]() { SendEvent(CompleteDrawingEvent(false)); });
+  connect(m_construction, &ConstructionPanelWidget::AutoBuildCheckBoxChanged, [this](bool isOn) { SendEvent(AutoBuildEvent(isOn)); });
 }
 
 

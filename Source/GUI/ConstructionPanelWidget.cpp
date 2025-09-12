@@ -30,9 +30,15 @@ ConstructionPanelWidget::ConstructionPanelWidget(QWidget* parent): QWidget(paren
   vertLayout->setAlignment(Qt::AlignCenter);
   vertLayout->addStretch();
 
-  connect(m_acceptButton, &QPushButton::clicked, this, [this] () {emit IsAccepted(true);});
-  connect(m_cancelButton, &QPushButton::clicked, this, [this]() {emit IsAccepted(false); });
-  connect(m_autoBuildCheckBox, &QCheckBox::toggled, this, &ConstructionPanelWidget::IsAutoBuilded);
+  connect(m_acceptButton, &QPushButton::clicked, this, &ConstructionPanelWidget::AcceptButtonTriggered);
+  connect(m_cancelButton, &QPushButton::clicked, this, &ConstructionPanelWidget::CancelButtonTriggered);
+  connect(m_autoBuildCheckBox, &QCheckBox::toggled, this, &ConstructionPanelWidget::AutoBuildCheckBoxChanged);
+  connect(this, &ConstructionPanelWidget::AutoBuildCheckBoxEnabled,
+          [this](bool isEnabled)
+          {
+            if (!isEnabled)
+              m_autoBuildCheckBox->setCheckState(Qt::Unchecked);
+          });
 }
 
 
@@ -65,6 +71,7 @@ void ConstructionPanelWidget::SetActionEnabled(SwitchableConstructionPanelAction
       break;
     case SwitchableConstructionPanelAction::AutoBuild:
       m_autoBuildCheckBox->setEnabled(isEnabled);
+      emit AutoBuildCheckBoxEnabled(isEnabled);
       break;
     }
 }

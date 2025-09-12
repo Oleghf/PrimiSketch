@@ -33,6 +33,7 @@ void PaintController::OnPaintEvent(const ScenePaintEvent & event)
     {
       painter.SetStyleLine(prop->style);
       painter.SetPenColor({prop->r, prop->g, prop->b, prop->a});
+      painter.SetBrushColor({prop->r, prop->g, prop->b, prop->a});
       figure->Render(painter);
       return true;
     }

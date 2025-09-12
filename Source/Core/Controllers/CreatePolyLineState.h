@@ -1,32 +1,29 @@
 #pragma once
 
-#include <memory>
+#include <vector>
 
 #include <IState.h>
 #include <Point.h>
 
-class SceneMouseEvent;
-class CompleteDrawingEvent;
 class IView;
 class GeometryModel;
 class RenderableModel;
-class ICommand;
+class SceneMouseEvent;
+class CompleteDrawingEvent;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-/// Состояние создания отрезка линии
+/// Состояние создания ломанной кривой
 /**
 */
 ////////////////////////////////////////////////////////////////////////////////
-class CreateLineSegmentState : public IState
+class CreatePolyLineState : public IState
 {
 private:
   enum class Status
   {
     AwaitActivate,
-    AwaitFirstPos,
-    AwaitSecondPos,
-    AwaitConfirm
+    AwaitPoints
   };
 
 private:
@@ -37,8 +34,7 @@ private:
 
   Status m_status;
 
-  Point m_firstPos;
-  Point m_secondPos;
+  std::vector<Point> m_points;
 
   bool m_isAutoBuild;
 
@@ -46,10 +42,10 @@ private:
   std::unique_ptr<ICommand> OnSceneMouseEvent(const SceneMouseEvent & mouseEv);
   std::unique_ptr<ICommand> OnCompleteDrawingEvent(const CompleteDrawingEvent & ev);
 
-  std::unique_ptr<ICommand> CreateDrawCommand(const Point & first, const Point & second);
+  std::unique_ptr<ICommand> CreateDrawCommand(const std::vector<Point> & points);
 
 public:
-  CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
+  CreatePolyLineState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
 
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
 
