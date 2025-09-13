@@ -153,6 +153,18 @@ std::shared_ptr<Rectangle> Rectangle::Read(const InputStream & is)
 
 //------------------------------------------------------------------------------
 /**
+  Обновляет прямоугольник по новым двум точкам
+*/
+//---
+void Rectangle::Update(const Point& first, const Point& second)
+{
+  m_topLeft = {std::min(first.x, second.x), std::max(first.y, second.y)};
+  m_bottomRight = {std::max(first.x, second.x), std::min(first.y, second.y)};
+}
+
+
+//------------------------------------------------------------------------------
+/**
   Получить верхнюю левую точку
 */
 //---

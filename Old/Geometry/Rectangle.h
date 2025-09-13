@@ -30,6 +30,8 @@ public:
 
   static std::shared_ptr<Rectangle> Read(const InputStream & is);
 
+  void Update(const Point & first, const Point & second);
+
   Point TopLeft() const;
   Point TopRight() const;
   Point BottomLeft() const;

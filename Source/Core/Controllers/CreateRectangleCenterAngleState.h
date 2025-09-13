@@ -5,6 +5,7 @@
 #include <IState.h>
 #include <Point.h>
 
+class Rectangle;
 class SceneMouseEvent;
 class CompleteDrawingEvent;
 class IView;
@@ -24,29 +25,35 @@ private:
   enum class Status
   {
     AwaitActivate,
-    AwaitCenterPos,
-    AwaitAnglePos,
+    AwaitFirstPos,
+    AwaitSecondPos,
     AwaitConfirm
   };
 
 private:
   std::shared_ptr<IView> m_view;
+  std::shared_ptr<Rectangle> m_temporaryRectangle;
 
   GeometryModel & m_geometry;
   RenderableModel & m_renderable;
 
   Status m_status;
 
-  Point m_centerPos;
-  Point m_anglePos;
+  Point m_firstPos;
+  Point m_secondPos;
 
   bool m_isAutoBuild;
 
 private:
-  std::unique_ptr<ICommand> OnSceneMouseEvent(const SceneMouseEvent & mouseEv);
-  std::unique_ptr<ICommand> OnCompleteDrawingEvent(const CompleteDrawingEvent & ev);
+  void CreateTemporaryFigure(const Point & pos);
+  void UpdateEndPosTemporaryFigure(const Point & pos);
+  void RemoveTemporaryFigure();
 
-  std::unique_ptr<ICommand> CreateDrawCommand(const Point & center, const Point & angle);
+  std::unique_ptr<ICommand> OnSceneMousePressEvent(const SceneMouseEvent & mouseEv);
+  void OnSceneMouseMoveEvent(const SceneMouseEvent & mouseEv);
+  std::unique_ptr<ICommand> OnCompleteDrawingEvent(const CompleteDrawingEvent & ev);
+  void OnAutoBuildEvent(const AutoBuildEvent & ev);
+  std::unique_ptr<ICommand> CreateDrawCommand(const Point & first, const Point & second);
 
 public:
   CreateRectangleCenterAngleState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);

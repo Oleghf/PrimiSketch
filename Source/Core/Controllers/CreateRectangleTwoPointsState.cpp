@@ -5,7 +5,44 @@
 #include <Rectangle.h>
 #include <CreateFigureCommand.h>
 #include <ICommand.h>
+#include <RenderableModel.h>
 #include <CreateRectangleTwoPointsState.h>
+
+
+//------------------------------------------------------------------------------
+/**
+  Создает временную(фантомную) фигуру по переданной координате(в виде точки)
+*/
+//---
+void CreateRectangleTwoPointsState::CreateTemporaryFigure(const Point & pos)
+{
+  m_temporaryRectangle = std::make_shared<Rectangle>(pos, pos);
+  m_renderable.SetRenderProperties(m_temporaryRectangle, {0, 0, 0, 155, m_view->GetStyleLine()});
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Обновляет конечную точку временной(фантомной) фигуры, если такая была создана
+*/
+//---
+void CreateRectangleTwoPointsState::UpdateEndPosTemporaryFigure(const Point & pos)
+{
+  m_temporaryRectangle->Update(m_firstPos, pos);
+  m_view->RequestRedraw();
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Удаляет временную(фантомную) фигуру
+*/
+//---
+void CreateRectangleTwoPointsState::RemoveTemporaryFigure()
+{
+  m_renderable.Remove(m_temporaryRectangle);
+  m_temporaryRectangle = nullptr;
+}
 
 
 //------------------------------------------------------------------------------
@@ -13,27 +50,73 @@
   Обрабатывает событие клика по сцене
 */
 //---
-std::unique_ptr<ICommand> CreateRectangleTwoPointsState::OnSceneMouseEvent(const SceneMouseEvent & mouseEv)
+std::unique_ptr<ICommand> CreateRectangleTwoPointsState::OnSceneMousePressEvent(const SceneMouseEvent & mouseEv)
 {
-  if (m_status == Status::AwaitFirstPos)
+  if (mouseEv.Type() == EventType::SceneMousePress && mouseEv.Button() == MouseButton::Left)
   {
-    m_status = Status::AwaitSecondPos;
-    m_firstPos = mouseEv.LocalPos();
-  }
-  else
-  {
-    if (m_isAutoBuild)
+    if (m_status == Status::AwaitFirstPos)
     {
-      m_status = Status::AwaitFirstPos;
-      return CreateDrawCommand(m_firstPos, mouseEv.LocalPos());
+      m_firstPos = mouseEv.LocalPos();
+      m_status = Status::AwaitSecondPos;
+      CreateTemporaryFigure(m_firstPos);
     }
-    else
+    else if (m_status != Status::AwaitConfirm)
     {
-      m_status = Status::AwaitConfirm;
       m_secondPos = mouseEv.LocalPos();
+      if (m_isAutoBuild)
+      {
+        m_status = Status::AwaitFirstPos;
+        RemoveTemporaryFigure();
+        return CreateDrawCommand(m_firstPos, m_secondPos);
+      }
+      else
+        m_status = Status::AwaitConfirm;
     }
   }
   return nullptr;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Обрабатывает событие движения мышки по сцене
+*/
+//---
+void CreateRectangleTwoPointsState::OnSceneMouseMoveEvent(const SceneMouseEvent & mouseEv)
+{
+  if (mouseEv.Type() == EventType::SceneMouseMove)
+  {
+    if (m_status == Status::AwaitSecondPos && m_status != Status::AwaitConfirm)
+      UpdateEndPosTemporaryFigure(mouseEv.LocalPos());
+  }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Обрабатывает событие изменения галочки "Автоматическое построение"
+*/
+//---
+void CreateRectangleTwoPointsState::OnAutoBuildEvent(const AutoBuildEvent & ev)
+{
+  m_isAutoBuild = ev.IsAutoBuild();
+
+  m_view->SetActionEnabled(SwitchableEditorAction::Accept, !m_isAutoBuild);
+  m_view->SetActionEnabled(SwitchableEditorAction::Cancel, !m_isAutoBuild);
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Создает команду на создание прямоугольника по двум точкам
+*/
+//---
+std::unique_ptr<ICommand> CreateRectangleTwoPointsState::CreateDrawCommand(const Point & first, const Point & second)
+{
+  std::shared_ptr<Rectangle> segment = std::make_shared<Rectangle>(first, second);
+  RenderProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
+
+  return std::make_unique<CreateFigureCommand>(segment, renderableProp, m_geometry, m_renderable);
 }
 
 
@@ -46,24 +129,11 @@ std::unique_ptr<ICommand> CreateRectangleTwoPointsState::OnCompleteDrawingEvent(
 {
   m_status = Status::AwaitFirstPos;
 
+  RemoveTemporaryFigure();
   if (ev.IsDrawAccepted())
     return CreateDrawCommand(m_firstPos, m_secondPos);
   else
     return nullptr;
-}
-
-
-//------------------------------------------------------------------------------
-/**
-  Создает команду на создание отрезка по двум точкам
-*/
-//---
-std::unique_ptr<ICommand> CreateRectangleTwoPointsState::CreateDrawCommand(const Point & first, const Point & second)
-{
-  std::shared_ptr<Rectangle> rect = std::make_shared<Rectangle>(first, second);
-  RenderProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
-
-  return std::make_unique<CreateFigureCommand>(rect, renderableProp, m_geometry, m_renderable);
 }
 
 
@@ -85,9 +155,7 @@ CreateRectangleTwoPointsState::CreateRectangleTwoPointsState(std::shared_ptr<IVi
 
 //------------------------------------------------------------------------------
 /**
-  \brief Обрабатывает события мыши по сцене
-  \details При получении первого события нажатия мыши по сцене запоминает координаты нажатия.
-  При получении второго события нажатия мыши  по сцене создает команду создания отрезка и возвращает ее.
+  Обрабатывает событие
 */
 //---
 std::unique_ptr<ICommand> CreateRectangleTwoPointsState::OnEvent(const Event & event)
@@ -95,25 +163,23 @@ std::unique_ptr<ICommand> CreateRectangleTwoPointsState::OnEvent(const Event & e
   switch (event.Type())
   {
     case EventType::SceneMousePress:
+    case EventType::SceneMouseMove:
     {
       const SceneMouseEvent & mouseEvent = static_cast<const SceneMouseEvent &>(event);
-      if (mouseEvent.Button() == MouseButton::Left)
-        return OnSceneMouseEvent(mouseEvent);
+      if (event.Type() == EventType::SceneMousePress)
+        return OnSceneMousePressEvent(mouseEvent);
+      OnSceneMouseMoveEvent(mouseEvent);
       break;
     }
     case EventType::CompleteDrawing:
     {
-      if (m_status == Status::AwaitConfirm)
-      {
-        const CompleteDrawingEvent & completeDrawEvent = static_cast<const CompleteDrawingEvent &>(event);
-        return OnCompleteDrawingEvent(completeDrawEvent);
-      }
-      break;
+      const CompleteDrawingEvent & completeDrawEvent = static_cast<const CompleteDrawingEvent &>(event);
+      return OnCompleteDrawingEvent(completeDrawEvent);
     }
     case EventType::AutoBuild:
     {
       const AutoBuildEvent & autoBuildEv = static_cast<const AutoBuildEvent &>(event);
-      m_isAutoBuild = autoBuildEv.IsAutoBuild();
+      OnAutoBuildEvent(autoBuildEv);
       break;
     }
   }
@@ -150,5 +216,6 @@ void CreateRectangleTwoPointsState::Activate()
 void CreateRectangleTwoPointsState::Deactivate()
 {
   m_status = Status::AwaitActivate;
+  RemoveTemporaryFigure();
   m_view->SetProcessName("");
 }
