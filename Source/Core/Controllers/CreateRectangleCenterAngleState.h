@@ -5,7 +5,6 @@
 #include <IState.h>
 #include <Point.h>
 
-class LineSegment;
 class SceneMouseEvent;
 class CompleteDrawingEvent;
 class IView;
@@ -15,47 +14,42 @@ class ICommand;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-/// Состояние создания отрезка линии
+/// Состояние создания прямоугольника по центру и углу
 /**
 */
 ////////////////////////////////////////////////////////////////////////////////
-class CreateLineSegmentState : public IState
+class CreateRectangleCenterAngleState : public IState
 {
 private:
   enum class Status
   {
     AwaitActivate,
-    AwaitFirstPos,
-    AwaitSecondPos,
+    AwaitCenterPos,
+    AwaitAnglePos,
     AwaitConfirm
   };
 
 private:
   std::shared_ptr<IView> m_view;
-  std::shared_ptr<LineSegment> m_temporarySegment;
 
   GeometryModel & m_geometry;
   RenderableModel & m_renderable;
 
   Status m_status;
 
-  Point m_firstPos;
-  Point m_secondPos;
+  Point m_centerPos;
+  Point m_anglePos;
 
   bool m_isAutoBuild;
 
 private:
-  void CreateTemporaryFigure(const Point & pos);
-  void UpdateEndPosTemporaryFigure(const Point & pos);
-  void RemoveTemporaryFigure();
-
-  std::unique_ptr<ICommand> OnSceneMousePressEvent(const SceneMouseEvent & mouseEv);
-  std::unique_ptr<ICommand> onSceneMouseMoveEvent(const SceneMouseEvent & mouseEv);
+  std::unique_ptr<ICommand> OnSceneMouseEvent(const SceneMouseEvent & mouseEv);
   std::unique_ptr<ICommand> OnCompleteDrawingEvent(const CompleteDrawingEvent & ev);
-  std::unique_ptr<ICommand> CreateDrawCommand(const Point & first, const Point & second);
+
+  std::unique_ptr<ICommand> CreateDrawCommand(const Point & center, const Point & angle);
 
 public:
-  CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
+  CreateRectangleCenterAngleState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
 
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
 

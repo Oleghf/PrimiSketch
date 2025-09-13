@@ -8,7 +8,7 @@
 /**
 */
 ////////////////////////////////////////////////////////////////////////////////
-struct RenderableProperties
+struct RenderProperties
 {
   unsigned int r, g, b, a;
   StyleLine style;

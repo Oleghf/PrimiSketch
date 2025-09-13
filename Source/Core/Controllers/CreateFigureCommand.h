@@ -20,12 +20,12 @@ class CreateFigureCommand : public ICommand
 private:
   std::shared_ptr<IFigure> m_figure;
 
-  RenderableProperties m_properties;
+  RenderProperties m_properties;
   GeometryModel & m_geometry;
   RenderableModel & m_renderable;
 
 public:
-  CreateFigureCommand(std::shared_ptr<IFigure> figure, const RenderableProperties& properties, GeometryModel & geometry, RenderableModel & renderable);
+  CreateFigureCommand(std::shared_ptr<IFigure> figure, const RenderProperties& properties, GeometryModel & geometry, RenderableModel & renderable);
 
   void Do() override;
   void Undo() override;

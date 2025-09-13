@@ -2,6 +2,7 @@
 #include <IView.h>
 #include <IState.h>
 #include <CreateLineSegmentState.h>
+#include <CreateRectangleCenterAngleState.h>
 #include <CreatePolyLineState.h>
 #include <CreateRectangleTwoPointsState.h>
 #include <DefaultState.h>
@@ -32,8 +33,10 @@ MainController::MainController(std::shared_ptr<IView> view)
 {
   m_states[Tool::None] = m_currentState;
   m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_geometryModel, m_renderableModel);
-  m_states[Tool::RectangleTwoPoints] = std::make_shared<CreateRectangleTwoPointsState>(m_view, m_geometryModel, m_renderableModel);
   m_states[Tool::BrokenLine] = std::make_shared<CreatePolyLineState>(m_view, m_geometryModel, m_renderableModel);
+  m_states[Tool::RectangleTwoPoints] = std::make_shared<CreateRectangleTwoPointsState>(m_view, m_geometryModel, m_renderableModel);
+  m_states[Tool::RectangleCenterAngle] =
+    std::make_shared<CreateRectangleCenterAngleState>(m_view, m_geometryModel, m_renderableModel);
 
   ChangeState(Tool::None);
 }

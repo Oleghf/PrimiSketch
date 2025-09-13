@@ -62,6 +62,7 @@ void QtView::SetupWidgets()
   QHBoxLayout * subHorizLayout = new QHBoxLayout();
 
   m_scene->setMinimumSize(m_centralWidget->size());
+  m_scene->setMouseTracking(true);
 
   subHorizLayout->addWidget(m_scene,9);
   subHorizLayout->addWidget(m_properties,1);

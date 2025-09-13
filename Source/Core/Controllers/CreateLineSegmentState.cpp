@@ -9,30 +9,72 @@
 #include <CreateLineSegmentState.h>
 
 
+//
+void CreateLineSegmentState::CreateTemporaryFigure(const Point& pos)
+{
+  m_temporarySegment = std::make_shared<LineSegment>(pos, pos);
+  m_renderable.SetRenderProperties(m_temporarySegment, {0, 0, 0, 155, m_view->GetStyleLine()});
+}
+
+
+//
+void CreateLineSegmentState::UpdateEndPosTemporaryFigure(const Point& pos)
+{
+  if (m_temporarySegment)
+  {
+    m_temporarySegment->end = pos;
+    m_view->RequestRedraw();
+  }
+}
+
+
+//
+void CreateLineSegmentState::RemoveTemporaryFigure()
+{
+  m_renderable.Remove(m_temporarySegment);
+  m_temporarySegment = nullptr;
+}
+
+
 //------------------------------------------------------------------------------
 /**
   Обрабатывает событие клика по сцене
 */
 //---
-std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMouseEvent(const SceneMouseEvent & mouseEv)
+std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMousePressEvent(const SceneMouseEvent & mouseEv)
 {
-  if (m_status == Status::AwaitFirstPos)
+  if (mouseEv.Type() == EventType::SceneMousePress)
   {
-    m_status = Status::AwaitSecondPos;
-    m_firstPos = mouseEv.LocalPos();
-  }
-  else
-  {
-    if (m_isAutoBuild)
+    if (m_status == Status::AwaitFirstPos && mouseEv.Button() == MouseButton::Left)
     {
-      m_status = Status::AwaitFirstPos;
-      return CreateDrawCommand(m_firstPos, mouseEv.LocalPos());
+      m_firstPos = mouseEv.LocalPos();
+      m_status = Status::AwaitSecondPos;
+      CreateTemporaryFigure(m_firstPos);
     }
     else
     {
-      m_status = Status::AwaitConfirm;
       m_secondPos = mouseEv.LocalPos();
+      if (!m_isAutoBuild)
+        m_status = Status::AwaitConfirm;
+      else
+      {
+        m_status = Status::AwaitFirstPos;
+        RemoveTemporaryFigure();
+        return CreateDrawCommand(m_firstPos, m_secondPos);
+      }
     }
+  }
+  return nullptr;
+}
+
+
+//
+std::unique_ptr<ICommand> CreateLineSegmentState::onSceneMouseMoveEvent(const SceneMouseEvent& mouseEv)
+{
+  if (mouseEv.Type() == EventType::SceneMouseMove)
+  {
+    if (m_status == Status::AwaitSecondPos && m_status != Status::AwaitConfirm)
+        UpdateEndPosTemporaryFigure(mouseEv.LocalPos());
   }
   return nullptr;
 }
@@ -45,12 +87,15 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMouseEvent(const SceneM
 //---
 std::unique_ptr<ICommand> CreateLineSegmentState::OnCompleteDrawingEvent(const CompleteDrawingEvent & ev)
 {
-  m_status = Status::AwaitFirstPos;
+  if (m_status == Status::AwaitConfirm)
+  {
+    m_status = Status::AwaitFirstPos;
 
-  if (ev.IsDrawAccepted())
-    return CreateDrawCommand(m_firstPos, m_secondPos);
-  else
-    return nullptr;
+    RemoveTemporaryFigure();
+    if (ev.IsDrawAccepted())
+      return CreateDrawCommand(m_firstPos, m_secondPos);
+  }
+  return nullptr;
 }
 
 
@@ -62,7 +107,7 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnCompleteDrawingEvent(const C
 std::unique_ptr<ICommand> CreateLineSegmentState::CreateDrawCommand(const Point & first, const Point & second)
 {
   std::shared_ptr<LineSegment> segment = std::make_shared<LineSegment>(first, second);
-  RenderableProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
+  RenderProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
 
   return std::make_unique<CreateFigureCommand>(segment, renderableProp, m_geometry, m_renderable);
 }
@@ -94,20 +139,19 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
   switch (event.Type())
   {
     case EventType::SceneMousePress:
+    case EventType::SceneMouseMove:
     {
       const SceneMouseEvent & mouseEvent = static_cast<const SceneMouseEvent &>(event);
-      if (mouseEvent.Button() == MouseButton::Left)
-        return OnSceneMouseEvent(mouseEvent);
-      break;
+
+      if (event.Type() == EventType::SceneMousePress)
+        return OnSceneMousePressEvent(mouseEvent);
+      else
+        return onSceneMouseMoveEvent(mouseEvent);
     }
     case EventType::CompleteDrawing:
     {
-      if (m_status == Status::AwaitConfirm)
-      {
-        const CompleteDrawingEvent & completeDrawEvent = static_cast<const CompleteDrawingEvent &>(event);
-        return OnCompleteDrawingEvent(completeDrawEvent);
-      }
-      break;
+      const CompleteDrawingEvent & completeDrawEvent = static_cast<const CompleteDrawingEvent &>(event);
+      return OnCompleteDrawingEvent(completeDrawEvent);
     }
     case EventType::AutoBuild:
     {

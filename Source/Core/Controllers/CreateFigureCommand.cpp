@@ -9,7 +9,7 @@
   Конструктор
 */
 //---
-CreateFigureCommand::CreateFigureCommand(std::shared_ptr<IFigure> figure, const RenderableProperties & properties,
+CreateFigureCommand::CreateFigureCommand(std::shared_ptr<IFigure> figure, const RenderProperties & properties,
                                          GeometryModel & geometry, RenderableModel & renderable)
   : m_figure(figure)
   , m_properties(properties)

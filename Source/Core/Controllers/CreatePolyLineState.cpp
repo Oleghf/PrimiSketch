@@ -43,7 +43,7 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnCompleteDrawingEvent(const Comp
 std::unique_ptr<ICommand> CreatePolyLineState::CreateDrawCommand(const std::vector<Point> & points)
 {
   std::shared_ptr<BrokenLine> polyline = std::make_shared<BrokenLine>(points);
-  RenderableProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
+  RenderProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
 
   m_points.clear();
 
