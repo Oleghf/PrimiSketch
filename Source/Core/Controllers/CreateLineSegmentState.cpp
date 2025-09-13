@@ -9,7 +9,11 @@
 #include <CreateLineSegmentState.h>
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Создает временную(фантомную) фигуру по переданной координате(в виде точки)
+*/
+//---
 void CreateLineSegmentState::CreateTemporaryFigure(const Point& pos)
 {
   m_temporarySegment = std::make_shared<LineSegment>(pos, pos);
@@ -17,7 +21,11 @@ void CreateLineSegmentState::CreateTemporaryFigure(const Point& pos)
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Обновляет конечную точку временной(фантомной) фигуры, если такая была создана
+*/
+//---
 void CreateLineSegmentState::UpdateEndPosTemporaryFigure(const Point& pos)
 {
   if (m_temporarySegment)
@@ -28,7 +36,11 @@ void CreateLineSegmentState::UpdateEndPosTemporaryFigure(const Point& pos)
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Удаляет временную(фантомную) фигуру
+*/
+//---
 void CreateLineSegmentState::RemoveTemporaryFigure()
 {
   m_renderable.Remove(m_temporarySegment);
@@ -43,40 +55,43 @@ void CreateLineSegmentState::RemoveTemporaryFigure()
 //---
 std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMousePressEvent(const SceneMouseEvent & mouseEv)
 {
-  if (mouseEv.Type() == EventType::SceneMousePress)
+  if (mouseEv.Type() == EventType::SceneMousePress && mouseEv.Button() == MouseButton::Left)
   {
-    if (m_status == Status::AwaitFirstPos && mouseEv.Button() == MouseButton::Left)
+    if (m_status == Status::AwaitFirstPos)
     {
       m_firstPos = mouseEv.LocalPos();
       m_status = Status::AwaitSecondPos;
       CreateTemporaryFigure(m_firstPos);
     }
-    else
+    else if (m_status != Status::AwaitConfirm)
     {
       m_secondPos = mouseEv.LocalPos();
-      if (!m_isAutoBuild)
-        m_status = Status::AwaitConfirm;
-      else
+      if (m_isAutoBuild)
       {
         m_status = Status::AwaitFirstPos;
         RemoveTemporaryFigure();
         return CreateDrawCommand(m_firstPos, m_secondPos);
       }
+      else
+        m_status = Status::AwaitConfirm;
     }
   }
   return nullptr;
 }
 
 
-//
-std::unique_ptr<ICommand> CreateLineSegmentState::onSceneMouseMoveEvent(const SceneMouseEvent& mouseEv)
+//------------------------------------------------------------------------------
+/**
+  Обрабатывает событие движения мышки по сцене
+*/
+//---
+void CreateLineSegmentState::OnSceneMouseMoveEvent(const SceneMouseEvent& mouseEv)
 {
   if (mouseEv.Type() == EventType::SceneMouseMove)
   {
     if (m_status == Status::AwaitSecondPos && m_status != Status::AwaitConfirm)
         UpdateEndPosTemporaryFigure(mouseEv.LocalPos());
   }
-  return nullptr;
 }
 
 
@@ -96,6 +111,20 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnCompleteDrawingEvent(const C
       return CreateDrawCommand(m_firstPos, m_secondPos);
   }
   return nullptr;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Обрабатывает событие изменения галочки "Автоматическое построение"
+*/
+//---
+void CreateLineSegmentState::OnAutoBuildEvent(const AutoBuildEvent& ev)
+{
+  m_isAutoBuild = ev.IsAutoBuild();
+
+  m_view->SetActionEnabled(SwitchableEditorAction::Accept, !m_isAutoBuild);
+  m_view->SetActionEnabled(SwitchableEditorAction::Cancel, !m_isAutoBuild);
 }
 
 
@@ -142,11 +171,10 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
     case EventType::SceneMouseMove:
     {
       const SceneMouseEvent & mouseEvent = static_cast<const SceneMouseEvent &>(event);
-
       if (event.Type() == EventType::SceneMousePress)
         return OnSceneMousePressEvent(mouseEvent);
-      else
-        return onSceneMouseMoveEvent(mouseEvent);
+      OnSceneMouseMoveEvent(mouseEvent);
+      break;
     }
     case EventType::CompleteDrawing:
     {
@@ -156,7 +184,7 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnEvent(const Event & event)
     case EventType::AutoBuild:
     {
       const AutoBuildEvent & autoBuildEv = static_cast<const AutoBuildEvent &>(event);
-      m_isAutoBuild = autoBuildEv.IsAutoBuild();
+      OnAutoBuildEvent(autoBuildEv);
       break;
     }
   }
@@ -193,5 +221,6 @@ void CreateLineSegmentState::Activate()
 void CreateLineSegmentState::Deactivate()
 {
   m_status = Status::AwaitActivate;
+  RemoveTemporaryFigure();
   m_view->SetProcessName("");
 }

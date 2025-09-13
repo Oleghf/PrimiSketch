@@ -8,6 +8,7 @@
 class LineSegment;
 class SceneMouseEvent;
 class CompleteDrawingEvent;
+class AutoBuildEvent;
 class IView;
 class GeometryModel;
 class RenderableModel;
@@ -50,8 +51,9 @@ private:
   void RemoveTemporaryFigure();
 
   std::unique_ptr<ICommand> OnSceneMousePressEvent(const SceneMouseEvent & mouseEv);
-  std::unique_ptr<ICommand> onSceneMouseMoveEvent(const SceneMouseEvent & mouseEv);
+  void OnSceneMouseMoveEvent(const SceneMouseEvent & mouseEv);
   std::unique_ptr<ICommand> OnCompleteDrawingEvent(const CompleteDrawingEvent & ev);
+  void OnAutoBuildEvent(const AutoBuildEvent & ev);
   std::unique_ptr<ICommand> CreateDrawCommand(const Point & first, const Point & second);
 
 public:
