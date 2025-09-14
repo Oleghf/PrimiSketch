@@ -8,7 +8,7 @@ add_library(${controllers_static_lib_name} STATIC)
 target_sources(${controllers_static_lib_name} PRIVATE
 "CommandManager.cpp"
 "MainController.cpp"
- "CreateLineSegmentState.h" "CreateLineSegmentState.cpp" "CreateFigureCommand.h" "CreateFigureCommand.cpp" "DefaultState.h" "DefaultState.cpp" "PaintController.h" "PaintController.cpp"  "RenderableModel.h" "RenderableModel.cpp" "CreateRectangleTwoPointsState.h" "CreateRectangleTwoPointsState.cpp"  "CreatePolyLineState.h" "CreatePolyLineState.cpp" "CreateRectangleCenterAngleState.h" "CreateRectangleCenterAngleState.cpp"  )
+ "CreateLineSegmentState.h" "CreateLineSegmentState.cpp" "CreateFigureCommand.cpp" "DefaultState.cpp" "PaintController.cpp" "RenderableModel.cpp" "CreateRectangleTwoPointsState.cpp" "CreatePolyLineState.cpp" "CreateRectangleCenterAngleState.h" "CreateRectangleCenterAngleState.cpp" "DeleteFigureCommand.cpp")
 
 # Указываем подключенные директории
 target_include_directories(${controllers_static_lib_name} PUBLIC

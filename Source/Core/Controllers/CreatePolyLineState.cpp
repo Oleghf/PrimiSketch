@@ -216,5 +216,6 @@ void CreatePolyLineState::Deactivate()
 {
   m_status = Status::AwaitActivate;
   RemoveTemporaryFigure();
+  m_points.clear();
   m_view->SetProcessName("");
 }
