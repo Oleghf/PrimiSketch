@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include <ScenePaintEvent.h>
 #include <IView.h>
 #include <IState.h>
@@ -13,6 +15,22 @@
 
 
 //
+void MainController::Save(const std::string & path)
+{
+}
+
+
+//
+void MainController::Load(const std::string& path)
+{
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Изменить состояние приложения
+*/
+//---
 void MainController::ChangeState(Tool newTool)
 {
   m_currentState->Deactivate();

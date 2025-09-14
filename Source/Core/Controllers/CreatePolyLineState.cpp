@@ -1,4 +1,5 @@
 #include <BrokenLine.h>
+#include <LineSegment.h>
 #include <AutoBuildEvent.h>
 #include <CompleteDrawingEvent.h>
 #include <CreateFigureCommand.h>
@@ -9,16 +10,98 @@
 #include <SceneMouseEvent.h>
 
 
+
+//------------------------------------------------------------------------------
+/**
+  Создает временную(фантомную) фигуру по переданной координате(в виде точки)
+*/
+//---
+void CreatePolyLineState::CreateTemporaryFigure(const Point & pos)
+{
+  m_temporarySegments.push_back(std::make_shared<LineSegment>(pos, pos));
+  m_renderable.SetRenderProperties(m_temporarySegments.back(), {0, 0, 0, 155, m_view->GetStyleLine()});
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Обновляет конечную точку временной(фантомной) фигуры, если такая была создана
+*/
+//---
+void CreatePolyLineState::UpdateEndPosTemporaryFigure(const Point & end)
+{
+  if (!m_temporarySegments.empty())
+  {
+    m_temporarySegments.back()->end = end;
+    m_view->RequestRedraw();
+  }
+}
+
+
+//
+void CreatePolyLineState::CreateNewLineSegment(const Point& start, const Point& end)
+{
+  std::shared_ptr<LineSegment> segment = std::make_shared<LineSegment>(start, end);
+  m_temporarySegments.push_back(segment);
+  m_renderable.SetRenderProperties(segment, {0, 0, 0, 155, m_view->GetStyleLine()});
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Удаляет временную(фантомную) фигуру
+*/
+//---
+void CreatePolyLineState::RemoveTemporaryFigure()
+{
+  for (auto & segment : m_temporarySegments)
+  {
+    m_renderable.Remove(segment);
+  }
+  m_temporarySegments.clear();
+}
+
+
 //------------------------------------------------------------------------------
 /**
   Обрабатывает событие клика по сцене
 */
 //---
-std::unique_ptr<ICommand> CreatePolyLineState::OnSceneMouseEvent(const SceneMouseEvent & mouseEv)
+std::unique_ptr<ICommand> CreatePolyLineState::OnSceneMousePressEvent(const SceneMouseEvent & mouseEv)
 {
-  if (m_status == Status::AwaitPoints)
-    m_points.push_back(mouseEv.LocalPos());
+  if (mouseEv.Type() == EventType::SceneMousePress && mouseEv.Button() == MouseButton::Left)
+  {
+    if (m_status == Status::AwaitFirstPos)
+    {
+      m_firstPos = mouseEv.LocalPos();
+      m_status = Status::AwaitPoints;
+      CreateTemporaryFigure(m_firstPos);
+    }
+    else
+    {
+      m_secondPos = mouseEv.LocalPos();
+      CreateNewLineSegment(m_secondPos, m_firstPos);
+      m_points.push_back(m_firstPos);
+      m_points.push_back(m_secondPos);
+      m_firstPos = m_points.back();
+    }
+  }
   return nullptr;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Обрабатывает событие движения мышки по сцене
+*/
+//---
+void CreatePolyLineState::OnSceneMouseMoveEvent(const SceneMouseEvent & mouseEv)
+{
+  if (mouseEv.Type() == EventType::SceneMouseMove)
+  {
+    if (m_status != Status::AwaitFirstPos)
+      UpdateEndPosTemporaryFigure(mouseEv.LocalPos());
+  }
 }
 
 
@@ -29,8 +112,15 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnSceneMouseEvent(const SceneMous
 //---
 std::unique_ptr<ICommand> CreatePolyLineState::OnCompleteDrawingEvent(const CompleteDrawingEvent & ev)
 {
-  if (ev.IsDrawAccepted())
-    return CreateDrawCommand(m_points);
+  if (m_status == Status::AwaitPoints)
+  {
+    m_status = Status::AwaitFirstPos;
+
+    RemoveTemporaryFigure();
+    if (ev.IsDrawAccepted())
+      return CreateDrawCommand(m_points);
+
+  }
   return nullptr;
 }
 
@@ -76,17 +166,17 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnEvent(const Event & event)
   switch (event.Type())
   {
     case EventType::SceneMousePress:
+    case EventType::SceneMouseMove:
     {
-      const SceneMouseEvent & mouseEv = static_cast<const SceneMouseEvent &>(event);
-
-      if (mouseEv.Button() == MouseButton::Left)
-        return OnSceneMouseEvent(mouseEv);
+      const SceneMouseEvent & mouseEvent = static_cast<const SceneMouseEvent &>(event);
+      if (event.Type() == EventType::SceneMousePress)
+        return OnSceneMousePressEvent(mouseEvent);
+      OnSceneMouseMoveEvent(mouseEvent);
       break;
     }
     case EventType::CompleteDrawing:
     {
       const CompleteDrawingEvent & completeDrawEvent = static_cast<const CompleteDrawingEvent &>(event);
-
       return OnCompleteDrawingEvent(completeDrawEvent);
     }
   }
@@ -103,7 +193,7 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnEvent(const Event & event)
 //---
 void CreatePolyLineState::Activate()
 {
-  m_status = Status::AwaitPoints;
+  m_status = Status::AwaitFirstPos;
   m_view->SetProcessName("Фигура: Ломаная");
 
   m_view->SetActionEnabled(SwitchableEditorAction::Accept, true);
@@ -123,5 +213,6 @@ void CreatePolyLineState::Activate()
 void CreatePolyLineState::Deactivate()
 {
   m_status = Status::AwaitActivate;
+  RemoveTemporaryFigure();
   m_view->SetProcessName("");
 }

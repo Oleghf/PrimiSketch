@@ -29,5 +29,7 @@ public:
 
   static std::shared_ptr<BrokenLine> Read(const InputStream & is);
 
+  void Update(const std::vector<Point> & points);
+
   std::vector<Point> GetPoints() const;
 };

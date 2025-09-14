@@ -163,6 +163,14 @@ std::shared_ptr<BrokenLine> BrokenLine::Read(const InputStream & is)
 }
 
 
+//
+void BrokenLine::Update(const std::vector<Point>& points)
+{
+  assert(!points.empty());
+  m_points = points;
+}
+
+
 //------------------------------------------------------------------------------
 /**
   Получить массив отрезков, составляющих ломаную линию
