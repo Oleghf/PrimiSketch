@@ -23,6 +23,5 @@ public:
 
   void SetPenColor(const Color & color) override;
   void SetBrushColor(const Color & color) override;
-  void SetThickness(double thickness) override;
   void SetStyleLine(StyleLine style) override;
 };

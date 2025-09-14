@@ -53,6 +53,8 @@ MouseButton qt_adapters::FromQtMouseButton(Qt::MouseButton button)
       return MouseButton::Middle;
     case Qt::RightButton:
       return MouseButton::Right;
+    default:
+      return MouseButton::Unknow;
   }
 }
 

@@ -58,7 +58,11 @@ void ConstructionPanelWidget::paintEvent(QPaintEvent * event)
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Включить/Отключить кнопки на панели создания фигуры
+*/
+//---
 void ConstructionPanelWidget::SetActionEnabled(SwitchableConstructionPanelAction action, bool isEnabled)
 {
 	switch (action)
@@ -77,7 +81,11 @@ void ConstructionPanelWidget::SetActionEnabled(SwitchableConstructionPanelAction
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Узнать о том включены ли кнопки на панели создания фигуры
+*/
+//---
 bool ConstructionPanelWidget::IsActionEnabled(SwitchableConstructionPanelAction action) const
 {
   switch (action)

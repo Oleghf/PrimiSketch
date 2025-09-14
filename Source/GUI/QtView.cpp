@@ -28,7 +28,7 @@
 
 //------------------------------------------------------------------------------
 /**
-  Устанавливает меню и горячие клавиши
+  Устанавить меню и горячие клавиши
 */
 //---
 void QtView::SetupMenu()
@@ -53,7 +53,7 @@ void QtView::SetupMenu()
 
 //------------------------------------------------------------------------------
 /**
-  Устанавливает виджеты сцены, панели создания фигуры, панели свойств, панели инструментов в основное окно приложения
+  Устанавить виджеты сцены, панели создания фигуры, панели свойств, панели инструментов в основное окно приложения
 */
 //---
 void QtView::SetupWidgets()
@@ -78,16 +78,13 @@ void QtView::SetupWidgets()
 
 //------------------------------------------------------------------------------
 /**
-  Отправляет ивент слушателям
+  Отправить ивент слушателям
 */
 //---
 void QtView::SendEvent(const Event& event)
 {
-  for (auto & obs : m_listeners)
-  {
-    if (obs)
-      obs->OnEvent(event);
-  }
+  for (std::shared_ptr<EventListener> & obs : m_listeners)
+    obs->OnEvent(event);
 }
 
 
@@ -134,7 +131,11 @@ void QtView::RequestRedraw()
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Включить/Отключить кнопки в редакторе
+*/
+//---
 void QtView::SetActionEnabled(SwitchableEditorAction action, bool isEnabled)
 {
     switch (action)
@@ -167,7 +168,11 @@ void QtView::SetActionEnabled(SwitchableEditorAction action, bool isEnabled)
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Узнать о том, включены/отключены ли кнопки в редакторе
+*/
+//---
 bool QtView::IsActionEnabled(SwitchableEditorAction action) const
 {
   switch (action)
@@ -194,7 +199,7 @@ bool QtView::IsActionEnabled(SwitchableEditorAction action) const
 
 //------------------------------------------------------------------------------
 /**
-  Установка нового названия процесса в панель свойств
+  Установить новое название процесса в панель свойств
 */
 //---
 void QtView::SetProcessName(const std::string& nameProcess)
@@ -205,7 +210,7 @@ void QtView::SetProcessName(const std::string& nameProcess)
 
 //------------------------------------------------------------------------------
 /**
-  Получение текущего названия процесса из панели свойств
+  Получить текущеее название процесса из панели свойств
 */
 //---
 std::string QtView::GetProccessName() const
@@ -216,7 +221,7 @@ std::string QtView::GetProccessName() const
 
 //------------------------------------------------------------------------------
 /**
-  Открывает диалог сохранения текущего состояния приложения
+  Открыть диалог сохранения текущего состояния приложения
 */
 //---
 std::string QtView::OpenSaveFileDialog(const std::string & title, const std::string & initPath, const std::string & filter)
@@ -227,7 +232,7 @@ std::string QtView::OpenSaveFileDialog(const std::string & title, const std::str
 
 //------------------------------------------------------------------------------
 /**
-  Открывает диалог загрузки состояния приложения
+  Открыть диалог загрузки состояния приложения
 */
 //---
 std::string QtView::OpenLoadFileDialog(const std::string & title, const std::string & initPath, const std::string & filter)
@@ -238,7 +243,7 @@ std::string QtView::OpenLoadFileDialog(const std::string & title, const std::str
 
 //------------------------------------------------------------------------------
 /**
-  Показывает пользователю сообщение выбранного типа
+  Показать пользователю сообщение выбранного типа
 */
 //---
 void QtView::ShowMessage(const std::string & title, const std::string & message, MessageType type)
@@ -260,7 +265,7 @@ void QtView::ShowMessage(const std::string & title, const std::string & message,
 
 //------------------------------------------------------------------------------
 /**
-  Устанавливает коэфф зума
+  Устанавить коэфф зума
 */
 //---
 void QtView::SetZoomFactor(double factor)
@@ -271,7 +276,7 @@ void QtView::SetZoomFactor(double factor)
 
 //------------------------------------------------------------------------------
 /**
-  Возвращает коэфф зума
+  Вернуть коэфф зума
 */
 //---
 double QtView::ZoomFactor() const
@@ -282,7 +287,7 @@ double QtView::ZoomFactor() const
 
 //------------------------------------------------------------------------------
 /**
-  Добавляет слушателя событий
+  Добавить слушателя событий
 */
 //---
 void QtView::AddEventListener(std::shared_ptr<EventListener> listener)
@@ -294,7 +299,7 @@ void QtView::AddEventListener(std::shared_ptr<EventListener> listener)
 
 //------------------------------------------------------------------------------
 /**
-  Удаляет слушателя событий
+  Удалить слушателя событий
 */
 //---
 void QtView::RemoveEventListener(std::shared_ptr<EventListener> listener)
@@ -305,7 +310,7 @@ void QtView::RemoveEventListener(std::shared_ptr<EventListener> listener)
 
 //------------------------------------------------------------------------------
 /**
-  Устанавливает стиль отрисовки примитивов
+  Устанавить стиль отрисовки примитивов
 */
 //---
 void QtView::SetStyleLine(StyleLine style)
@@ -316,7 +321,7 @@ void QtView::SetStyleLine(StyleLine style)
 
 //------------------------------------------------------------------------------
 /**
-  Возвращает стиль отрисовки примитивов
+  Вернуть стиль отрисовки примитивов
 */
 //---
 StyleLine QtView::GetStyleLine() const
@@ -327,7 +332,7 @@ StyleLine QtView::GetStyleLine() const
 
 //------------------------------------------------------------------------------
 /**
-  Генерирует событие перерисовки сцены
+  Сгенерировать событие перерисовки сцены
 */
 //---
 void QtView::CreateScenePaintEvent(QPainter & painter)

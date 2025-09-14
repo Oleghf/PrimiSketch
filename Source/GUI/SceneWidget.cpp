@@ -59,8 +59,7 @@ void SceneWidget::paintEvent(QPaintEvent * event)
   QPainter painter(this);
 
   painter.setRenderHint(QPainter::Antialiasing);
-
-  painter.setPen(QPen(Qt::black, 2));
+  painter.setPen({Qt::black, 2});
   painter.drawRect(rect());
 
   emit CreatedQPainter(painter);

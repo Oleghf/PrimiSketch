@@ -24,6 +24,8 @@ private:
 public:
   PropertiesPanelWidget(QWidget * parent = nullptr);
 
+  void paintEvent(QPaintEvent * event) override;
+
   void SetStyleLineBoxEnabled(bool isEnabled);
   bool IsStyleLineBoxEnabled() const;
 
@@ -32,8 +34,6 @@ public:
 
   void SetStyleLine(StyleLine newStyle);
   StyleLine GetStyleLine() const; 
-
-  void paintEvent(QPaintEvent * event) override;
 
 signals:
   void StyleLineChanged(StyleLine newStyle);

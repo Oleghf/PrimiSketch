@@ -3,9 +3,10 @@
 #include <Point.h>
 #include <QtPainter.h>
 
+
 //------------------------------------------------------------------------------
 /**
-  Пространство имен для хранения enum толщины
+  Анонимное пространство имен для хранения enum толщины
 */
 //---
 namespace
@@ -16,6 +17,7 @@ namespace
         Thickened = 6
     };
 }
+
 
 //------------------------------------------------------------------------------
 /**
@@ -51,7 +53,7 @@ void QtPainter::Circle(const Point& center, double radius)
 
 //------------------------------------------------------------------------------
 /**
-  Установить цвет обводки по rgb
+  Установить цвет обводки
 */
 //---
 void QtPainter::SetPenColor(const Color & color)
@@ -64,7 +66,7 @@ void QtPainter::SetPenColor(const Color & color)
 
 //------------------------------------------------------------------------------
 /**
-  Установить цвет залива по rgb
+  Установить цвет заливки
 */
 //---
 void QtPainter::SetBrushColor(const Color & color)
@@ -77,33 +79,20 @@ void QtPainter::SetBrushColor(const Color & color)
 
 //------------------------------------------------------------------------------
 /**
-  Установить толщину линий обводки
-*/
-//---
-void QtPainter::SetThickness(double thickness)
-{
-  QPen pen = m_painter.pen();
-  pen.setWidthF(thickness);
-  m_painter.setPen(pen);
-}
-
-
-//------------------------------------------------------------------------------
-/**
   Установить стиль линии
 */
 //---
 void QtPainter::SetStyleLine(StyleLine style)
 {
-    QPen pen = m_painter.pen();
-	switch (style)
-	{
+  QPen pen = m_painter.pen();
+  switch (style)
+  {
     case StyleLine::Main:
-	{
+    {
       pen.setStyle(Qt::SolidLine);
       pen.setWidthF(Thickness::Normal);
       break;
-	}
+    }
     case StyleLine::Thickened:
     {
       pen.setStyle(Qt::SolidLine);
@@ -122,7 +111,7 @@ void QtPainter::SetStyleLine(StyleLine style)
       pen.setWidthF(Thickness::Normal);
       break;
     }
-    }
+  }
 
-    m_painter.setPen(pen);
+  m_painter.setPen(pen);
 }

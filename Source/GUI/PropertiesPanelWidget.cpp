@@ -41,14 +41,39 @@ PropertiesPanelWidget::PropertiesPanelWidget(QWidget * parent)
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Перегруженный метод отрисовывающий виджет
+*/
+//---
+void PropertiesPanelWidget::paintEvent(QPaintEvent * event)
+{
+  QWidget::paintEvent(event);
+
+  QPainter painter(this);
+
+  painter.setPen(QPen(Qt::black, 2));
+  painter.drawRect(rect());
+}
+
+
+
+//------------------------------------------------------------------------------
+/**
+  Включить/Отключить комбо бокс со стилями
+*/
+//---
 void PropertiesPanelWidget::SetStyleLineBoxEnabled(bool isEnabled)
 {
   m_stylesBox->setEnabled(isEnabled);
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Узнать о том, вклчен ли комбо бокс со стилями
+*/
+//---
 bool PropertiesPanelWidget::IsStyleLineBoxEnabled() const
 {
   return m_stylesBox->isEnabled();
@@ -57,7 +82,7 @@ bool PropertiesPanelWidget::IsStyleLineBoxEnabled() const
 
 //------------------------------------------------------------------------------
 /**
-  Устанавливает название текущего процесса
+  Устанавить название текущего процесса
 */
 //---
 void PropertiesPanelWidget::SetProcessName(const std::string& nameProcess)
@@ -68,7 +93,7 @@ void PropertiesPanelWidget::SetProcessName(const std::string& nameProcess)
 
 //------------------------------------------------------------------------------
 /**
-  Возвращает название текущего процесса
+  Вернуть название текущего процесса
 */
 //---
 std::string PropertiesPanelWidget::GetProcessName() const
@@ -79,7 +104,7 @@ std::string PropertiesPanelWidget::GetProcessName() const
 
 //------------------------------------------------------------------------------
 /**
-  Устанавливает стиль отрисовки примитивов
+  Установить стиль отрисовки примитивов
 */
 //---
 void PropertiesPanelWidget::SetStyleLine(StyleLine newStyle)
@@ -92,7 +117,7 @@ void PropertiesPanelWidget::SetStyleLine(StyleLine newStyle)
 
 //------------------------------------------------------------------------------
 /**
-  Возвращает установленный стиль отрисовки примитивов
+  Вернуть установленный стиль отрисовки примитивов
 */
 //---
 StyleLine PropertiesPanelWidget::GetStyleLine() const
@@ -100,21 +125,4 @@ StyleLine PropertiesPanelWidget::GetStyleLine() const
   int indexStyle = m_stylesBox->currentIndex();
 
   return static_cast<StyleLine>(m_stylesBox->itemData(indexStyle).toInt());
-}
-
-
-//------------------------------------------------------------------------------
-/**
-  Перегруженный метод отрисовывающий виджет
-*/
-//---
-void PropertiesPanelWidget::paintEvent(QPaintEvent* event)
-{
-  QWidget::paintEvent(event);
-
-  QPainter painter(this);
-
-  painter.setPen(QPen(Qt::black, 2));
-  painter.drawRect(rect());
-
 }
