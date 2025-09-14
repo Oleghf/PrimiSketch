@@ -2,6 +2,7 @@
 #include <cassert>
 #include <algorithm>
 
+#include <PrimitiveView.h>
 #include <ConsoleOutputStream.h>
 #include <OutputStream.h>
 #include <InputStream.h>
@@ -10,7 +11,7 @@
 #include <BrokenLine.h>
 
 
-static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
+// static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
 
 
 //------------------------------------------------------------------------------
@@ -123,6 +124,14 @@ size_t BrokenLine::GetTypeHash() const
 }
 
 
+//
+void BrokenLine::Render(PrimitiveView & primitiveView)
+{
+    for (size_t i = 1; i < m_points.size(); i++)
+      primitiveView.Line(m_points.at(i), m_points.at(i - 1));
+}
+
+
 //------------------------------------------------------------------------------
 /**
   \brief Читает поток, создавая ломанную линию на основе прочитанных данных
@@ -151,6 +160,14 @@ std::shared_ptr<BrokenLine> BrokenLine::Read(const InputStream & is)
   }
   
   return std::make_shared<BrokenLine>(points);
+}
+
+
+//
+void BrokenLine::Update(const std::vector<Point>& points)
+{
+  assert(!points.empty());
+  m_points = points;
 }
 
 

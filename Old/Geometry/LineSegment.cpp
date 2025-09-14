@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <array>
 
+#include <PrimitiveView.h>
 #include <OutputStream.h>
 #include <InputStream.h>
 #include <MathUtils.h>
@@ -8,7 +9,7 @@
 #include <LineSegment.h>
 
 
-static bool _ = IFigure::RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read);
+//static bool _ = IFigure::RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read);
 
 
 //------------------------------------------------------------------------------
@@ -121,6 +122,13 @@ void LineSegment::Write(OutputStream & os) const
 size_t LineSegment::GetTypeHash() const
 {
   return math_utils::hash("LineSegment");
+}
+
+
+//
+void LineSegment::Render(PrimitiveView& render)
+{
+  render.Line(start, end);
 }
 
 

@@ -8,6 +8,7 @@ struct Vector;
 class Box;
 class OutputStream;
 class InputStream;
+class PrimitiveView;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -31,6 +32,8 @@ public:
   virtual void Write(OutputStream & os) const = 0;
   /// Возвращает хэш типа фигуры
   virtual size_t GetTypeHash() const = 0;
+  ///
+  virtual void Render(PrimitiveView & render) = 0;
   /// Читает данные из потока и в случае успеха возвращает указатель на фигуру, в ином случае nullptr
   static std::shared_ptr<IFigure> Read(const InputStream& is);
   /// Регистрирует тип фигуры по хэшу и функции создания соответствующей фигуры

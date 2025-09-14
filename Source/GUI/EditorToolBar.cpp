@@ -1,0 +1,68 @@
+#include <QActionGroup>
+
+#include <EditorToolBar.h>
+
+
+//------------------------------------------------------------------------------
+/**
+  \brief Конструктор
+  \details Инициализирует кнопки на панели инструментов и соединяет сигналы
+*/
+//---
+EditorToolBar::EditorToolBar(QWidget * parent)
+	: QToolBar(parent)
+{
+  // Создаем кнопки панели инструментов
+  QAction * lineSegmentAction = addAction(tr("Отрезок"));
+  QAction * brokenLineAction = addAction(tr("Ломанная"));
+  QAction * rectangleTwoPointsAction = addAction(tr("Прямоугольник по двум точкам"));
+  QAction * rectangleCenterAngleAction = addAction(tr("Прямоугольник по центру и углу"));
+
+  // Делаем все кнопки "вжимаемыми"
+  lineSegmentAction->setCheckable(true);
+  brokenLineAction->setCheckable(true);
+  rectangleTwoPointsAction->setCheckable(true);
+  rectangleCenterAngleAction->setCheckable(true);
+
+  // Включаем их в QActionGroup, чтобы установить эксклюзивность кнопок
+  // Таким образом только одна кнопка может быть "вжата"
+  QActionGroup * actionGroup = new QActionGroup(this);
+  actionGroup->addAction(lineSegmentAction);
+  actionGroup->addAction(brokenLineAction);
+  actionGroup->addAction(rectangleTwoPointsAction);
+  actionGroup->addAction(rectangleCenterAngleAction);
+  actionGroup->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
+
+  connect(lineSegmentAction, &QAction::toggled,
+          [this](bool checked)
+          {
+            if (checked)
+              emit toolChanged(Tool::LineSegment);
+            else
+              emit toolChanged(Tool::None);
+          });
+  connect(brokenLineAction, &QAction::toggled,
+          [this](bool checked)
+          {
+            if (checked)
+              emit toolChanged(Tool::BrokenLine);
+            else
+              emit toolChanged(Tool::None);
+          });
+  connect(rectangleTwoPointsAction, &QAction::toggled,
+          [this](bool checked)
+          {
+            if (checked)
+              emit toolChanged(Tool::RectangleTwoPoints);
+            else
+              emit toolChanged(Tool::None);
+          });
+  connect(rectangleCenterAngleAction, &QAction::toggled,
+          [this](bool checked)
+          {
+            if (checked)
+              emit toolChanged(Tool::RectangleCenterAngle);
+            else
+              emit toolChanged(Tool::None);
+          });
+}

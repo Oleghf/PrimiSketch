@@ -17,3 +17,8 @@ target_sources(${geometry_target_name} PRIVATE "IFigure.h" "Point.cpp" "Vector.c
 # эту библиотеку.
 target_include_directories(${geometry_target_name}
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Указываем библиотеки для линковки
+target_link_libraries(${geometry_target_name} PUBLIC
+Interfaces
+)

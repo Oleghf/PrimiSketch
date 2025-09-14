@@ -26,8 +26,11 @@ public:
   bool IntersectsPoint(const Point & point, double epsilon) const override;
   void Write(OutputStream & os) const override;
   size_t GetTypeHash() const override;
+  void Render(PrimitiveView & view) override;
 
   static std::shared_ptr<Rectangle> Read(const InputStream & is);
+
+  void Update(const Point & first, const Point & second);
 
   Point TopLeft() const;
   Point TopRight() const;
