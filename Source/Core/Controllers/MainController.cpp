@@ -1,26 +1,32 @@
-#include <fstream>
-
+#include <Event.h>
 #include <ScenePaintEvent.h>
-#include <IView.h>
+#include <ToolChangeEvent.h>
 #include <IState.h>
+#include <DefaultState.h>
 #include <CreateLineSegmentState.h>
 #include <CreateRectangleCenterAngleState.h>
 #include <CreatePolyLineState.h>
 #include <CreateRectangleTwoPointsState.h>
-#include <DefaultState.h>
-#include <Event.h>
-#include <ToolChangeEvent.h>
 #include <ICommand.h>
+#include <IView.h>
 #include <MainController.h>
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Сохранить состояние программы в файл
+*/
+//---
 void MainController::Save(const std::string & path)
 {
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Загрузить состояние программы из файла
+*/
+//---
 void MainController::Load(const std::string& path)
 {
 }
@@ -46,15 +52,14 @@ void MainController::ChangeState(Tool newTool)
 //---
 MainController::MainController(std::shared_ptr<IView> view)
   : m_view(view)
-  , m_currentState(std::make_shared<DefaultState>(m_view, m_geometryModel))
+  , m_currentState(std::make_shared<DefaultState>(m_view, m_renderableModel))
   , m_paintController(view, m_renderableModel)
 {
   m_states[Tool::None] = m_currentState;
-  m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_geometryModel, m_renderableModel);
-  m_states[Tool::BrokenLine] = std::make_shared<CreatePolyLineState>(m_view, m_geometryModel, m_renderableModel);
-  m_states[Tool::RectangleTwoPoints] = std::make_shared<CreateRectangleTwoPointsState>(m_view, m_geometryModel, m_renderableModel);
-  m_states[Tool::RectangleCenterAngle] =
-    std::make_shared<CreateRectangleCenterAngleState>(m_view, m_geometryModel, m_renderableModel);
+  m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_renderableModel);
+  m_states[Tool::BrokenLine] = std::make_shared<CreatePolyLineState>(m_view, m_renderableModel);
+  m_states[Tool::RectangleTwoPoints] = std::make_shared<CreateRectangleTwoPointsState>(m_view, m_renderableModel);
+  m_states[Tool::RectangleCenterAngle] = std::make_shared<CreateRectangleCenterAngleState>(m_view, m_renderableModel);
 
   ChangeState(Tool::None);
 }

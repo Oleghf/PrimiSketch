@@ -14,7 +14,7 @@ class ICommand;
 class IState
 {
 public:
-  /// Передает событие состоянию
+  /// Передать событие состоянию
   virtual std::unique_ptr<ICommand> OnEvent(const Event & event) = 0;
   /// Активировать состояние
   virtual void Activate() = 0;

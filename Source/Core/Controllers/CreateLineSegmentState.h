@@ -10,7 +10,6 @@ class SceneMouseEvent;
 class CompleteDrawingEvent;
 class AutoBuildEvent;
 class IView;
-class GeometryModel;
 class RenderableModel;
 class ICommand;
 
@@ -23,19 +22,24 @@ class ICommand;
 class CreateLineSegmentState : public IState
 {
 private:
+  ////////////////////////////////////////////////////////////////////////////////
+  //
+  /// Статус состояния
+  /**
+  */
+  ////////////////////////////////////////////////////////////////////////////////
   enum class Status
   {
-    AwaitActivate,
-    AwaitFirstPos,
-    AwaitSecondPos,
-    AwaitConfirm
+    AwaitActivate,  // Ожидает активации
+    AwaitFirstPos,  // Ожидает первой точки
+    AwaitSecondPos, // Ожидает второй точки
+    AwaitConfirm    // Ожидает подтверждения введенных данных
   };
 
 private:
   std::shared_ptr<IView> m_view;
   std::shared_ptr<LineSegment> m_temporarySegment;
 
-  GeometryModel & m_geometry;
   RenderableModel & m_renderable;
 
   Status m_status;
@@ -57,7 +61,7 @@ private:
   std::unique_ptr<ICommand> CreateDrawCommand(const Point & first, const Point & second);
 
 public:
-  CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
+  CreateLineSegmentState(std::shared_ptr<IView> view, RenderableModel & renderable);
 
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
 

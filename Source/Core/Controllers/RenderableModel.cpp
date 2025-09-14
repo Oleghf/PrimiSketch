@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <IFigure.h>
 #include <Box.h>
 #include <RenderableModel.h>
@@ -11,7 +13,7 @@
 void RenderableModel::Add(std::shared_ptr<IFigure> figure)
 {
   if (figure)
-    m_figures[figure] = {0, 0, 0, 255, StyleLine::Main};
+    m_figures[figure] = {Color::BLACK(), StyleLine::Main};
 }
 
 
@@ -56,6 +58,22 @@ void RenderableModel::ForEachFiguresInBox(const Box & box, std::function<bool(st
     if (!pred(figure.first))
       break;
   }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Ищет фигуру в точке с определенной погрешностью
+*/
+//---
+std::shared_ptr<IFigure> RenderableModel::FindFigure(const Point& point, double radius) const
+{
+  auto it = std::find_if(m_figures.begin(), m_figures.end(), [&point, radius](const std::pair<std::shared_ptr<IFigure>, RenderProperties> & pair)
+                         { return pair.first->IntersectsPoint(point, radius); });
+
+  if (it != m_figures.end())
+    return it->first;
+  return nullptr;
 }
 
 

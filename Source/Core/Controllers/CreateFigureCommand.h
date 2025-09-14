@@ -21,11 +21,10 @@ private:
   std::shared_ptr<IFigure> m_figure;
 
   RenderProperties m_properties;
-  GeometryModel & m_geometry;
   RenderableModel & m_renderable;
 
 public:
-  CreateFigureCommand(std::shared_ptr<IFigure> figure, const RenderProperties& properties, GeometryModel & geometry, RenderableModel & renderable);
+  CreateFigureCommand(std::shared_ptr<IFigure> figure, const RenderProperties& properties, RenderableModel & renderable);
 
   void Do() override;
   void Undo() override;

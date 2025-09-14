@@ -3,9 +3,9 @@
 #include <CompleteDrawingEvent.h>
 #include <AutoBuildEvent.h>
 #include <SceneMouseEvent.h>
-#include <LineSegment.h>
 #include <CreateFigureCommand.h>
 #include <RenderableModel.h>
+#include <LineSegment.h>
 #include <CreateLineSegmentState.h>
 
 
@@ -16,8 +16,10 @@
 //---
 void CreateLineSegmentState::CreateTemporaryFigure(const Point& pos)
 {
+  Color color = Color::BLACK();
+  color.a = 155;
   m_temporarySegment = std::make_shared<LineSegment>(pos, pos);
-  m_renderable.SetRenderProperties(m_temporarySegment, {0, 0, 0, 155, m_view->GetStyleLine()});
+  m_renderable.SetRenderProperties(m_temporarySegment, {color, m_view->GetStyleLine()});
 }
 
 
@@ -56,7 +58,6 @@ void CreateLineSegmentState::RemoveTemporaryFigure()
 std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMousePressEvent(const SceneMouseEvent & mouseEv)
 {
   if (mouseEv.Type() == EventType::SceneMousePress && mouseEv.Button() == MouseButton::Left)
-  {
     if (m_status == Status::AwaitFirstPos)
     {
       m_firstPos = mouseEv.LocalPos();
@@ -75,7 +76,6 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMousePressEvent(const S
       else
         m_status = Status::AwaitConfirm;
     }
-  }
   return nullptr;
 }
 
@@ -88,10 +88,8 @@ std::unique_ptr<ICommand> CreateLineSegmentState::OnSceneMousePressEvent(const S
 void CreateLineSegmentState::OnSceneMouseMoveEvent(const SceneMouseEvent& mouseEv)
 {
   if (mouseEv.Type() == EventType::SceneMouseMove)
-  {
     if (m_status == Status::AwaitSecondPos && m_status != Status::AwaitConfirm)
         UpdateEndPosTemporaryFigure(mouseEv.LocalPos());
-  }
 }
 
 
@@ -136,9 +134,9 @@ void CreateLineSegmentState::OnAutoBuildEvent(const AutoBuildEvent& ev)
 std::unique_ptr<ICommand> CreateLineSegmentState::CreateDrawCommand(const Point & first, const Point & second)
 {
   std::shared_ptr<LineSegment> segment = std::make_shared<LineSegment>(first, second);
-  RenderProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
+  RenderProperties renderableProp{Color::BLACK(), m_view->GetStyleLine()};
 
-  return std::make_unique<CreateFigureCommand>(segment, renderableProp, m_geometry, m_renderable);
+  return std::make_unique<CreateFigureCommand>(segment, renderableProp, m_renderable);
 }
 
 
@@ -147,10 +145,9 @@ std::unique_ptr<ICommand> CreateLineSegmentState::CreateDrawCommand(const Point 
   Конструктор
 */
 //---
-CreateLineSegmentState::CreateLineSegmentState(std::shared_ptr<IView> view, GeometryModel & geometry,
+CreateLineSegmentState::CreateLineSegmentState(std::shared_ptr<IView> view,
                                                RenderableModel & renderable)
   : m_view(view)
-  , m_geometry(geometry)
   , m_renderable(renderable)
   , m_status(Status::AwaitActivate)
   , m_isAutoBuild(false)

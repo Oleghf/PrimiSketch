@@ -3,14 +3,12 @@
 #include <memory>
 #include <string>
 
-#include <Tools.h>
-#include <StyleLine.h>
+#include <Tool.h>
 #include <PaintController.h>
 #include <CommandManager.h>
 #include <EventListener.h>
 #include <GeometryModel.h>
 #include <RenderableModel.h>
-#include <RenderableProperties.h>
 
 class IState;
 class IView;
@@ -25,7 +23,6 @@ class MainController : public EventListener
 {
 private:
   CommandManager m_commandManager;
-  GeometryModel m_geometryModel;
   RenderableModel m_renderableModel;
   PaintController m_paintController;
   

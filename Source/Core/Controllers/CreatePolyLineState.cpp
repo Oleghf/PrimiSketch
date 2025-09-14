@@ -1,14 +1,13 @@
 #include <BrokenLine.h>
 #include <LineSegment.h>
+#include <Event.h>
 #include <AutoBuildEvent.h>
 #include <CompleteDrawingEvent.h>
+#include <SceneMouseEvent.h>
 #include <CreateFigureCommand.h>
-#include <CreatePolyLineState.h>
-#include <Event.h>
 #include <IView.h>
 #include <RenderableModel.h>
-#include <SceneMouseEvent.h>
-
+#include <CreatePolyLineState.h>
 
 
 //------------------------------------------------------------------------------
@@ -18,8 +17,11 @@
 //---
 void CreatePolyLineState::CreateTemporaryFigure(const Point & pos)
 {
+  Color color = Color::BLACK();
+  color.a = 155;
+
   m_temporarySegments.push_back(std::make_shared<LineSegment>(pos, pos));
-  m_renderable.SetRenderProperties(m_temporarySegments.back(), {0, 0, 0, 155, m_view->GetStyleLine()});
+  m_renderable.SetRenderProperties(m_temporarySegments.back(), {color, m_view->GetStyleLine()});
 }
 
 
@@ -38,12 +40,19 @@ void CreatePolyLineState::UpdateEndPosTemporaryFigure(const Point & end)
 }
 
 
-//
-void CreatePolyLineState::CreateNewLineSegment(const Point& start, const Point& end)
+//------------------------------------------------------------------------------
+/**
+  Создает новый фантомный сегмент ломанной
+*/
+//---
+void CreatePolyLineState::CreateNewPhantomSegment(const Point& start, const Point& end)
 {
+  Color color = Color::BLACK();
+  color.a = 155;
+
   std::shared_ptr<LineSegment> segment = std::make_shared<LineSegment>(start, end);
   m_temporarySegments.push_back(segment);
-  m_renderable.SetRenderProperties(segment, {0, 0, 0, 155, m_view->GetStyleLine()});
+  m_renderable.SetRenderProperties(segment, {color, m_view->GetStyleLine()});
 }
 
 
@@ -55,9 +64,7 @@ void CreatePolyLineState::CreateNewLineSegment(const Point& start, const Point& 
 void CreatePolyLineState::RemoveTemporaryFigure()
 {
   for (auto & segment : m_temporarySegments)
-  {
     m_renderable.Remove(segment);
-  }
   m_temporarySegments.clear();
 }
 
@@ -70,7 +77,6 @@ void CreatePolyLineState::RemoveTemporaryFigure()
 std::unique_ptr<ICommand> CreatePolyLineState::OnSceneMousePressEvent(const SceneMouseEvent & mouseEv)
 {
   if (mouseEv.Type() == EventType::SceneMousePress && mouseEv.Button() == MouseButton::Left)
-  {
     if (m_status == Status::AwaitFirstPos)
     {
       m_firstPos = mouseEv.LocalPos();
@@ -80,12 +86,11 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnSceneMousePressEvent(const Scen
     else
     {
       m_secondPos = mouseEv.LocalPos();
-      CreateNewLineSegment(m_secondPos, m_firstPos);
+      CreateNewPhantomSegment(m_secondPos, m_firstPos);
       m_points.push_back(m_firstPos);
       m_points.push_back(m_secondPos);
       m_firstPos = m_points.back();
     }
-  }
   return nullptr;
 }
 
@@ -98,10 +103,8 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnSceneMousePressEvent(const Scen
 void CreatePolyLineState::OnSceneMouseMoveEvent(const SceneMouseEvent & mouseEv)
 {
   if (mouseEv.Type() == EventType::SceneMouseMove)
-  {
     if (m_status != Status::AwaitFirstPos)
       UpdateEndPosTemporaryFigure(mouseEv.LocalPos());
-  }
 }
 
 
@@ -117,9 +120,11 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnCompleteDrawingEvent(const Comp
     m_status = Status::AwaitFirstPos;
 
     RemoveTemporaryFigure();
-    if (ev.IsDrawAccepted())
-      return CreateDrawCommand(m_points);
+    std::vector<Point> points = std::move(m_points);
+    m_points.clear();
 
+    if (ev.IsDrawAccepted())
+      return CreateDrawCommand(points);
   }
   return nullptr;
 }
@@ -133,11 +138,9 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnCompleteDrawingEvent(const Comp
 std::unique_ptr<ICommand> CreatePolyLineState::CreateDrawCommand(const std::vector<Point> & points)
 {
   std::shared_ptr<BrokenLine> polyline = std::make_shared<BrokenLine>(points);
-  RenderProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
+  RenderProperties renderableProp{Color::BLACK(), m_view->GetStyleLine()};
 
-  m_points.clear();
-
-  return std::make_unique<CreateFigureCommand>(polyline, renderableProp, m_geometry, m_renderable);
+  return std::make_unique<CreateFigureCommand>(polyline, renderableProp, m_renderable);
 }
 
 
@@ -146,9 +149,8 @@ std::unique_ptr<ICommand> CreatePolyLineState::CreateDrawCommand(const std::vect
   Конструктор
 */
 //---
-CreatePolyLineState::CreatePolyLineState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable)
-  : m_view(view)
-  , m_geometry(geometry)
+CreatePolyLineState::CreatePolyLineState(std::shared_ptr<IView> view, RenderableModel & renderable)
+  : m_view(std::move(view))
   , m_renderable(renderable)
   , m_status(Status::AwaitActivate)
   , m_isAutoBuild(false)

@@ -8,7 +8,6 @@
 class LineSegment;
 class BrokenLine;
 class IView;
-class GeometryModel;
 class RenderableModel;
 class SceneMouseEvent;
 class CompleteDrawingEvent;
@@ -22,23 +21,28 @@ class CompleteDrawingEvent;
 class CreatePolyLineState : public IState
 {
 private:
+  ////////////////////////////////////////////////////////////////////////////////
+  //
+  /// Статус состояния
+  /**
+  */
+  ////////////////////////////////////////////////////////////////////////////////
   enum class Status
   {
-    AwaitActivate,
-    AwaitFirstPos,
-    AwaitPoints
+    AwaitActivate,  // Ожидает активации
+    AwaitFirstPos,  // Ожидает первую точку
+    AwaitPoints     // Ожидает остальные точки
   };
 
 private:
   std::shared_ptr<IView> m_view;
   std::vector<std::shared_ptr<LineSegment>> m_temporarySegments;
+  std::vector<Point> m_points;
 
-  GeometryModel & m_geometry;
   RenderableModel & m_renderable;
 
   Status m_status;
 
-  std::vector<Point> m_points;
   Point m_firstPos;
   Point m_secondPos;
 
@@ -48,7 +52,7 @@ private:
   void CreateTemporaryFigure(const Point & pos);
   void UpdateEndPosTemporaryFigure(const Point & end);
   void RemoveTemporaryFigure();
-  void CreateNewLineSegment(const Point & start, const Point & end);
+  void CreateNewPhantomSegment(const Point & start, const Point & end);
 
   std::unique_ptr<ICommand> OnSceneMousePressEvent(const SceneMouseEvent & mouseEv);
   void OnSceneMouseMoveEvent(const SceneMouseEvent & mouseEv);
@@ -56,7 +60,7 @@ private:
   std::unique_ptr<ICommand> CreateDrawCommand(const std::vector<Point> & points);
 
 public:
-  CreatePolyLineState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
+  CreatePolyLineState(std::shared_ptr<IView> view, RenderableModel & renderable);
 
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
 

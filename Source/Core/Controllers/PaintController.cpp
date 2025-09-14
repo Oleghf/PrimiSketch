@@ -32,11 +32,12 @@ void PaintController::OnPaintEvent(const ScenePaintEvent & event)
     if (auto prop = m_renderable.GetRenderProperties(figure))
     {
       painter.SetStyleLine(prop->style);
-      painter.SetPenColor({prop->r, prop->g, prop->b, prop->a});
-      painter.SetBrushColor({prop->r, prop->g, prop->b, prop->a});
+      painter.SetPenColor({prop->color.r, prop->color.g, prop->color.b, prop->color.a});
+      painter.SetBrushColor({prop->color.r, prop->color.g, prop->color.b, prop->color.a});
       figure->Render(painter);
       return true;
     }
+    return false;
   };
 
   m_renderable.ForEachFigures(paintPred);

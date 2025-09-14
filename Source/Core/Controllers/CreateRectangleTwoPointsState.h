@@ -9,7 +9,6 @@ class Rectangle;
 class SceneMouseEvent;
 class CompleteDrawingEvent;
 class IView;
-class GeometryModel;
 class RenderableModel;
 class ICommand;
 
@@ -22,19 +21,24 @@ class ICommand;
 class CreateRectangleTwoPointsState : public IState
 {
 private:
+  ////////////////////////////////////////////////////////////////////////////////
+  //
+  /// Статус состояния
+  /**
+  */
+  ////////////////////////////////////////////////////////////////////////////////
   enum class Status
   {
-    AwaitActivate,
-    AwaitFirstPos,
-    AwaitSecondPos,
-    AwaitConfirm
+    AwaitActivate,  // Ожидает активации
+    AwaitFirstPos,  // Ожидает первую точку
+    AwaitSecondPos, // Ожидает вторую точку
+    AwaitConfirm    // Ожидает подтверждение введеных данных
   };
 
 private:
   std::shared_ptr<IView> m_view;
   std::shared_ptr<Rectangle> m_temporaryRectangle;
 
-  GeometryModel & m_geometry;
   RenderableModel & m_renderable;
 
   Status m_status;
@@ -56,7 +60,7 @@ private:
   std::unique_ptr<ICommand> CreateDrawCommand(const Point & first, const Point & second);
 
 public:
-  CreateRectangleTwoPointsState(std::shared_ptr<IView> view, GeometryModel & geometry, RenderableModel & renderable);
+  CreateRectangleTwoPointsState(std::shared_ptr<IView> view, RenderableModel & renderable);
 
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
 

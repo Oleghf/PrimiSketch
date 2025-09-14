@@ -11,8 +11,8 @@ class ICommand
 public:
   virtual ~ICommand() = default;
 
-  /// Выполняет команду
+  /// Выполнить команду
   virtual void Do() = 0;
-  /// Отменяет команду
+  /// Отменить команду
   virtual void Undo() = 0;
 };

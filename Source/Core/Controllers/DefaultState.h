@@ -3,7 +3,9 @@
 #include <IState.h>
 
 class IView;
-class GeometryModel;
+class IFigure;
+class SceneMouseEvent;
+class RenderableModel;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -15,10 +17,15 @@ class DefaultState : public IState
 {
 private:
   std::shared_ptr<IView> m_view;
-  GeometryModel & m_geometry;
+  RenderableModel & m_renderable;
+
+private:
+  std::unique_ptr<ICommand> OnSceneMousePressEvent(const SceneMouseEvent & event);
+  std::unique_ptr<ICommand> OnSceneMouseMoveEvent(const SceneMouseEvent & event);
+  std::unique_ptr<ICommand> OnSceneMouseReleaseEvent(const SceneMouseEvent & event);
 
 public:
-  DefaultState(std::shared_ptr<IView> view, GeometryModel & geometryModel);
+  DefaultState(std::shared_ptr<IView> view, RenderableModel & renderableModel);
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
   void Activate() override;
   void Deactivate() override;

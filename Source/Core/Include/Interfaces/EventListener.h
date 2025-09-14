@@ -2,7 +2,6 @@
 
 class Event;
 
-
 ////////////////////////////////////////////////////////////////////////////////
 //
 /// Слушатель событий
@@ -14,6 +13,6 @@ class EventListener
 public:
   virtual ~EventListener() = default;
 
-  /// Обрабатывает переданное событие
+  /// Обработать переданное событие
   virtual void OnEvent(const Event & event) = 0;
 };

@@ -10,10 +10,9 @@
 */
 //---
 CreateFigureCommand::CreateFigureCommand(std::shared_ptr<IFigure> figure, const RenderProperties & properties,
-                                         GeometryModel & geometry, RenderableModel & renderable)
-  : m_figure(figure)
+                                         RenderableModel & renderable)
+  : m_figure(std::move(figure))
   , m_properties(properties)
-  , m_geometry(geometry)
   , m_renderable(renderable)
 {
 }
@@ -26,9 +25,7 @@ CreateFigureCommand::CreateFigureCommand(std::shared_ptr<IFigure> figure, const 
 //---
 void CreateFigureCommand::Do()
 {
-  m_geometry.Add(m_figure);
   m_renderable.SetRenderProperties(m_figure, m_properties);
-  
 }
 
 
@@ -39,6 +36,5 @@ void CreateFigureCommand::Do()
 //---
 void CreateFigureCommand::Undo()
 {
-  m_geometry.Remove(m_figure);
   m_renderable.Remove(m_figure);
 }

@@ -24,8 +24,6 @@ public:
   virtual void SetPenColor(const Color & color) = 0;
   /// Установить цвет заливки
   virtual void SetBrushColor(const Color & color) = 0;
-  /// Установить толщину обводки
-  virtual void SetThickness(double thickness) = 0;
   /// Установить стиль отрисовки
   virtual void SetStyleLine(StyleLine style) = 0;
 };

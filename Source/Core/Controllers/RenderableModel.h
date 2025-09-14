@@ -7,6 +7,7 @@
 
 #include <RenderableProperties.h>
 #include <IModel.h>
+#include <IFigure.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -24,6 +25,7 @@ public:
   void Remove(const std::shared_ptr<IFigure> & figure) override;
   void ForEachFigures(std::function<bool(std::shared_ptr<IFigure>)> pred) override;
   void ForEachFiguresInBox(const Box & box, std::function<bool(std::shared_ptr<IFigure>)> pred) override;
+  std::shared_ptr<IFigure> FindFigure(const Point & point, double radius) const override;
 
   void SetRenderProperties(std::shared_ptr<IFigure> figure, RenderProperties properties);
   std::optional<RenderProperties> GetRenderProperties(std::shared_ptr<IFigure> figure) const;

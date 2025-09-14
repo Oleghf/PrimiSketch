@@ -1,6 +1,32 @@
 #include <ICommand.h>
+#include <Event.h>
+#include <SceneMouseEvent.h>
 #include <IView.h>
+#include <GeometryModel.h>
+#include <RenderableModel.h>
+#include <Vector.h>
 #include <DefaultState.h>
+
+
+//
+std::unique_ptr<ICommand> DefaultState::OnSceneMousePressEvent(const SceneMouseEvent & event)
+{
+  return nullptr;
+}
+
+
+//
+std::unique_ptr<ICommand> DefaultState::OnSceneMouseMoveEvent(const SceneMouseEvent& event)
+{
+  return nullptr;
+}
+
+
+//
+std::unique_ptr<ICommand> DefaultState::OnSceneMouseReleaseEvent(const SceneMouseEvent & event)
+{
+  return nullptr;
+}
 
 
 //------------------------------------------------------------------------------
@@ -8,9 +34,9 @@
   Конструктор
 */
 //---
-DefaultState::DefaultState(std::shared_ptr<IView> view, GeometryModel & geometryModel)
+DefaultState::DefaultState(std::shared_ptr<IView> view, RenderableModel & renderableModel)
   : m_view(std::move(view))
-  , m_geometry(geometryModel)
+  , m_renderable(renderableModel)
 {
 }
 
@@ -22,11 +48,31 @@ DefaultState::DefaultState(std::shared_ptr<IView> view, GeometryModel & geometry
 //---
 std::unique_ptr<ICommand> DefaultState::OnEvent(const Event& event)
 {
-  return nullptr; // ... WIP
+  switch (event.Type())
+  {
+    case EventType::SceneMousePress:
+    case EventType::SceneMouseMove:
+    case EventType::SceneMouseRelease:
+    {
+      const SceneMouseEvent & mouseEv = static_cast<const SceneMouseEvent &>(event);
+      if (event.Type() == EventType::SceneMousePress)
+        return OnSceneMousePressEvent(mouseEv);
+      else if (event.Type() == EventType::SceneMouseMove)
+        return OnSceneMouseMoveEvent(mouseEv);
+      else
+        return OnSceneMouseReleaseEvent(mouseEv);
+    }
+  }
+
+  return nullptr;
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Активировать состояние
+*/
+//---
 void DefaultState::Activate()
 {
   m_view->SetProcessName("Инструмент не выбран");
@@ -38,7 +84,11 @@ void DefaultState::Activate()
 }
 
 
-//
+//------------------------------------------------------------------------------
+/**
+  Деактивировать состояние
+*/
+//---
 void DefaultState::Deactivate()
 {
   m_view->SetProcessName("");

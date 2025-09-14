@@ -16,8 +16,11 @@
 //---
 void CreateRectangleCenterAngleState::CreateTemporaryFigure(const Point & pos)
 {
+  Color color = Color::BLACK();
+  color.a = 155;
+
   m_temporaryRectangle = std::make_shared<Rectangle>(pos, pos);
-  m_renderable.SetRenderProperties(m_temporaryRectangle, {0, 0, 0, 155, m_view->GetStyleLine()});
+  m_renderable.SetRenderProperties(m_temporaryRectangle, {color, m_view->GetStyleLine()});
 }
 
 
@@ -54,7 +57,6 @@ void CreateRectangleCenterAngleState::RemoveTemporaryFigure()
 std::unique_ptr<ICommand> CreateRectangleCenterAngleState::OnSceneMousePressEvent(const SceneMouseEvent & mouseEv)
 {
   if (mouseEv.Type() == EventType::SceneMousePress && mouseEv.Button() == MouseButton::Left)
-  {
     if (m_status == Status::AwaitFirstPos)
     {
       m_firstPos = mouseEv.LocalPos();
@@ -73,7 +75,6 @@ std::unique_ptr<ICommand> CreateRectangleCenterAngleState::OnSceneMousePressEven
       else
         m_status = Status::AwaitConfirm;
     }
-  }
   return nullptr;
 }
 
@@ -86,10 +87,8 @@ std::unique_ptr<ICommand> CreateRectangleCenterAngleState::OnSceneMousePressEven
 void CreateRectangleCenterAngleState::OnSceneMouseMoveEvent(const SceneMouseEvent & mouseEv)
 {
   if (mouseEv.Type() == EventType::SceneMouseMove)
-  {
     if (m_status == Status::AwaitSecondPos && m_status != Status::AwaitConfirm)
       UpdateEndPosTemporaryFigure(mouseEv.LocalPos());
-  }
 }
 
 
@@ -134,9 +133,9 @@ std::unique_ptr<ICommand> CreateRectangleCenterAngleState::CreateDrawCommand(con
   Point oppositeAngle{2 * center.x - angle.x, 2 * center.y - angle.y};
 
   std::shared_ptr<Rectangle> rect = std::make_shared<Rectangle>(oppositeAngle, angle);
-  RenderProperties renderableProp{0, 0, 0, 255, m_view->GetStyleLine()};
+  RenderProperties renderableProp{Color::BLACK(), m_view->GetStyleLine()};
 
-  return std::make_unique<CreateFigureCommand>(rect, renderableProp, m_geometry, m_renderable);
+  return std::make_unique<CreateFigureCommand>(rect, renderableProp, m_renderable);
 }
 
 
@@ -145,10 +144,8 @@ std::unique_ptr<ICommand> CreateRectangleCenterAngleState::CreateDrawCommand(con
   Конструктор
 */
 //---
-CreateRectangleCenterAngleState::CreateRectangleCenterAngleState(std::shared_ptr<IView> view, GeometryModel & geometry,
-                                                             RenderableModel & renderable)
-  : m_view(view)
-  , m_geometry(geometry)
+CreateRectangleCenterAngleState::CreateRectangleCenterAngleState(std::shared_ptr<IView> view, RenderableModel & renderable)
+  : m_view(std::move(view))
   , m_renderable(renderable)
   , m_status(Status::AwaitActivate)
   , m_isAutoBuild(false)
