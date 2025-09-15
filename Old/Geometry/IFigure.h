@@ -35,8 +35,8 @@ public:
   ///
   virtual void Render(PrimitiveView & render) = 0;
   /// Читает данные из потока и в случае успеха возвращает указатель на фигуру, в ином случае nullptr
-  static std::shared_ptr<IFigure> Read(const InputStream& is);
+  static std::shared_ptr<IFigure> Read(InputStream& is);
   /// Регистрирует тип фигуры по хэшу и функции создания соответствующей фигуры
-  static bool RegisterType(size_t hash, std::function<std::shared_ptr<IFigure>(const InputStream&)>);
+  static bool RegisterType(size_t hash, std::function<std::shared_ptr<IFigure>(InputStream&)>);
 
 };

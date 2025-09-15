@@ -138,7 +138,7 @@ void Rectangle::Render(PrimitiveView & primitiveView)
   \brief Читает из потока 4 переменных типа double, создает на их основе прямоугольник
   \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
 */
-std::shared_ptr<Rectangle> Rectangle::Read(const InputStream & is)
+std::shared_ptr<Rectangle> Rectangle::Read(InputStream & is)
 {
   std::array<double, 4> coords{};
 

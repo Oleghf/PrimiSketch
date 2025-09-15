@@ -139,7 +139,7 @@ void BrokenLine::Render(PrimitiveView & primitiveView)
            Дальнейшие переменные читает как double и интерпетирует как координаты точек.
   \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
 */
-std::shared_ptr<BrokenLine> BrokenLine::Read(const InputStream & is)
+std::shared_ptr<BrokenLine> BrokenLine::Read(InputStream & is)
 {
   size_t size = 0;
   std::vector<Point> points;

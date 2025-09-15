@@ -27,7 +27,7 @@ public:
   size_t GetTypeHash() const override;
   void Render(PrimitiveView & view) override;
 
-  static std::shared_ptr<BrokenLine> Read(const InputStream & is);
+  static std::shared_ptr<BrokenLine> Read(InputStream & is);
 
   void Update(const std::vector<Point> & points);
 

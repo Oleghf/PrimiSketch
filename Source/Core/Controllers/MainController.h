@@ -7,7 +7,7 @@
 #include <PaintController.h>
 #include <CommandManager.h>
 #include <EventListener.h>
-#include <GeometryModel.h>
+#include <SelectedModel.h>
 #include <RenderableModel.h>
 
 class IState;
@@ -23,6 +23,7 @@ class MainController : public EventListener
 {
 private:
   CommandManager m_commandManager;
+  SelectedModel m_selectedModel;
   RenderableModel m_renderableModel;
   PaintController m_paintController;
   

@@ -28,7 +28,7 @@ public:
   size_t GetTypeHash() const override;
   void Render(PrimitiveView & view) override;
 
-  static std::shared_ptr<Rectangle> Read(const InputStream & is);
+  static std::shared_ptr<Rectangle> Read(InputStream & is);
 
   void Update(const Point & first, const Point & second);
 

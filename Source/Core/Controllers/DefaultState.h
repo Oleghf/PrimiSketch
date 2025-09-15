@@ -5,6 +5,7 @@
 class IView;
 class IFigure;
 class SceneMouseEvent;
+class SelectedModel;
 class RenderableModel;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +18,13 @@ class DefaultState : public IState
 {
 private:
   std::shared_ptr<IView> m_view;
+  std::shared_ptr<IFigure> m_inMoveFigure;
+  std::shared_ptr<IFigure> m_selectedFigure;
+
+  SelectedModel & m_selected;
   RenderableModel & m_renderable;
+
+  bool m_isUserWantToMove;
 
 private:
   std::unique_ptr<ICommand> OnSceneMousePressEvent(const SceneMouseEvent & event);
@@ -25,7 +32,7 @@ private:
   std::unique_ptr<ICommand> OnSceneMouseReleaseEvent(const SceneMouseEvent & event);
 
 public:
-  DefaultState(std::shared_ptr<IView> view, RenderableModel & renderableModel);
+  DefaultState(std::shared_ptr<IView> view, SelectedModel & selectedModel, RenderableModel & renderableModel);
   std::unique_ptr<ICommand> OnEvent(const Event & event) override;
   void Activate() override;
   void Deactivate() override;

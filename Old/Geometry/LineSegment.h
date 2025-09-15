@@ -26,6 +26,6 @@ public:
   size_t GetTypeHash() const override;
   void Render(PrimitiveView & render) override;
 
-  static std::shared_ptr<LineSegment> Read(const InputStream & is);
+  static std::shared_ptr<LineSegment> Read(InputStream & is);
   double Length() const;
 };

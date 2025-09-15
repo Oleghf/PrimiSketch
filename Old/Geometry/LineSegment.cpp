@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <array>
+#include <string>
 
 #include <PrimitiveView.h>
 #include <OutputStream.h>
@@ -23,6 +24,7 @@ LineSegment::LineSegment(const Point & startPoint, const Point & endPoint)
   : start(startPoint)
   , end(endPoint)
 {
+  IFigure::RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read); // Временно
 }
 
 
@@ -137,7 +139,7 @@ void LineSegment::Render(PrimitiveView& render)
   \brief Читает из потока 4 переменных типа double, создает на их основе сегмент линии
   \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
 */
-std::shared_ptr<LineSegment> LineSegment::Read(const InputStream & is)
+std::shared_ptr<LineSegment> LineSegment::Read(InputStream & is)
 {
   std::array<double, 4> coords{};
 

@@ -6,19 +6,19 @@
 
 namespace
 {
-std::unordered_map<size_t, std::function<std::shared_ptr<IFigure>(const InputStream &)>> registeredTypes;
+std::unordered_map<size_t, std::function<std::shared_ptr<IFigure>(InputStream &)>> registeredTypes;
 }
 
 
 //------------------------------------------------------------------------------
 /**
-  \brief Читает данные из потока и на основе их создает фигуру
-  \details Сначала метод пытается интерпретировать первые данные как хэш.
-           После этого он ищет по данному хэшу зарегестрированный тип.
-           Если тип зарегестрирован то вызывает его метод Read.
-           В ином случае возвращает nullptr
+  \brief Р§РёС‚Р°РµС‚ РґР°РЅРЅС‹Рµ РёР· РїРѕС‚РѕРєР° Рё РЅР° РѕСЃРЅРѕРІРµ РёС… СЃРѕР·РґР°РµС‚ С„РёРіСѓСЂСѓ
+  \details РЎРЅР°С‡Р°Р»Р° РјРµС‚РѕРґ РїС‹С‚Р°РµС‚СЃСЏ РёРЅС‚РµСЂРїСЂРµС‚РёСЂРѕРІР°С‚СЊ РїРµСЂРІС‹Рµ РґР°РЅРЅС‹Рµ РєР°Рє С…СЌС€.
+           РџРѕСЃР»Рµ СЌС‚РѕРіРѕ РѕРЅ РёС‰РµС‚ РїРѕ РґР°РЅРЅРѕРјСѓ С…СЌС€Сѓ Р·Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅРЅС‹Р№ С‚РёРї.
+           Р•СЃР»Рё С‚РёРї Р·Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅ С‚Рѕ РІС‹Р·С‹РІР°РµС‚ РµРіРѕ РјРµС‚РѕРґ Read.
+           Р’ РёРЅРѕРј СЃР»СѓС‡Р°Рµ РІРѕР·РІСЂР°С‰Р°РµС‚ nullptr
 */
-std::shared_ptr<IFigure> IFigure::Read(const InputStream& is)
+std::shared_ptr<IFigure> IFigure::Read(InputStream& is)
 {
   size_t hash;
   if (!is.Read(hash))
@@ -37,10 +37,10 @@ std::shared_ptr<IFigure> IFigure::Read(const InputStream& is)
 
 //------------------------------------------------------------------------------
 /**
-  Регистрирует тип фигуры по хэшу
+  Р РµРіРёСЃС‚СЂРёСЂСѓРµС‚ С‚РёРї С„РёРіСѓСЂС‹ РїРѕ С…СЌС€Сѓ
 */
 //---
-bool IFigure::RegisterType(size_t hash, std::function<std::shared_ptr<IFigure>(const InputStream&)> read)
+bool IFigure::RegisterType(size_t hash, std::function<std::shared_ptr<IFigure>(InputStream&)> read)
 {
   auto result = registeredTypes.emplace(hash, read);
 

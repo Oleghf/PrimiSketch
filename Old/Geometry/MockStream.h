@@ -14,7 +14,8 @@ class MockStream : public InputStream
 public:
   MockStream();
 
-  bool Read(int &) const override;
-  bool Read(size_t &) const override;
-  bool Read(double &) const override;
+  bool Read(int &) override;
+  bool Read(unsigned int &) override;
+  bool Read(size_t &) override;
+  bool Read(double &) override;
 };
