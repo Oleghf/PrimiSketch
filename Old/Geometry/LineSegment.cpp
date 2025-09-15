@@ -10,7 +10,7 @@
 #include <LineSegment.h>
 
 
-//static bool _ = IFigure::RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read);
+static bool _ = IFigure::RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read);
 
 
 //------------------------------------------------------------------------------
@@ -24,7 +24,6 @@ LineSegment::LineSegment(const Point & startPoint, const Point & endPoint)
   : start(startPoint)
   , end(endPoint)
 {
-  IFigure::RegisterType(math_utils::hash("LineSegment"), &LineSegment::Read); // Временно
 }
 
 

@@ -33,7 +33,6 @@ private:
   std::unordered_map <Tool, std::shared_ptr<IState>> m_states;
 
 private:
-
   void Load(const std::string & path);
   void Save(const std::string & path);
   void ChangeState(Tool newTool);

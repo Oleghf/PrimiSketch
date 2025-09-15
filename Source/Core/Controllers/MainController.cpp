@@ -18,12 +18,12 @@
 #include <IView.h>
 #include <MainController.h>
 
-static constexpr size_t END_MARKER = 119994564321;
-
 
 //------------------------------------------------------------------------------
 /**
-  Сохранить состояние программы в файл
+  \brief Сохранить состояние программы в файл
+  \details Сначала сохраняются цвет и стиль линии, далее хэш фигуры,
+  а после фигура записывает в поток данные о себе
 */
 //---
 void MainController::Save(const std::string & path)
@@ -51,7 +51,10 @@ void MainController::Save(const std::string & path)
 
 //------------------------------------------------------------------------------
 /**
-  Загрузить состояние программы из файла
+  \brief Загрузить состояние программы из файла
+  \details Функция запускает цикл в котором сначала идет попытка прочитать из потока данные о цвете и о стиле линии фигуры,
+  если это удается, то далее идет попытка прочитать данные о самой фигуре. После этого создается команда на создание фигуры.
+  Так продолжается, до тех пор, пока не получится прочитать какие либо данные, в этом случае цикл прерывается.
 */
 //---
 void MainController::Load(const std::string& path)
@@ -69,28 +72,8 @@ void MainController::Load(const std::string& path)
     else
       break;
 
-    size_t hash;
-    if (ifile.Read(hash))
-    {
-      if (hash == math_utils::hash("LineSegment"))
-      {
-        std::shared_ptr<LineSegment> fig = LineSegment::Read(ifile);
-        auto command = std::make_unique<CreateFigureCommand>(fig, RenderProperties{color, style}, m_renderableModel);
-        m_commandManager.Execute(std::move(command));
-      }
-      else if (hash == math_utils::hash("Rectangle"))
-      {
-        std::shared_ptr<Rectangle> fig = Rectangle::Read(ifile);
-        auto command = std::make_unique<CreateFigureCommand>(fig, RenderProperties{color, style}, m_renderableModel);
-        m_commandManager.Execute(std::move(command));
-      }
-      else if (hash == math_utils::hash("BrokenLine"))
-      {
-        std::shared_ptr<BrokenLine> fig = BrokenLine::Read(ifile);
-        auto command = std::make_unique<CreateFigureCommand>(fig, RenderProperties{color, style}, m_renderableModel);
-        m_commandManager.Execute(std::move(command));
-      }
-    }
+    if (std::shared_ptr<IFigure> fig = IFigure::Read(ifile))
+      m_commandManager.Execute(std::make_unique<CreateFigureCommand>(fig, RenderProperties{color, style}, m_renderableModel));
     else
       break;
   }
@@ -147,6 +130,7 @@ void MainController::OnEvent(const Event& event)
     case EventType::LoadFile:
     {
       m_renderableModel = RenderableModel();
+      m_selectedModel = SelectedModel();
       Load(m_view->OpenLoadFileDialog("Загрузка", "", "PrimiSketch files (*.ps)"));
       break;
     }

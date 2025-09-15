@@ -11,7 +11,7 @@
 #include <BrokenLine.h>
 
 
-// static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
+static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
 
 
 //------------------------------------------------------------------------------

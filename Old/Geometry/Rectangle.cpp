@@ -11,7 +11,7 @@
 #include <Rectangle.h>
 
 
-//static bool _ = IFigure::RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
+static bool _ = IFigure::RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
 
 
 //------------------------------------------------------------------------------
