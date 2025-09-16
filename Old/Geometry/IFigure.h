@@ -5,6 +5,7 @@
 
 struct Point;
 struct Vector;
+struct Matrix3;
 class Box;
 class OutputStream;
 class InputStream;
@@ -28,6 +29,8 @@ public:
   virtual bool InBox(const Box& box) const = 0;
   /// Проверка пересечения фигуры с точкой
   virtual bool IntersectsPoint(const Point & point, double epsilon) const = 0;
+  // Трансформирует фигуру
+  virtual void Transform(const Matrix3 & transform) = 0;
   /// Записывает данные о фигуре в поток
   virtual void Write(OutputStream & os) const = 0;
   /// Возвращает хэш типа фигуры

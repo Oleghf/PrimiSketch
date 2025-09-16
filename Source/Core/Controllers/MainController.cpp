@@ -1,12 +1,12 @@
+
+#include <Matrix3.h>
 #include <MathUtils.h>
 #include <CreateFigureCommand.h>
-#include <LineSegment.h>
-#include <Rectangle.h>
-#include <BrokenLine.h>
 #include <BinaryFile.h>
 #include <BinaryFileInput.h>
 #include <Event.h>
 #include <ScenePaintEvent.h>
+#include <SceneWheelEvent.h>
 #include <ToolChangeEvent.h>
 #include <IState.h>
 #include <DefaultState.h>
@@ -19,6 +19,14 @@
 #include <MainController.h>
 
 
+namespace
+{
+constexpr double BASE_FACTOR = 1.1;
+constexpr double MAX_SCALE = 5;
+constexpr double MIN_SCALE = 0.5;
+}
+
+
 //------------------------------------------------------------------------------
 /**
   \brief Сохранить состояние программы в файл
@@ -29,6 +37,8 @@
 void MainController::Save(const std::string & path)
 {
   BinaryFile ofile(path);
+
+  ofile.Write(m_scale);
 
   auto pred = [&ofile, this](std::shared_ptr<IFigure> figure)
   {
@@ -61,6 +71,12 @@ void MainController::Load(const std::string& path)
 {
   BinaryFileInput ifile(path);
 
+  double scale;
+  if (ifile.Read(scale))
+    m_scale = scale;
+  else
+    return;
+
   while (true)
   {
     int styleInt;
@@ -77,6 +93,28 @@ void MainController::Load(const std::string& path)
     else
       break;
   }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Увеличение/Уменьшение объектов на сцене
+*/
+//---
+void MainController::Scale(const Point & anchorPos, double factor)
+{
+  if (m_scale * factor > MAX_SCALE || m_scale * factor < MIN_SCALE)
+    return;
+  m_scale = m_scale * factor;
+  auto pred = [factor, &anchorPos](std::shared_ptr<IFigure> fig)
+  {
+    fig->Transform(Matrix3::translation({-anchorPos.x, -anchorPos.y}));
+    fig->Transform(Matrix3::scale(factor, factor));
+    fig->Transform(Matrix3::translation({anchorPos.x, anchorPos.y}));
+    return true;
+  };
+
+  m_renderableModel.ForEachFigures(pred);
 }
 
 
@@ -101,7 +139,7 @@ void MainController::ChangeState(Tool newTool)
 MainController::MainController(std::shared_ptr<IView> view)
   : m_view(view)
   , m_currentState(std::make_shared<DefaultState>(m_view,m_selectedModel, m_renderableModel))
-  , m_paintController(view, m_renderableModel)
+  , m_paintController(view, m_renderableModel), m_scale(1)
 {
   m_states[Tool::None] = m_currentState;
   m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_renderableModel);
@@ -132,6 +170,15 @@ void MainController::OnEvent(const Event& event)
       m_renderableModel = RenderableModel();
       m_selectedModel = SelectedModel();
       Load(m_view->OpenLoadFileDialog("Загрузка", "", "PrimiSketch files (*.ps)"));
+      break;
+    }
+    case EventType::SceneWheelEvent:
+    {
+      const SceneWheelEvent & wheelEv = static_cast<const SceneWheelEvent &>(event);
+      if (wheelEv.Degrees() > 0)
+        Scale(wheelEv.CursorPos(), BASE_FACTOR);
+      else
+        Scale(wheelEv.CursorPos(), 1 / BASE_FACTOR);
       break;
     }
     case EventType::Undo:

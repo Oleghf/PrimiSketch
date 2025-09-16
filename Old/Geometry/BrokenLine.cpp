@@ -2,6 +2,7 @@
 #include <cassert>
 #include <algorithm>
 
+#include <Matrix3.h>
 #include <PrimitiveView.h>
 #include <ConsoleOutputStream.h>
 #include <OutputStream.h>
@@ -92,6 +93,16 @@ bool BrokenLine::IntersectsPoint(const Point & point, double epsilon) const
       return true;
   }
   return false;
+}
+
+
+//
+void BrokenLine::Transform(const Matrix3 & transform)
+{
+  for (Point & point : m_points)
+  {
+    point = point * transform;
+  }
 }
 
 

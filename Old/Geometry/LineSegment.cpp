@@ -2,6 +2,7 @@
 #include <array>
 #include <string>
 
+#include <Matrix3.h>
 #include <PrimitiveView.h>
 #include <OutputStream.h>
 #include <InputStream.h>
@@ -98,6 +99,14 @@ bool LineSegment::InBox(const Box & box) const
 bool LineSegment::IntersectsPoint(const Point & point, double epsilon) const
 {
   return math_utils::SegmentIntersectsCircle(start, end, point, epsilon);
+}
+
+
+//
+void LineSegment::Transform(const Matrix3 & transform)
+{
+  start = start * transform;
+  end = end * transform;
 }
 
 

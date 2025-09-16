@@ -6,6 +6,7 @@
 #include <MathUtils.h>
 #include <Box.h>
 #include <Vector.h>
+#include <Matrix3.h>
 #include <InputStream.h>
 #include <OutputStream.h>
 #include <Rectangle.h>
@@ -91,6 +92,14 @@ bool Rectangle::IntersectsPoint(const Point & point, double epsilon) const
 
   return !((bottomRightBoundBoxPoint.x < m_topLeft.x) || (topLeftBoundBoxPoint.x > m_bottomRight.x) ||
            (bottomRightBoundBoxPoint.y > m_topLeft.y) || (topLeftBoundBoxPoint.y < m_bottomRight.y));
+}
+
+
+//
+void Rectangle::Transform(const Matrix3 & transform)
+{
+  m_topLeft =  m_topLeft * transform;
+  m_bottomRight = m_bottomRight * transform;
 }
 
 

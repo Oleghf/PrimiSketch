@@ -32,9 +32,13 @@ private:
 
   std::unordered_map <Tool, std::shared_ptr<IState>> m_states;
 
+  double m_scale;
+
 private:
   void Load(const std::string & path);
   void Save(const std::string & path);
+  void Scale(const Point & anchorPos, double factor);
+
   void ChangeState(Tool newTool);
 
 public:
