@@ -24,6 +24,7 @@ private:
   SelectedModel & m_selected;
   RenderableModel & m_renderable;
 
+  Point m_firstPos;
   bool m_isUserWantToMove;
 
 private:

@@ -16,6 +16,7 @@
 #include <AutoBuildEvent.h>
 #include <ScenePaintEvent.h>
 #include <ToolChangeEvent.h>
+#include <SceneDeleteEvent.h>
 #include <ExportSVGEvent.h>
 #include <SceneMouseEvent.h>
 #include <UndoEvent.h>
@@ -75,6 +76,9 @@ void QtView::SetupWidgets()
   mainVertLayout->addStretch();
 
   addToolBar(m_toolBar);
+
+  m_scene->setFocus();
+  m_scene->setFocusPolicy(Qt::ClickFocus);
 }
 
 
@@ -112,6 +116,12 @@ QtView::QtView()
   connect(m_scene, &SceneWidget::CreatedQMouseEvent, [this](QMouseEvent * ev) { SendEvent(qt_adapters::FromQMouseEvent(ev)); });
   connect(m_scene, &SceneWidget::CreatedQWheelEvent, [this](QWheelEvent * ev) {
     SendEvent(SceneWheelEvent(ev->angleDelta().y(), qt_adapters::FromQPointF(ev->position())));});
+  connect(m_scene, &SceneWidget::CreatedQKeyEvent,
+          [this](QKeyEvent * ev)
+          {
+            if (ev->key() == Qt::Key_Backspace || ev->key() == Qt::Key_Delete)
+              SendEvent(SceneDeleteEvent());
+          });
   connect(m_open, &QAction::triggered, [this]() { SendEvent(LoadFileEvent()); });
   connect(m_saveAs, &QAction::triggered, [this]() { SendEvent(SaveFileEvent()); });
   connect(m_undo, &QAction::triggered, [this]() { SendEvent(UndoEvent()); });

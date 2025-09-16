@@ -24,4 +24,5 @@ public:
   void ForEachFigures(std::function<bool(std::shared_ptr<IFigure>)> pred) override;
   void ForEachFiguresInBox(const Box & box, std::function<bool(std::shared_ptr<IFigure>)> pred) override;
   std::shared_ptr<IFigure> FindFigure(const Point & point, double radius) const override;
+  void Clear() { m_figures.clear(); }
 };

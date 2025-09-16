@@ -6,7 +6,7 @@ add_library(${events_static_library} STATIC)
 
 # Указываем какие файлы необходимо включить в цель сборки.
 target_sources(${events_static_library} PRIVATE
-"SceneMouseEvent.cpp")
+"SceneMouseEvent.cpp" "SceneDeleteEvent.h")
 
 # Указываем подключенные директории
 target_include_directories(${events_static_library} PUBLIC
