@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include <RenderableModel.h>
 #include <DeleteFigureCommand.h>
 
@@ -10,7 +12,9 @@
 DeleteFigureCommand::DeleteFigureCommand(std::shared_ptr<IFigure> figure, RenderableModel & renderable)
   : m_figure(std::move(figure))
   , m_renderable(renderable)
+  , m_renderProperties()
 {
+  assert(m_figure);
 }
 
 
@@ -21,6 +25,7 @@ DeleteFigureCommand::DeleteFigureCommand(std::shared_ptr<IFigure> figure, Render
 //---
 void DeleteFigureCommand::Do()
 {
+  m_renderProperties = m_renderable.GetRenderProperties(m_figure).value();
   m_renderable.Remove(m_figure);
 }
 
@@ -32,5 +37,5 @@ void DeleteFigureCommand::Do()
 //---
 void DeleteFigureCommand::Undo()
 {
-  m_renderable.Add(m_figure);
+  m_renderable.SetRenderProperties(m_figure, m_renderProperties);
 }

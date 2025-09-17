@@ -1,6 +1,6 @@
-#include <chrono>
-
 #include <ICommand.h>
+#include <MoveFigureCommand.h>
+#include <DeleteFigureCommand.h>
 #include <Event.h>
 #include <SceneMouseEvent.h>
 #include <IView.h>
@@ -15,22 +15,20 @@
   Обрабатывает событие клика по сцене
 */
 //---
-std::unique_ptr<ICommand> DefaultState::OnSceneMousePressEvent(const SceneMouseEvent & event)
+void DefaultState::OnSceneMousePressEvent(const SceneMouseEvent & event)
 {
-  if (auto fig = m_renderable.FindFigure(event.LocalPos(), 2))
-    if (auto selectedFigure = m_selected.FindFigure(event.LocalPos(), 2))
+  if (m_clickedFigure = m_renderable.FindFigure(event.LocalPos(), 2))
+    if (m_selectedFigure && m_selectedFigure == m_clickedFigure)
     {
-      m_selectedFigure = selectedFigure;
-      m_firstPos = event.LocalPos();
+      m_isUserSelected = false;
+      m_clickPos = event.LocalPos();
     }
     else
     {
-      m_selected.Clear();
-      m_selected.Add(fig);
-      m_renderable.SetRenderProperties(fig, {Color::GREEN(), m_renderable.GetRenderProperties(fig)->style});
+      m_isUserSelected = true;
+      Deselect();
+      Select(m_clickedFigure);
     }
-
-  return nullptr;
 }
 
 
@@ -39,18 +37,17 @@ std::unique_ptr<ICommand> DefaultState::OnSceneMousePressEvent(const SceneMouseE
   Обрабатывает событие движения мышки по сцене
 */
 //---
-std::unique_ptr<ICommand> DefaultState::OnSceneMouseMoveEvent(const SceneMouseEvent& event)
+void DefaultState::OnSceneMouseMoveEvent(const SceneMouseEvent& event)
 {
-  if (m_selectedFigure)
+  if (m_selectedFigure && m_clickedFigure == m_selectedFigure)
   {
-    Vector delta = event.LocalPos() - m_firstPos;
+    const Vector delta = event.LocalPos() - m_clickPos;
     if (delta.dx > 5 || delta.dx < -5 || delta.dy > 5 || delta.dy < -5)
     {
       m_isUserWantToMove = true;
       m_selectedFigure->Move(event.LocalPos() - m_selectedFigure->Center());
     }
   };
-  return nullptr;
 }
 
 
@@ -61,22 +58,58 @@ std::unique_ptr<ICommand> DefaultState::OnSceneMouseMoveEvent(const SceneMouseEv
 //---
 std::unique_ptr<ICommand> DefaultState::OnSceneMouseReleaseEvent(const SceneMouseEvent & event)
 {
-  if (m_selectedFigure)
+  if (m_clickedFigure && m_clickedFigure == m_selectedFigure)
   {
     if (m_isUserWantToMove)
     {
       m_isUserWantToMove = false;
-      m_selectedFigure = nullptr;
+
+      std::shared_ptr<IFigure> fig = std::move(m_clickedFigure);
+      m_clickedFigure = nullptr;
+      
+      fig->Move(m_clickPos - event.LocalPos());
+      return std::make_unique<MoveFigureCommand>(fig, event.LocalPos() - m_clickPos);
     }
-    else
+    else if (!m_isUserSelected)
     {
-      m_renderable.SetRenderProperties(m_selectedFigure,
-                                       {Color::BLACK(), m_renderable.GetRenderProperties(m_selectedFigure)->style});
-      m_selected.Clear();
-      m_selectedFigure = nullptr;
+      Deselect();
     }
+    m_clickedFigure = nullptr;
   }
+
   return nullptr;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Выделяет объект
+*/
+//---
+void DefaultState::Select(std::shared_ptr<IFigure> figure)
+{
+  if (!m_selectedFigure)
+  {
+    m_selectedFigure = std::move(figure);
+    m_renderable.SetRenderProperties(m_selectedFigure,
+                                     {Color::GREEN(), m_renderable.GetRenderProperties(m_selectedFigure)->style});
+  };
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Снимает выделение с объекта
+*/
+//---
+void DefaultState::Deselect()
+{
+  if (m_selectedFigure)
+  {
+    m_renderable.SetRenderProperties(m_selectedFigure,
+                                     {Color::BLACK(), m_renderable.GetRenderProperties(m_selectedFigure)->style});
+    m_selectedFigure = nullptr;
+  };
 }
 
 
@@ -85,12 +118,11 @@ std::unique_ptr<ICommand> DefaultState::OnSceneMouseReleaseEvent(const SceneMous
   Конструктор
 */
 //---
-DefaultState::DefaultState(std::shared_ptr<IView> view, SelectedModel & selectedModel, RenderableModel & renderableModel)
+DefaultState::DefaultState(std::shared_ptr<IView> view, RenderableModel & renderableModel)
   : m_view(std::move(view))
-  , m_inMoveFigure(nullptr)
-  , m_selected(selectedModel)
   , m_renderable(renderableModel)
   , m_isUserWantToMove(false)
+  , m_isUserSelected(false)
 {
 }
 
@@ -110,21 +142,18 @@ std::unique_ptr<ICommand> DefaultState::OnEvent(const Event& event)
     {
       const SceneMouseEvent & mouseEv = static_cast<const SceneMouseEvent &>(event);
       if (event.Type() == EventType::SceneMousePress)
-        return OnSceneMousePressEvent(mouseEv);
+        OnSceneMousePressEvent(mouseEv);
       else if (event.Type() == EventType::SceneMouseMove)
-        return OnSceneMouseMoveEvent(mouseEv);
+        OnSceneMouseMoveEvent(mouseEv);
       else
         return OnSceneMouseReleaseEvent(mouseEv);
+      break;
     }
     case EventType::SceneDeleteEvent:
     {
-      auto pred = [this](std::shared_ptr<IFigure> figure)
-      {
-        m_renderable.Remove(figure);
-        return true;
-      };
-      m_selected.ForEachFigures(pred);
-      m_selected.Clear();
+      std::shared_ptr<IFigure> fig = m_selectedFigure;
+      Deselect();
+      return std::make_unique<DeleteFigureCommand>(fig, m_renderable);
       break;
     }
   }

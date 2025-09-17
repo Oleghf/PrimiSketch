@@ -3,9 +3,9 @@
 #include <memory>
 
 #include <ICommand.h>
+#include <RenderableProperties.h>
 
 class IFigure;
-class RenderableModel;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -19,6 +19,7 @@ private:
   std::shared_ptr<IFigure> m_figure;
 
   RenderableModel & m_renderable;
+  RenderProperties m_renderProperties;
 
 public:
   DeleteFigureCommand(std::shared_ptr<IFigure> figure, RenderableModel & renderable);

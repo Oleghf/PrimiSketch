@@ -30,7 +30,7 @@ constexpr double MIN_SCALE = 0.5;
 //------------------------------------------------------------------------------
 /**
   \brief Сохранить состояние программы в файл
-  \details Сначала сохраняются цвет и стиль линии, далее хэш фигуры,
+  \details Сначала сохраняются стиль линии, далее хэш фигуры,
   а после фигура записывает в поток данные о себе
 */
 //---
@@ -43,12 +43,7 @@ void MainController::Save(const std::string & path)
   auto pred = [&ofile, this](std::shared_ptr<IFigure> figure)
   {
     RenderProperties renprop = m_renderableModel.GetRenderProperties(figure).value();
-    Color color = renprop.color;
     StyleLine style = renprop.style;
-    ofile.Write(color.r);
-    ofile.Write(color.g);
-    ofile.Write(color.b);
-    ofile.Write(color.a);
     ofile.Write(static_cast<int>(style));
     ofile.Write(figure->GetTypeHash());
     figure->Write(ofile);
@@ -80,16 +75,16 @@ void MainController::Load(const std::string& path)
   while (true)
   {
     int styleInt;
-    Color color;
     StyleLine style;
 
-    if (ifile.Read(color.r) && ifile.Read(color.g) && ifile.Read(color.b) && ifile.Read(color.a) && ifile.Read(styleInt))
+    if (ifile.Read(styleInt))
       style = static_cast<StyleLine>(styleInt);
     else
       break;
 
     if (std::shared_ptr<IFigure> fig = IFigure::Read(ifile))
-      m_commandManager.Execute(std::make_unique<CreateFigureCommand>(fig, RenderProperties{color, style}, m_renderableModel));
+      m_commandManager.Execute(
+        std::make_unique<CreateFigureCommand>(fig, RenderProperties{Color::BLACK(), style}, m_renderableModel));
     else
       break;
   }
@@ -125,9 +120,9 @@ void MainController::Scale(const Point & anchorPos, double factor)
 //---
 void MainController::ChangeState(Tool newTool)
 {
-  m_currentState->Deactivate();
+  m_states[m_currentTool]->Deactivate();
   m_states[newTool]->Activate();
-  m_currentState = m_states[newTool];
+  m_currentTool = newTool;
 }
 
 
@@ -137,11 +132,11 @@ void MainController::ChangeState(Tool newTool)
 */
 //---
 MainController::MainController(std::shared_ptr<IView> view)
-  : m_view(view)
-  , m_currentState(std::make_shared<DefaultState>(m_view,m_selectedModel, m_renderableModel))
+  : m_view(std::move(view))
+  , m_currentTool(Tool::None)
   , m_paintController(view, m_renderableModel), m_scale(1)
 {
-  m_states[Tool::None] = m_currentState;
+  m_states[Tool::None] = std::make_shared<DefaultState>(m_view, m_renderableModel);
   m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_renderableModel);
   m_states[Tool::BrokenLine] = std::make_shared<CreatePolyLineState>(m_view, m_renderableModel);
   m_states[Tool::RectangleTwoPoints] = std::make_shared<CreateRectangleTwoPointsState>(m_view, m_renderableModel);
@@ -168,7 +163,6 @@ void MainController::OnEvent(const Event& event)
     case EventType::LoadFile:
     {
       m_renderableModel = RenderableModel();
-      m_selectedModel = SelectedModel();
       Load(m_view->OpenLoadFileDialog("Загрузка", "", "PrimiSketch files (*.ps)"));
       break;
     }
@@ -204,7 +198,7 @@ void MainController::OnEvent(const Event& event)
     }
     default:
     {
-      m_commandManager.Execute(m_currentState->OnEvent(event));
+      m_commandManager.Execute(m_states[m_currentTool]->OnEvent(event));
       break;
     }
     }
