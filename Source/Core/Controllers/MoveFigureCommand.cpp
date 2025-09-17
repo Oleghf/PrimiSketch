@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include <IFigure.h>
 #include <MoveFigureCommand.h>
 
@@ -11,6 +13,7 @@ MoveFigureCommand::MoveFigureCommand(std::shared_ptr<IFigure> figure, const Vect
   : m_figure(std::move(figure))
   , m_offset(offset)
 {
+  assert(m_figure);
 }
 
 

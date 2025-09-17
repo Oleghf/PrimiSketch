@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include <RenderableModel.h>
 #include <GeometryModel.h>
 #include <IFigure.h>
@@ -15,6 +17,7 @@ CreateFigureCommand::CreateFigureCommand(std::shared_ptr<IFigure> figure, const 
   , m_properties(properties)
   , m_renderable(renderable)
 {
+  assert(m_figure);
 }
 
 
