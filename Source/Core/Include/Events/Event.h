@@ -13,6 +13,7 @@ enum class EventType
   SceneMouseMove,
   SceneMouseRelease,
   SceneWheelEvent,
+  SceneDeleteEvent,
   ToolChange,
   PaintEvent,
   Undo,

@@ -7,7 +7,6 @@
 #include <PaintController.h>
 #include <CommandManager.h>
 #include <EventListener.h>
-#include <GeometryModel.h>
 #include <RenderableModel.h>
 
 class IState;
@@ -27,14 +26,17 @@ private:
   PaintController m_paintController;
   
   std::shared_ptr<IView> m_view;
-  std::shared_ptr<IState> m_currentState;
 
+  Tool m_currentTool;
   std::unordered_map <Tool, std::shared_ptr<IState>> m_states;
 
-private:
+  double m_scale;
 
+private:
   void Load(const std::string & path);
   void Save(const std::string & path);
+  void Scale(const Point & anchorPos, double factor);
+
   void ChangeState(Tool newTool);
 
 public:

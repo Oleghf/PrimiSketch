@@ -1,9 +1,7 @@
 #include <cassert>
 
-#include <RenderableModel.h>
-#include <GeometryModel.h>
 #include <IFigure.h>
-#include <CreateFigureCommand.h>
+#include <MoveFigureCommand.h>
 
 
 //------------------------------------------------------------------------------
@@ -11,11 +9,9 @@
   Конструктор
 */
 //---
-CreateFigureCommand::CreateFigureCommand(std::shared_ptr<IFigure> figure, const RenderProperties & properties,
-                                         RenderableModel & renderable)
+MoveFigureCommand::MoveFigureCommand(std::shared_ptr<IFigure> figure, const Vector & offset)
   : m_figure(std::move(figure))
-  , m_properties(properties)
-  , m_renderable(renderable)
+  , m_offset(offset)
 {
   assert(m_figure);
 }
@@ -26,9 +22,9 @@ CreateFigureCommand::CreateFigureCommand(std::shared_ptr<IFigure> figure, const 
   Выполняет команду
 */
 //---
-void CreateFigureCommand::Do()
+void MoveFigureCommand::Do()
 {
-  m_renderable.SetRenderProperties(m_figure, m_properties);
+  m_figure->Move(m_offset);
 }
 
 
@@ -37,7 +33,7 @@ void CreateFigureCommand::Do()
   Отменяет команду
 */
 //---
-void CreateFigureCommand::Undo()
+void MoveFigureCommand::Undo()
 {
-  m_renderable.Remove(m_figure);
+  m_figure->Move({-m_offset.dx, -m_offset.dy});
 }

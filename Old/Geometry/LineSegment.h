@@ -22,10 +22,11 @@ public:
   void Move(const Vector & offset) override;
   bool InBox(const Box & box) const override;
   bool IntersectsPoint(const Point & point, double epsilon) const override;
+  void Transform(const Matrix3 & transform) override;
   void Write(OutputStream & os) const override;
   size_t GetTypeHash() const override;
   void Render(PrimitiveView & render) override;
 
-  static std::shared_ptr<LineSegment> Read(const InputStream & is);
+  static std::shared_ptr<LineSegment> Read(InputStream & is);
   double Length() const;
 };

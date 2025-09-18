@@ -22,6 +22,7 @@ public:
   BinaryFile(const std::string & filePath);
 
   void Write(int num) override;
+  void Write(unsigned int num) override;
   void Write(size_t num) override;
   void Write(double num) override;
 

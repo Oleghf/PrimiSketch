@@ -1,13 +1,13 @@
-#include <BinaryFile.h>
+#include <BinaryFileInput.h>
 
 
 //------------------------------------------------------------------------------
 /**
-  Конструктор. Открывает файл для записи.
+  Конструктор. Открывает файл для чтения.
 */
 //---
-BinaryFile::BinaryFile(const std::string& filePath)
-  : m_ofs(filePath)
+BinaryFileInput::BinaryFileInput(const std::string & filePath)
+  : m_ifs(filePath)
 {
 }
 
@@ -17,9 +17,11 @@ BinaryFile::BinaryFile(const std::string& filePath)
   Записывает число в файл, в бинарном формате
 */
 //---
-void BinaryFile::Write(int num)
+bool BinaryFileInput::Read(int & num)
 {
-  m_ofs.write(reinterpret_cast<const char *>(&num), sizeof(num));
+  if (m_ifs.is_open() && m_ifs.good() && m_ifs.read(reinterpret_cast<char *>(&num), sizeof(num)))
+    return true;
+  return false;
 }
 
 
@@ -28,9 +30,11 @@ void BinaryFile::Write(int num)
   Записывает число в файл, в бинарном формате
 */
 //---
-void BinaryFile::Write(unsigned int num)
+bool BinaryFileInput::Read(unsigned int & num)
 {
-  m_ofs.write(reinterpret_cast<const char *>(&num), sizeof(num));
+  if (m_ifs.is_open() && m_ifs.good() && m_ifs.read(reinterpret_cast<char *>(&num), sizeof(num)))
+    return true;
+  return false;
 }
 
 
@@ -39,9 +43,11 @@ void BinaryFile::Write(unsigned int num)
   Записывает число в файл, в бинарном формате
 */
 //---
-void BinaryFile::Write(size_t num)
+bool BinaryFileInput::Read(size_t & num)
 {
-  m_ofs.write(reinterpret_cast<const char *>(&num), sizeof(num));
+  if (m_ifs.is_open() && m_ifs.good() && m_ifs.read(reinterpret_cast<char *>(&num), sizeof(num)))
+    return true;
+  return false;
 }
 
 
@@ -50,9 +56,11 @@ void BinaryFile::Write(size_t num)
   Записывает число в файл, в бинарном формате
 */
 //---
-void BinaryFile::Write(double num)
+bool BinaryFileInput::Read(double & num)
 {
-  m_ofs.write(reinterpret_cast<const char *>(&num), sizeof(num));
+  if (m_ifs.is_open() && m_ifs.good() && m_ifs.read(reinterpret_cast<char *>(&num), sizeof(num)))
+    return true;
+  return false;
 }
 
 
@@ -61,9 +69,9 @@ void BinaryFile::Write(double num)
   Открывает файл по указанному пути
 */
 //---
-void BinaryFile::Open(const std::string& filePath)
+void BinaryFileInput::Open(const std::string & filePath)
 {
-  m_ofs.open(filePath);
+  m_ifs.open(filePath);
 }
 
 
@@ -72,9 +80,9 @@ void BinaryFile::Open(const std::string& filePath)
   Проверяет, открыт ли файл.
 */
 //---
-bool BinaryFile::IsOpen() const
+bool BinaryFileInput::IsOpen() const
 {
-  return m_ofs.is_open();
+  return m_ifs.is_open();
 }
 
 
@@ -83,7 +91,7 @@ bool BinaryFile::IsOpen() const
   Закрывает файл
 */
 //---
-void BinaryFile::Close()
+void BinaryFileInput::Close()
 {
-  m_ofs.close();
+  m_ifs.close();
 }

@@ -10,7 +10,8 @@
 class InputStream
 {
 public:
-  virtual bool Read(int &) const = 0;
-  virtual bool Read(size_t &) const = 0;
-  virtual bool Read(double &) const = 0;
+  virtual bool Read(int &) = 0;
+  virtual bool Read(unsigned int &) = 0;
+  virtual bool Read(size_t &) = 0;
+  virtual bool Read(double &) = 0;
 };

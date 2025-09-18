@@ -3,26 +3,26 @@
 #include <memory>
 
 #include <ICommand.h>
-#include <RenderableProperties.h>
+#include <Vector.h>
 
 class IFigure;
+class RenderableModel;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-/// Команда удаления фигуры
+/// Команда перемещения фигуры
 /**
 */
 ////////////////////////////////////////////////////////////////////////////////
-class DeleteFigureCommand : public ICommand
+class MoveFigureCommand : public ICommand
 {
 private:
   std::shared_ptr<IFigure> m_figure;
 
-  RenderableModel & m_renderable;
-  RenderProperties m_renderProperties;
+  Vector m_offset;
 
 public:
-  DeleteFigureCommand(std::shared_ptr<IFigure> figure, RenderableModel & renderable);
+  MoveFigureCommand(std::shared_ptr<IFigure> figure, const Vector & offset);
 
   void Do() override;
   void Undo() override;

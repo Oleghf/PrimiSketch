@@ -2,6 +2,7 @@
 #include <cassert>
 #include <algorithm>
 
+#include <Matrix3.h>
 #include <PrimitiveView.h>
 #include <ConsoleOutputStream.h>
 #include <OutputStream.h>
@@ -11,7 +12,7 @@
 #include <BrokenLine.h>
 
 
-// static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
+static bool _ = IFigure::RegisterType(math_utils::hash("BrokenLine"), &BrokenLine::Read);
 
 
 //------------------------------------------------------------------------------
@@ -95,6 +96,16 @@ bool BrokenLine::IntersectsPoint(const Point & point, double epsilon) const
 }
 
 
+//
+void BrokenLine::Transform(const Matrix3 & transform)
+{
+  for (Point & point : m_points)
+  {
+    point = point * transform;
+  }
+}
+
+
 //------------------------------------------------------------------------------
 /**
   Выводит данные о ломанной линии в численном формате
@@ -139,7 +150,7 @@ void BrokenLine::Render(PrimitiveView & primitiveView)
            Дальнейшие переменные читает как double и интерпетирует как координаты точек.
   \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
 */
-std::shared_ptr<BrokenLine> BrokenLine::Read(const InputStream & is)
+std::shared_ptr<BrokenLine> BrokenLine::Read(InputStream & is)
 {
   size_t size = 0;
   std::vector<Point> points;

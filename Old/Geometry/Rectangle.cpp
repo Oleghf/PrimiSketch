@@ -6,12 +6,13 @@
 #include <MathUtils.h>
 #include <Box.h>
 #include <Vector.h>
+#include <Matrix3.h>
 #include <InputStream.h>
 #include <OutputStream.h>
 #include <Rectangle.h>
 
 
-//static bool _ = IFigure::RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
+static bool _ = IFigure::RegisterType(math_utils::hash("Rectangle"), &Rectangle::Read);
 
 
 //------------------------------------------------------------------------------
@@ -94,6 +95,14 @@ bool Rectangle::IntersectsPoint(const Point & point, double epsilon) const
 }
 
 
+//
+void Rectangle::Transform(const Matrix3 & transform)
+{
+  m_topLeft =  m_topLeft * transform;
+  m_bottomRight = m_bottomRight * transform;
+}
+
+
 //------------------------------------------------------------------------------
 /**
   Выводит данные о прямоугольнике в численном формате
@@ -138,7 +147,7 @@ void Rectangle::Render(PrimitiveView & primitiveView)
   \brief Читает из потока 4 переменных типа double, создает на их основе прямоугольник
   \warning Если не прочитается хотя бы одна переменная, то метод вернет nullptr
 */
-std::shared_ptr<Rectangle> Rectangle::Read(const InputStream & is)
+std::shared_ptr<Rectangle> Rectangle::Read(InputStream & is)
 {
   std::array<double, 4> coords{};
 

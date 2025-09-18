@@ -1,5 +1,12 @@
+
+#include <Matrix3.h>
+#include <MathUtils.h>
+#include <CreateFigureCommand.h>
+#include <BinaryFile.h>
+#include <BinaryFileInput.h>
 #include <Event.h>
 #include <ScenePaintEvent.h>
+#include <SceneWheelEvent.h>
 #include <ToolChangeEvent.h>
 #include <IState.h>
 #include <DefaultState.h>
@@ -12,23 +19,97 @@
 #include <MainController.h>
 
 
-//------------------------------------------------------------------------------
-/**
-  Сохранить состояние программы в файл
-*/
-//---
-void MainController::Save(const std::string & path)
+namespace
 {
+constexpr double BASE_FACTOR = 1.1;
+constexpr double MAX_SCALE = 5;
+constexpr double MIN_SCALE = 0.5;
 }
 
 
 //------------------------------------------------------------------------------
 /**
-  Загрузить состояние программы из файла
+  \brief Сохранить состояние программы в файл
+  \details Сначала сохраняются стиль линии, далее хэш фигуры,
+  а после фигура записывает в поток данные о себе
+*/
+//---
+void MainController::Save(const std::string & path)
+{
+  BinaryFile ofile(path);
+
+  ofile.Write(m_scale);
+
+  auto pred = [&ofile, this](std::shared_ptr<IFigure> figure)
+  {
+    RenderProperties renprop = m_renderableModel.GetRenderProperties(figure).value();
+    StyleLine style = renprop.style;
+    ofile.Write(static_cast<int>(style));
+    ofile.Write(figure->GetTypeHash());
+    figure->Write(ofile);
+    return true;
+  };
+
+  m_renderableModel.ForEachFigures(pred);
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  \brief Загрузить состояние программы из файла
+  \details Функция запускает цикл в котором сначала идет попытка прочитать из потока данные о цвете и о стиле линии фигуры,
+  если это удается, то далее идет попытка прочитать данные о самой фигуре. После этого создается команда на создание фигуры.
+  Так продолжается, до тех пор, пока не получится прочитать какие либо данные, в этом случае цикл прерывается.
 */
 //---
 void MainController::Load(const std::string& path)
 {
+  BinaryFileInput ifile(path);
+
+  double scale;
+  if (ifile.Read(scale))
+    m_scale = scale;
+  else
+    return;
+
+  while (true)
+  {
+    int styleInt;
+    StyleLine style;
+
+    if (ifile.Read(styleInt))
+      style = static_cast<StyleLine>(styleInt);
+    else
+      break;
+
+    if (std::shared_ptr<IFigure> fig = IFigure::Read(ifile))
+      m_commandManager.Execute(
+        std::make_unique<CreateFigureCommand>(fig, RenderProperties{Color::BLACK(), style}, m_renderableModel));
+    else
+      break;
+  }
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Увеличение/Уменьшение объектов на сцене
+*/
+//---
+void MainController::Scale(const Point & anchorPos, double factor)
+{
+  if (m_scale * factor > MAX_SCALE || m_scale * factor < MIN_SCALE)
+    return;
+  m_scale = m_scale * factor;
+  auto pred = [factor, &anchorPos](std::shared_ptr<IFigure> fig)
+  {
+    fig->Transform(Matrix3::translation({-anchorPos.x, -anchorPos.y}));
+    fig->Transform(Matrix3::scale(factor, factor));
+    fig->Transform(Matrix3::translation({anchorPos.x, anchorPos.y}));
+    return true;
+  };
+
+  m_renderableModel.ForEachFigures(pred);
 }
 
 
@@ -39,9 +120,9 @@ void MainController::Load(const std::string& path)
 //---
 void MainController::ChangeState(Tool newTool)
 {
-  m_currentState->Deactivate();
+  m_states[m_currentTool]->Deactivate();
   m_states[newTool]->Activate();
-  m_currentState = m_states[newTool];
+  m_currentTool = newTool;
 }
 
 
@@ -51,11 +132,11 @@ void MainController::ChangeState(Tool newTool)
 */
 //---
 MainController::MainController(std::shared_ptr<IView> view)
-  : m_view(view)
-  , m_currentState(std::make_shared<DefaultState>(m_view, m_renderableModel))
-  , m_paintController(view, m_renderableModel)
+  : m_view(std::move(view))
+  , m_currentTool(Tool::None)
+  , m_paintController(view, m_renderableModel), m_scale(1)
 {
-  m_states[Tool::None] = m_currentState;
+  m_states[Tool::None] = std::make_shared<DefaultState>(m_view, m_renderableModel);
   m_states[Tool::LineSegment] = std::make_shared<CreateLineSegmentState>(m_view, m_renderableModel);
   m_states[Tool::BrokenLine] = std::make_shared<CreatePolyLineState>(m_view, m_renderableModel);
   m_states[Tool::RectangleTwoPoints] = std::make_shared<CreateRectangleTwoPointsState>(m_view, m_renderableModel);
@@ -76,12 +157,22 @@ void MainController::OnEvent(const Event& event)
 	{
     case EventType::SaveFile:
 	{
-      m_view->OpenSaveFileDialog("Сохранение", "");
+      Save(m_view->OpenSaveFileDialog("Сохранение", "", "PrimiSketch files (*.ps)"));
       break;
 	}
     case EventType::LoadFile:
     {
-      m_view->OpenLoadFileDialog("Загрузка", "");
+      m_renderableModel = RenderableModel();
+      Load(m_view->OpenLoadFileDialog("Загрузка", "", "PrimiSketch files (*.ps)"));
+      break;
+    }
+    case EventType::SceneWheelEvent:
+    {
+      const SceneWheelEvent & wheelEv = static_cast<const SceneWheelEvent &>(event);
+      if (wheelEv.Degrees() > 0)
+        Scale(wheelEv.CursorPos(), BASE_FACTOR);
+      else
+        Scale(wheelEv.CursorPos(), 1 / BASE_FACTOR);
       break;
     }
     case EventType::Undo:
@@ -107,7 +198,7 @@ void MainController::OnEvent(const Event& event)
     }
     default:
     {
-      m_commandManager.Execute(m_currentState->OnEvent(event));
+      m_commandManager.Execute(m_states[m_currentTool]->OnEvent(event));
       break;
     }
     }

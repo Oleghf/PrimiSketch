@@ -36,7 +36,20 @@ MockStream::MockStream()
   Псевдо-генерирует значение и помещает его в n
 */
 //---
-bool MockStream::Read(int& n) const
+bool MockStream::Read(int& n)
+{
+  n = rand() % 10;
+
+  return true;
+}
+
+
+//------------------------------------------------------------------------------
+/**
+  Псевдо-генерирует значение и помещает его в n
+*/
+//---
+bool MockStream::Read(unsigned int & n)
 {
   n = rand() % 10;
 
@@ -51,7 +64,7 @@ bool MockStream::Read(int& n) const
            Далее возвращает псевдо-случайные значения.
 */
 //---
-bool MockStream::Read(size_t & n) const
+bool MockStream::Read(size_t & n)
 {
   static bool isFirstCall = true;
 
@@ -74,7 +87,7 @@ bool MockStream::Read(size_t & n) const
   Псевдо-генерирует значение и помещает его в n
 */
 //---
-bool MockStream::Read(double& n) const
+bool MockStream::Read(double& n)
 {
   n = rand() % 3;
 
