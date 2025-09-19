@@ -35,6 +35,7 @@ private:
 private:
   void Load(const std::string & path);
   void Save(const std::string & path);
+  void ExportSVG(const std::string & path);
   void Scale(const Point & anchorPos, double factor);
 
   void ChangeState(Tool newTool);

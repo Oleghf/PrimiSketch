@@ -15,9 +15,9 @@ struct Matrix3
           double m21 = 0, double m22 = 1.0, double m23 = 0,
           double m31 = 0, double m32 = 0, double m33 = 1.0);
 
-  static Matrix3 translation(const Vector & offset);
-  static Matrix3 scale(double scaleX, double scaleY);
-  static Matrix3 rotation(double radian);
+  static Matrix3 Translation(const Vector & offset);
+  static Matrix3 Scale(double scaleX, double scaleY);
+  static Matrix3 Rotation(double radian);
 
   Matrix3 operator*(const Matrix3 & matrix) const;
 

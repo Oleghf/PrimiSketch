@@ -29,11 +29,13 @@ Matrix3::Matrix3(double m11, double m12, double m13,
   Смещение на вектор
 */
 //---
-Matrix3 Matrix3::translation(const Vector & offset)
+Matrix3 Matrix3::Translation(const Vector & offset)
 {
   return Matrix3(
 
-    1.0, 0.0, offset.dx, 0.0, 1.0, offset.dy, 0.0, 0.0, 1.0);
+    1.0, 0.0, offset.dx,
+    0.0, 1.0, offset.dy,
+    0.0, 0.0, 1.0);
 }
 
 
@@ -42,9 +44,11 @@ Matrix3 Matrix3::translation(const Vector & offset)
   Масштабирование
 */
 //---
-Matrix3 Matrix3::scale(double scaleX, double scaleY)
+Matrix3 Matrix3::Scale(double scaleX, double scaleY)
 {
-  return Matrix3(scaleX, 0, 0, 0, scaleY, 0, 0, 0, 1);
+  return Matrix3(scaleX, 0, 0,
+                 0, scaleY, 0,
+                 0, 0, 1);
 }
 
 
@@ -53,9 +57,11 @@ Matrix3 Matrix3::scale(double scaleX, double scaleY)
   Поворот
 */
 //---
-Matrix3 Matrix3::rotation(double radian)
+Matrix3 Matrix3::Rotation(double radian)
 {
-  return Matrix3(std::cos(radian), -std::sin(radian), 0, std::sin(radian), std::cos(radian), 0, 0, 0, 1);
+  return Matrix3(std::cos(radian), -std::sin(radian), 0,
+                 std::sin(radian), std::cos(radian), 0,
+                 0, 0, 1);
 }
 
 

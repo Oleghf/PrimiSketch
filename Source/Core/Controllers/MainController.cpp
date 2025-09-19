@@ -1,4 +1,6 @@
+#include <fstream>
 
+#include <LineSegment.h>
 #include <Matrix3.h>
 #include <MathUtils.h>
 #include <CreateFigureCommand.h>
@@ -56,6 +58,22 @@ void MainController::Save(const std::string & path)
 
 //------------------------------------------------------------------------------
 /**
+  Экспортирует в SVG формат
+*/
+//---
+void MainController::ExportSVG(const std::string & path)
+{
+  std::ofstream ofstream(path);
+
+  auto pred = [this, &ofstream](std::shared_ptr<IFigure> figure)
+  {
+// wip
+  };
+}
+
+
+//------------------------------------------------------------------------------
+/**
   \brief Загрузить состояние программы из файла
   \details Функция запускает цикл в котором сначала идет попытка прочитать из потока данные о цвете и о стиле линии фигуры,
   если это удается, то далее идет попытка прочитать данные о самой фигуре. После этого создается команда на создание фигуры.
@@ -103,9 +121,9 @@ void MainController::Scale(const Point & anchorPos, double factor)
   m_scale = m_scale * factor;
   auto pred = [factor, &anchorPos](std::shared_ptr<IFigure> fig)
   {
-    fig->Transform(Matrix3::translation({-anchorPos.x, -anchorPos.y}));
-    fig->Transform(Matrix3::scale(factor, factor));
-    fig->Transform(Matrix3::translation({anchorPos.x, anchorPos.y}));
+    fig->Transform(Matrix3::Translation({-anchorPos.x, -anchorPos.y}));
+    fig->Transform(Matrix3::Scale(factor, factor));
+    fig->Transform(Matrix3::Translation({anchorPos.x, anchorPos.y}));
     return true;
   };
 
@@ -194,6 +212,11 @@ void MainController::OnEvent(const Event& event)
     {
       ToolChangeEvent tcEv = static_cast<const ToolChangeEvent &>(event);
       ChangeState(tcEv.Tool());
+      break;
+    }
+    case EventType::ExportSVG:
+    {
+      ExportSVG(m_view->OpenSaveFileDialog("Экспорт в SVG", "", "SVG files (*.svg)"));
       break;
     }
     default:

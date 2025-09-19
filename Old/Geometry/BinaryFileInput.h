@@ -22,7 +22,7 @@ public:
   BinaryFileInput(const std::string & filePath);
 
   bool Read(int& num) override;
-  bool Read(unsigned int & num);
+  bool Read(unsigned int & num) override;
   bool Read(size_t& num) override;
   bool Read(double& num) override;
 
