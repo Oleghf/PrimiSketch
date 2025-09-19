@@ -4,7 +4,6 @@
 #include <Event.h>
 #include <SceneMouseEvent.h>
 #include <IView.h>
-#include <SelectedModel.h>
 #include <RenderableModel.h>
 #include <Vector.h>
 #include <DefaultState.h>
@@ -21,7 +20,6 @@ void DefaultState::OnSceneMousePressEvent(const SceneMouseEvent & event)
     if (m_selectedFigure && m_selectedFigure == m_clickedFigure)
     {
       m_isUserSelected = false;
-      m_clickPos = event.LocalPos();
     }
     else
     {
@@ -29,6 +27,8 @@ void DefaultState::OnSceneMousePressEvent(const SceneMouseEvent & event)
       Deselect();
       Select(m_clickedFigure);
     }
+  m_clickPos = event.LocalPos();
+  m_movePos = m_clickPos;
 }
 
 
@@ -45,7 +45,8 @@ void DefaultState::OnSceneMouseMoveEvent(const SceneMouseEvent& event)
     if (delta.dx > 5 || delta.dx < -5 || delta.dy > 5 || delta.dy < -5)
     {
       m_isUserWantToMove = true;
-      m_selectedFigure->Move(event.LocalPos() - m_selectedFigure->Center());
+      m_selectedFigure->Move(event.LocalPos() - m_movePos);
+      m_movePos = event.LocalPos();
     }
   };
 }

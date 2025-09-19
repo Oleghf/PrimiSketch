@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <BrokenLine.h>
 #include <LineSegment.h>
 #include <Event.h>
@@ -82,12 +84,12 @@ std::unique_ptr<ICommand> CreatePolyLineState::OnSceneMousePressEvent(const Scen
       m_firstPos = mouseEv.LocalPos();
       m_status = Status::AwaitPoints;
       CreateTemporaryFigure(m_firstPos);
+      m_points.push_back(m_firstPos);
     }
     else
     {
       m_secondPos = mouseEv.LocalPos();
       CreateNewPhantomSegment(m_secondPos, m_firstPos);
-      m_points.push_back(m_firstPos);
       m_points.push_back(m_secondPos);
       m_firstPos = m_points.back();
     }

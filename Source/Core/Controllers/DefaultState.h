@@ -5,7 +5,6 @@
 class IView;
 class IFigure;
 class SceneMouseEvent;
-class SelectedModel;
 class RenderableModel;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,6 +23,7 @@ private:
   RenderableModel & m_renderable;
 
   Point m_clickPos;
+  Point m_movePos;
   bool m_isUserWantToMove;
   bool m_isUserSelected;
 
